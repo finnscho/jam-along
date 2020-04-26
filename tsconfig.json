@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
     "target": "esnext",
+    "noImplicitAny": false,
     "module": "esnext",
     "strict": true,
     "jsx": "preserve",
@@ -12,6 +13,7 @@
     "sourceMap": true,
     "baseUrl": ".",
     "types": [
+      "vuetify",
       "webpack-env",
       "jest"
     ],
