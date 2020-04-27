@@ -1,13 +1,16 @@
 <template>
   <v-container fluid>
       <v-card >
-      <v-row>
-          <v-col><video-js-recorder /></v-col>
-          <v-col><video-js-recorder /></v-col>
+        <v-btn v-on:click="click">play all</v-btn>
+        <v-btn v-on:click="record">record all</v-btn>
+
+      <v-row class="pa-0" >
+          <v-col class="pa-0"><video-js-recorder  class="pa-0" /></v-col>
+          <v-col class="pa-0" ><video-js-recorder class="pa-0" /></v-col>
       </v-row>
-      <v-row>
-          <v-col><video-js-recorder /></v-col>
-          <v-col><video-js-recorder /></v-col>
+      <v-row class="pa-0">
+          <v-col class="pa-0" ><video-js-recorder class="pa-0" /></v-col>
+          <v-col class="pa-0"><video-js-recorder class="pa-0" /></v-col>
       </v-row>
       </v-card>
   </v-container>
@@ -16,6 +19,9 @@
 import Vue from "vue";
 import { Component, Prop } from "vue-property-decorator";
 import VideoJSRecord from "./VideoJSRecord.vue";
+import store from "../../store";
+import {VideoStreamMerger} from 'video-stream-merger'
+
 
 
 @Component({
@@ -25,13 +31,31 @@ import VideoJSRecord from "./VideoJSRecord.vue";
 })
 export default class VideoRecorderGrid extends Vue {
 
-getId() {
-   
-    return (Math.floor(Math.random() * Math.floor(1000))).toString();
+
+
+
+
+
+
+public click(){
+  store.state.players.forEach(element => {
+
+   // if(element.recordedData !== undefined)
+    {
+      console.log('play');
+      element.play();
+    }
+  });
 }
+public record(){
+}
+
 }
 </script>
 
-<style>
-
+<style >
+v-col{
+  padding:0px;
+}
+<!--  -->
 </style>

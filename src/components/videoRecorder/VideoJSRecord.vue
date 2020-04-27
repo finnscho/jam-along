@@ -23,10 +23,10 @@
                     autoplay: false,
                     fluid: true,
                     loop: false,
-                    width: 320,
-                    height: 240,
+     
                     controlBar: {
-                        volumePanel: false
+                        volumePanel: false,
+
                     },
                     plugins: {
                         // configure videojs-record plugin
@@ -41,6 +41,8 @@
             };
         },
         mounted() {
+
+            
           //  this.myid = '234'// + (Math.floor(Math.random() * Math.floor(100)))
             /* eslint-disable no-console */
             this.player = videojs('#'+this.id, this.options, () => {
@@ -49,7 +51,10 @@
                     ' with videojs-record ' + videojs.getPluginVersion('record') +
                     ' and recordrtc ' + RecordRTC.version;
                 videojs.log(msg);
+                
             });
+
+            store.commit("addPlayer", this.player);
 
             // device is ready
             this.player.on('deviceReady', () => {
@@ -58,7 +63,14 @@
 
             // user clicked the record button and started recording
             this.player.on('startRecord', () => {
-                console.log('started recording!');
+                  store.state.players.forEach(element => {
+
+                if(element.recordedData !== undefined)
+                    {
+                    console.log('play');
+                    element.play();
+                    }
+                });
             });
 
             // user completed recording and stream is available
@@ -67,6 +79,7 @@
                 // can be downloaded by the user, stored on server etc.
                 console.log('finished recording: ', this.player.recordedData);
                  store.commit("addVideo", this.player.recordedData);
+                
             });
 
             // error handling
@@ -77,6 +90,8 @@
             this.player.on('deviceError', () => {
                 console.error('device error:', this.player.deviceErrorCode);
             });
+
+
         },
         beforeDestroy() { 
             if (this.player) {

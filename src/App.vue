@@ -1,16 +1,18 @@
 <template>
   <div id="app">
-    <VideoRecorderGrid />
+    <v-card>
+    <audiorecorder />
+    </v-card>
   </div>
 </template>
 
 <script>
-import VideoRecorderGrid from './components/videoRecorder/VideoRecorderGrid.vue'
+import audiorecorder from './components/audio/audiorecorder.vue'
 
 export default {
   name: 'app',
   components: {
-    VideoRecorderGrid
+    audiorecorder
   }
 }
 </script>
