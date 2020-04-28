@@ -1,4 +1,7 @@
 module.exports = {
+  publicPath: process.env.NODE_ENV === 'production'
+    ? '"/jam-along/'
+    : '/',
   "transpileDependencies": [
     "vuetify"
   ]
@@ -8,6 +11,7 @@ const webpack = require('webpack');
 
 module.exports = {
   configureWebpack: {
+    
     resolve: {
         alias: {
             videojs: 'video.js',

@@ -26,7 +26,7 @@
             </v-slider>
           </v-col>
         </v-row>
-        <v-btn label="commit Offset" v-on:click="setOffset"></v-btn>
+        <v-btn v-on:click="setOffset" margin="auto"><v-icon color="orange" >mdi-pokeball</v-icon></v-btn>
       </v-card-text>
 
 
@@ -39,7 +39,8 @@
 <script>
     import 'video.js/dist/video-js.css'
     import 'videojs-record/dist/css/videojs.record.css'
-
+    import Vue from 'vue'
+    import { Component, Prop } from "vue-property-decorator";
     import 'webrtc-adapter'
     import RecordRTC from 'recordrtc'
    
@@ -49,12 +50,13 @@
     import Record from 'videojs-record/dist/videojs.record.js'
     import 'videojs-offset';
     import store from "@/store";
-    export default {
+    @Component()
+export default class VideoJSRecord extends Vue  {
         data() {
             return {
                 min: 0,
-      max: 3000,
-      slider: 0,
+                max: 3000,
+                slider: 0,
                 id:  'mycomponent'+(Math.floor(Math.random() * Math.floor(9))).toString(),
                 player: '',
                 options: {
@@ -78,7 +80,7 @@
                     }
                 }
             };
-        },
+        }
         mounted() {
 
             
@@ -139,37 +141,37 @@
             });
 
 
-        },
-        
-  methods:{
+        }       
 
-      setOffset(){
+
+    setOffset(){
         this.player.offset({
                 start: this.slider/1000
                 //Should the video go to the beginning when it ends
                 });
           
-      },
-              sync(action, target, param, callback) {
-                this.me = this,
-                this.offset = (this.context.currentTime - target.startTime) % target.buffer.duration;
-                const time = target.buffer.duration - this.offset;
-                console.log('player.sync', this.context.currentTime + this.time, action);
-                if (this.syncTimer) {
-                window.clearTimeout(this.syncTimer);
-                }
-                this.syncTimer = window.setTimeout(function() {
-                const returned = this.me[action](param);
-                if (callback) {
-                    callback(returned);
-                }
-                }, time * 1000);
-            }
-        },
+      }
+    // ync(action, target, param, callback) {
+    //             this.me = this,
+    //             this.offset = (this.context.currentTime - target.startTime) % target.buffer.duration;
+    //             const time = target.buffer.duration - this.offset;
+    //             console.log('player.sync', this.context.currentTime + this.time, action);
+    //             if (this.syncTimer) {
+    //             window.clearTimeout(this.syncTimer);
+    //             }
+    //             this.syncTimer = window.setTimeout(function() {
+    //             const returned = this.me[action](param);
+    //             if (callback) {
+    //                 callback(returned);
+    //             }
+    //             }, time * 1000);
+    //         }
+    //     }
         beforeDestroy() { 
             if (this.player) {
                 this.player.dispose();
             }
         }
-    }
+}
+    
 </script>
