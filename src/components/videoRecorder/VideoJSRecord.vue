@@ -1,5 +1,39 @@
 <template>
+<v-container>
     <video :id="id" class="video-js " playsinline></video>
+<v-card-text>
+    <label>offset</label>
+        <v-row>
+          <v-col class="pr-4">
+            <v-slider
+              v-model="slider"
+              class="align-center"
+              :max="max"
+              :min="min"
+              hide-details
+            >
+              <template v-slot:append>
+                <v-text-field
+                  v-model="slider"
+                  thumb-label
+                  class="mt-0 pt-0"
+                  hide-details
+                  single-line
+                  type="number"
+                  style="width: 60px"
+                ></v-text-field>
+              </template>
+            </v-slider>
+          </v-col>
+        </v-row>
+        <v-btn label="commit Offset" v-on:click="setOffset"></v-btn>
+      </v-card-text>
+
+
+
+
+
+</v-container>
 </template>
 
 <script>
@@ -8,14 +42,19 @@
 
     import 'webrtc-adapter'
     import RecordRTC from 'recordrtc'
+   
 
     import videojs from 'video.js'
     // eslint-disable-next-line
     import Record from 'videojs-record/dist/videojs.record.js'
+    import 'videojs-offset';
     import store from "@/store";
     export default {
         data() {
             return {
+                min: 0,
+      max: 3000,
+      slider: 0,
                 id:  'mycomponent'+(Math.floor(Math.random() * Math.floor(9))).toString(),
                 player: '',
                 options: {
@@ -63,6 +102,8 @@
 
             // user clicked the record button and started recording
             this.player.on('startRecord', () => {
+                const x = new Date().getTime();
+                console.log('time x : ' + x.toString())
                   store.state.players.forEach(element => {
 
                 if(element.recordedData !== undefined)
@@ -71,10 +112,16 @@
                     element.play();
                     }
                 });
+                const y = new Date().getTime();
+                console.log('time y : '+y.toString())
+                this.slider = (y-x)
+                console.log('offset: ' + this.slider.toString())
+
             });
 
             // user completed recording and stream is available
             this.player.on('finishRecord', () => {
+
                 // the blob object contains the recorded data that
                 // can be downloaded by the user, stored on server etc.
                 console.log('finished recording: ', this.player.recordedData);
@@ -92,6 +139,32 @@
             });
 
 
+        },
+        
+  methods:{
+
+      setOffset(){
+        this.player.offset({
+                start: this.slider/1000
+                //Should the video go to the beginning when it ends
+                });
+          
+      },
+              sync(action, target, param, callback) {
+                this.me = this,
+                this.offset = (this.context.currentTime - target.startTime) % target.buffer.duration;
+                const time = target.buffer.duration - this.offset;
+                console.log('player.sync', this.context.currentTime + this.time, action);
+                if (this.syncTimer) {
+                window.clearTimeout(this.syncTimer);
+                }
+                this.syncTimer = window.setTimeout(function() {
+                const returned = this.me[action](param);
+                if (callback) {
+                    callback(returned);
+                }
+                }, time * 1000);
+            }
         },
         beforeDestroy() { 
             if (this.player) {

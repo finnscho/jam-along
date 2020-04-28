@@ -2,7 +2,7 @@
   <v-container fluid>
       <v-card >
         <v-btn v-on:click="click">play all</v-btn>
-        <v-btn v-on:click="record">record all</v-btn>
+        <v-btn v-on:click="save">save</v-btn>
 
       <v-row class="pa-0" >
           <v-col class="pa-0"><video-js-recorder  class="pa-0" /></v-col>
@@ -47,7 +47,17 @@ public click(){
     }
   });
 }
-public record(){
+public save(){
+  let i = 1;
+  store.state.players.forEach(element => {
+
+    if(element.record() !== undefined)
+    {
+      console.log('save');
+       element.record().saveAs({'video': 'video'+i+'.webm'});
+       i++;
+    }
+  });
 }
 
 }
@@ -57,5 +67,4 @@ public record(){
 v-col{
   padding:0px;
 }
-<!--  -->
 </style>
