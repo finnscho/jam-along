@@ -10,6 +10,8 @@
   },
   "dependencies": {
     "core-js": "^3.6.4",
+    "lodash.uniqueid": "^4.0.1",
+    "polly-js": "^1.6.5",
     "video-stream-merger": "^3.3.3",
     "videojs-offset": "^2.1.2",
     "videojs-record": "^3.11.0",

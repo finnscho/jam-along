@@ -1,177 +1,212 @@
 <template>
-<v-container>
-    <video :id="id" class="video-js " playsinline></video>
-<v-card-text>
-    <label>offset</label>
-        <v-row>
-          <v-col class="pr-4">
-            <v-slider
-              v-model="slider"
-              class="align-center"
-              :max="max"
-              :min="min"
-              hide-details
-            >
-              <template v-slot:append>
-                <v-text-field
-                  v-model="slider"
-                  thumb-label
-                  class="mt-0 pt-0"
-                  hide-details
-                  single-line
-                  type="number"
-                  style="width: 60px"
-                ></v-text-field>
-              </template>
-            </v-slider>
-          </v-col>
-        </v-row>
-        <v-btn v-on:click="setOffset" margin="auto"><v-icon color="orange" >mdi-pokeball</v-icon></v-btn>
-      </v-card-text>
-
-
-
-
-
-</v-container>
+  <v-container v-on:click="activate">
+    <div id="app" v-cloak @drop.prevent="addFile" @dragover.prevent>
+      <video
+        :id="id"
+        class="video-js vjs-layout-large"
+        v-bind:style="active ? 'border: dashed;' : ''"
+        playsinline
+        controls
+        preload="auto"
+      ></video>
+    </div>
+  </v-container>
 </template>
 
 <script>
-    import 'video.js/dist/video-js.css'
-    import 'videojs-record/dist/css/videojs.record.css'
-    import Vue from 'vue'
-    import { Component, Prop } from "vue-property-decorator";
-    import 'webrtc-adapter'
-    import RecordRTC from 'recordrtc'
-   
+import "video.js/dist/video-js.css";
+import "videojs-record/dist/css/videojs.record.css";
+import Vue from "vue";
+import { Component, Prop } from "vue-property-decorator";
+import "webrtc-adapter";
+import RecordRTC from "recordrtc";
 
-    import videojs from 'video.js'
-    // eslint-disable-next-line
-    import Record from 'videojs-record/dist/videojs.record.js'
-    import 'videojs-offset';
-    import store from "@/store";
-    @Component()
-export default class VideoJSRecord extends Vue  {
-        data() {
-            return {
-                min: 0,
-                max: 3000,
-                slider: 0,
-                id:  'mycomponent'+(Math.floor(Math.random() * Math.floor(9))).toString(),
-                player: '',
-                options: {
-                    controls: true,
-                    autoplay: false,
-                    fluid: true,
-                    loop: false,
-     
-                    controlBar: {
-                        volumePanel: false,
+import videojs from "video.js";
+// eslint-disable-next-line
+import Record from "videojs-record/dist/videojs.record.js";
+import "videojs-offset";
+import store from "@/store";
+@Component()
+export default class VideoJSRecord extends Vue {
+  data() {
+    return {
+      src: {},
+      min: 0,
+      max: 3000,
+      active: false,
+      slider: 0,
+      id: "mycomponent" + Math.floor(Math.random() * Math.floor(9)).toString(),
+      player: "",
+      options: {
+        controls: true,
+        autoplay: false,
+        fluid: true,
+        responsive: true,
+        loop: false,
+        width: 1800,
+        height: 240,
+        controlBar: {
+          volumePanel: true,
+          seeking: true,
+        },
+        plugins: {
+          // configure videojs-record plugin
+          record: {
+            audio: true,
+            video: true,
+            maxLength: 500,
+            debug: true,
+          },
+        },
+      },
+    };
+  }
+  created() {
+    this.$root.$refs.A = this;
+  }
+  mounted() {
+    //  this.myid = '234'// + (Math.floor(Math.random() * Math.floor(100)))
+    /* eslint-disable no-console */
+    this.player = videojs("#" + this.id, this.options, () => {
+      // print version information at startup
+      const msg =
+        "Using video.js " +
+        videojs.VERSION +
+        " with videojs-record " +
+        videojs.getPluginVersion("record") +
+        " and recordrtc " +
+        RecordRTC.version;
+      videojs.log(msg);
+    });
 
-                    },
-                    plugins: {
-                        // configure videojs-record plugin
-                        record: {
-                            audio: true,
-                            video: true,
-                            maxLength: 500,
-                            debug: true
-                        }
-                    }
-                }
-            };
+    store.commit("addPlayer", this.player);
+    try {
+      this.player.record().getDevice();
+    } catch {
+      alert("fehler");
+    }
+
+    // device is ready
+    this.player.on("deviceReady", () => {
+      console.log("device is ready!");
+    });
+
+    // user clicked the record button and started recording
+    this.player.on("startRecord", () => {
+      const x = new Date().getTime();
+      console.log("time x : " + x.toString());
+      store.state.players.forEach((element) => {
+        //if(element.recordedData !== undefined)
+        {
+          console.log("play");
+          element.play();
         }
-        mounted() {
+      });
+      const y = new Date().getTime();
+      console.log("time y : " + y.toString());
+      this.slider = y - x;
+      console.log("offset: " + this.slider.toString());
+    });
 
-            
-          //  this.myid = '234'// + (Math.floor(Math.random() * Math.floor(100)))
-            /* eslint-disable no-console */
-            this.player = videojs('#'+this.id, this.options, () => {
-                // print version information at startup
-                const msg = 'Using video.js ' + videojs.VERSION +
-                    ' with videojs-record ' + videojs.getPluginVersion('record') +
-                    ' and recordrtc ' + RecordRTC.version;
-                videojs.log(msg);
-                
-            });
+    // user completed recording and stream is available
+    this.player.on("finishRecord", () => {
+      // the blob object contains the recorded data that
+      // can be downloaded by the user, stored on server etc.
+      console.log("finished recording: ", this.player.recordedData);
+      store.commit("addVideo", this.player.recordedData);
+    });
 
-            store.commit("addPlayer", this.player);
+    // error handling
+    this.player.on("error", (element, error) => {
+      console.warn(error);
+    });
 
-            // device is ready
-            this.player.on('deviceReady', () => {
-                console.log('device is ready!');
-            });
+    this.player.on("deviceError", () => {
+      console.error("device error:", this.player.deviceErrorCode);
+    });
+  }
 
-            // user clicked the record button and started recording
-            this.player.on('startRecord', () => {
-                const x = new Date().getTime();
-                console.log('time x : ' + x.toString())
-                  store.state.players.forEach(element => {
+  addFile(e) {
+    const droppedFiles = e.dataTransfer.files;
 
-                if(element.recordedData !== undefined)
-                    {
-                    console.log('play');
-                    element.play();
-                    }
-                });
-                const y = new Date().getTime();
-                console.log('time y : '+y.toString())
-                this.slider = (y-x)
-                console.log('offset: ' + this.slider.toString())
+    if (!droppedFiles) return;
+    // this tip, convert FileList to array, credit: https://www.smashingmagazine.com/2018/01/drag-drop-file-uploader-vanilla-js/
+    [...droppedFiles].forEach((f) => {
+      const reader = new FileReader();
+      reader.onload = this.loadData;
+      reader.addEventListener(
+        "load",
+        function() {
+          // convert image file to base64 string
+          const preview = document.querySelector("video");
+          preview.src = reader.result;
+          // this.player.record().getDevice();
+          const css = document.createElement("style");
+          css.type = "text/css";
+          css.setAttributeNode(document.createAttribute("scopped"));
+          css.appendChild(
+            document.createTextNode(
+              ".vjs-record .vjs-device-button.vjs-control{display:none}"
+            )
+          );
+          this.$el.appendChild(css);
+        },
+        false
+      );
+      reader.readAsDataURL(f);
+      this.files.push(f);
+    });
+  }
+  loadData(e2) {
+    if (e2 !== null && e2.target !== null) {
+      // finished reading file data.
+      this.src = e2.target.result;
+      // var img = document.createElement('img');
+      // img.src= e2.target.result;
+      // document.body.appendChild(img);
+    }
+  }
+  removeFile(file) {
+    this.files = this.files.filter((f) => {
+      return f != file;
+    });
+  }
 
-            });
+  activate() {
+    this.active = true;
+    store.commit("activePlayer", this.player);
+  }
 
-            // user completed recording and stream is available
-            this.player.on('finishRecord', () => {
-
-                // the blob object contains the recorded data that
-                // can be downloaded by the user, stored on server etc.
-                console.log('finished recording: ', this.player.recordedData);
-                 store.commit("addVideo", this.player.recordedData);
-                
-            });
-
-            // error handling
-            this.player.on('error', (element, error) => {
-                console.warn(error);
-            });
-
-            this.player.on('deviceError', () => {
-                console.error('device error:', this.player.deviceErrorCode);
-            });
-
-
-        }       
-
-
-    setOffset(){
-        this.player.offset({
-                start: this.slider/1000
-                //Should the video go to the beginning when it ends
-                });
-          
-      }
-    // ync(action, target, param, callback) {
-    //             this.me = this,
-    //             this.offset = (this.context.currentTime - target.startTime) % target.buffer.duration;
-    //             const time = target.buffer.duration - this.offset;
-    //             console.log('player.sync', this.context.currentTime + this.time, action);
-    //             if (this.syncTimer) {
-    //             window.clearTimeout(this.syncTimer);
-    //             }
-    //             this.syncTimer = window.setTimeout(function() {
-    //             const returned = this.me[action](param);
-    //             if (callback) {
-    //                 callback(returned);
-    //             }
-    //             }, time * 1000);
-    //         }
-    //     }
-        beforeDestroy() { 
-            if (this.player) {
-                this.player.dispose();
-            }
-        }
+  // ync(action, target, param, callback) {
+  //             this.me = this,
+  //             this.offset = (this.context.currentTime - target.startTime) % target.buffer.duration;
+  //             const time = target.buffer.duration - this.offset;
+  //             console.log('player.sync', this.context.currentTime + this.time, action);
+  //             if (this.syncTimer) {
+  //             window.clearTimeout(this.syncTimer);
+  //             }
+  //             this.syncTimer = window.setTimeout(function() {
+  //             const returned = this.me[action](param);
+  //             if (callback) {
+  //                 callback(returned);
+  //             }
+  //             }, time * 1000);
+  //         }
+  //     }
+  beforeDestroy() {
+    if (this.player) {
+      this.player.dispose();
+    }
+  }
 }
-    
 </script>
+
+<style>
+.video-js .vjs-control-bar {
+  display: none !important;
+}
+.video-js .vjs-tech {
+  /* height:1000px;
+  width: 1000px; */
+}
+</style>
