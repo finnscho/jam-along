@@ -11,7 +11,7 @@ const webpack = require('webpack');
 
 module.exports = {
   configureWebpack: {
-    
+    devtool: 'source-map',
     resolve: {
         alias: {
             videojs: 'video.js',

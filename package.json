@@ -10,9 +10,12 @@
   },
   "dependencies": {
     "core-js": "^3.6.4",
+    "ffmpeg.js": "^4.2.9003",
+    "fs": "0.0.1-security",
     "lodash.uniqueid": "^4.0.1",
+    "mediastream-to-webm": "^1.0.2",
     "polly-js": "^1.6.5",
-    "video-stream-merger": "^3.3.3",
+    "video-stream-merger": "^3.4.0",
     "videojs-offset": "^2.1.2",
     "videojs-record": "^3.11.0",
     "vue": "^2.6.11",
@@ -23,6 +26,7 @@
   },
   "devDependencies": {
     "@types/jest": "^24.0.19",
+    "@types/node": "^13.13.4",
     "@typescript-eslint/eslint-plugin": "^2.26.0",
     "@typescript-eslint/parser": "^2.26.0",
     "@vue/cli-plugin-babel": "~4.3.0",
@@ -55,7 +59,9 @@
     "parserOptions": {
       "ecmaVersion": 2020
     },
-    "rules": {},
+    "rules": {
+      "@typescript-eslint/no-var-requires": "warn"
+    },
     "overrides": [
       {
         "files": [

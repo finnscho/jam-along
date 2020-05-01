@@ -26,6 +26,7 @@ import videojs from "video.js";
 import Record from "videojs-record/dist/videojs.record.js";
 import "videojs-offset";
 import store from "@/store";
+
 @Component()
 export default class VideoJSRecord extends Vue {
   data() {
