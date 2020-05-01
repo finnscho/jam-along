@@ -29,6 +29,7 @@ import store from "@/store";
 
 @Component()
 export default class VideoJSRecord extends Vue {
+@Prop()id;
   data() {
     return {
       src: {},
@@ -36,7 +37,7 @@ export default class VideoJSRecord extends Vue {
       max: 3000,
       active: false,
       slider: 0,
-      id: "mycomponent" + Math.floor(Math.random() * Math.floor(9)).toString(),
+     
       player: "",
       options: {
         controls: true,

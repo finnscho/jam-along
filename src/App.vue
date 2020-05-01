@@ -5,7 +5,7 @@
 
     <VideoRecorderGrid />
 
-    <video controls id="output"></video>
+    
     </v-card>
   </div>
 </v-app>

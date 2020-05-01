@@ -1,4 +1,15 @@
+import videojs  from 'video.js';
+import "video.js/dist/video-js.css";
+import "videojs-record/dist/css/videojs.record.css";
+import Vue from "vue";
+import { Component, Prop } from "vue-property-decorator";
+import "webrtc-adapter";
+import RecordRTC from "recordrtc";
 
+// eslint-disable-next-line
+import Record from "videojs-record/dist/videojs.record.js";
+import "videojs-offset";
+import store from "@/store";
 
   // import { jalVideo } from "../models/models";
   // import ffmpeg from 'ffmpeg.js';
@@ -9,34 +20,9 @@
 export default class JalffmpegService {
   
 
-
-  //ffmpeg -i left.mp4 -i right.mp4 -filter_complex \
-// "[0:v][1:v]hstack=inputs=2[v]; \
-// [0:a][1:a]amerge[a]" \
-// -map "[v]" -map "[a]" -ac 2 output.mp4
-
-  // mergeVideos([jalVideo]: [any]): jalVideo {tccccc
+player: videojs;
   mergeVideos(videos: any[]) {
    
-
-
-    // const video =  document.querySelector('#output') as HTMLMediaElement;//document.createElement('video')
-
-    // video.src = URL.createObjectURL(videos[0]);
-    // video.autoplay=true;
-
-    const mp4Element = document.createElement('video')
-     mp4Element.src = URL.createObjectURL(videos[0].recordedData);
-
-    //  const mp4Element2 = document.createElement('video')
-    //  mp4Element2.src = URL.createObjectURL(videos[0].recordedData);
-    // if(test !== null){
-    // test.srcObject = videos[0];
-    // test.autoplay = true}
-    // // const  elem = new HTMLMediaElement();
-    // // elem.srcObject = videos[0]
-
-
     const  merger = new VideoStreamMerger()
     videos[0].record().mediaElement.play()
     merger.addMediaElement('webm',videos[0].record().mediaElement, {
@@ -59,12 +45,13 @@ export default class JalffmpegService {
     // // Start the merging. Calling this makes the result available to us
     merger.start()
     
-    // // We now have a merged MediaStream!
-    // // merger.result
+
     const outputElement = document.querySelector('#output');
     if(outputElement !== null){
     outputElement.srcObject = merger.result
     outputElement.autoplay = true}
+
+
 
 return merger.result;
 

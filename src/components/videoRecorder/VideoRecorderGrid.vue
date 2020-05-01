@@ -96,7 +96,18 @@
                 md="5"
               >
                 <div id="app" v-cloak @drop.prevent="addFile" @dragover.prevent>
-                  <video-js-recorder />
+                  <video-js-recorder  v-bind:id="'mycomponent' + Math.floor(Math.random() * Math.floor(9)).toString()"/>
+                </div>
+              </v-col>
+                <v-col
+                height:200px
+                cols="6"
+                md="5"
+              >
+              <div id="app" v-cloak @drop.prevent="addFile" @dragover.prevent>              
+                <video playsinline
+        controls
+        preload="auto" id="output"></video>
                 </div>
               </v-col>
 
@@ -112,8 +123,9 @@
               </v-col>
             </v-row>
           </v-col>
-        </v-row>
+        </v-row>           
       </v-card>
+       <!-- <v v-bind:id="'output'"/> -->
     </v-layout>
   </v-container>
 </template>
@@ -125,6 +137,7 @@ import store from "../../store";
 import { VideoStreamMerger } from "video-stream-merger";
 import "videojs-offset";
 import JalffmpegService  from "../services/ffmpegService";
+
 @Component({
   components: {
     "video-js-recorder": VideoJSRecord,
@@ -137,7 +150,9 @@ export default class VideoRecorderGrid extends Vue {
   hover = false;
   slider: number;
   recording = false;
-  
+  mediaRecorder: MediaRecorder =  null;
+ service = new JalffmpegService();
+ recordedChunks: any[]
 
   constructor(params) {
     super(params);
@@ -145,6 +160,7 @@ export default class VideoRecorderGrid extends Vue {
     this.files = [];
     this.data = [];
     this.slider = 0;
+    this.recordedChunks = []
    
   }
 
@@ -200,13 +216,36 @@ export default class VideoRecorderGrid extends Vue {
   // }
 
   record() {
-    const recorder = store?.state?.activePlayer?.record();
+
+    if(this.mediaRecorder != null)
+    {
+      if(this.recording != true){
+        this.mediaRecorder.ondataavailable = this.handleDataAvailable;
+        this.mediaRecorder?.start();
+        this.recording = true;
+      }
+      else
+      {
+        this.mediaRecorder?.stop();
+        this.recording = false;
+      }
+    }
+    else
+    {
+    let recorder: any;
+    if(this.service.player != undefined){recorder = this.service.player.record()}
+    else
+    {
+recorder = store?.state?.activePlayer?.record();
+    }
+      
     if (!recorder.isRecording()) {
       recorder.start();
       this.recording = true;
     } else {
       recorder.stop();
       this.recording = false;
+    }
     }
   }
   public click() {
@@ -239,7 +278,7 @@ export default class VideoRecorderGrid extends Vue {
   public save() {
 
  console.log('FFMPEG:')
-   const service = new JalffmpegService()
+   
     
 
     let i = 1;
@@ -255,9 +294,38 @@ export default class VideoRecorderGrid extends Vue {
         i++;
       }
     });
-    service.mergeVideos(data);
+    const stream = this.service.mergeVideos(data);
+    console.log(stream);
+
+    const recordedChunks = [];
+    const  options = { mimeType: "video/webm; codecs=vp9" };
+     this.mediaRecorder= new MediaRecorder(stream, options);
 
   }
+  
+handleDataAvailable(event) {
+  console.log("data-available");
+  if (event.data.size > 0) {
+    this.recordedChunks.push(event.data);
+    console.log(this.recordedChunks);
+    this.download();
+  } else {
+    // ...
+  }
+}
+ download() {
+  const blob = new Blob(this.recordedChunks, {
+    type: "video/webm"
+  });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  document.body.appendChild(a);
+  //a.style = "display: none";
+  a.href = url;
+  a.download = "test.webm";
+  a.click();
+  window.URL.revokeObjectURL(url);
+}
 }
 </script>
 
