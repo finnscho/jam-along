@@ -20,13 +20,16 @@ export default class JalffmpegService {
    
 
 
-    const video =  document.querySelector('#output') as HTMLMediaElement;//document.createElement('video')
+    // const video =  document.querySelector('#output') as HTMLMediaElement;//document.createElement('video')
 
-    video.src = URL.createObjectURL(videos[0]);
+    // video.src = URL.createObjectURL(videos[0]);
     // video.autoplay=true;
 
     const mp4Element = document.createElement('video')
-     mp4Element.src = URL.createObjectURL(videos[0]);
+     mp4Element.src = URL.createObjectURL(videos[0].recordedData);
+
+    //  const mp4Element2 = document.createElement('video')
+    //  mp4Element2.src = URL.createObjectURL(videos[0].recordedData);
     // if(test !== null){
     // test.srcObject = videos[0];
     // test.autoplay = true}
@@ -35,9 +38,8 @@ export default class JalffmpegService {
 
 
     const  merger = new VideoStreamMerger()
-
-    // Add the screen capture. Position it to fill the whole stream (the default)
-    merger.addMediaElement('webm',mp4Element, {
+    videos[0].record().mediaElement.play()
+    merger.addMediaElement('webm',videos[0].record().mediaElement, {
       x: 0, // position of the topleft corner
       y: 0,
       width: merger.width/2,
@@ -46,7 +48,7 @@ export default class JalffmpegService {
     })
     
     // Add the webcam stream. Position it on the bottom left and resize it to 100x100.
-    merger.addMediaElement('webm',mp4Element, {
+    merger.addStream(videos[1].record().stream, {
       x: merger.width / 2,
       y: 0,
       width: merger.width/2,
@@ -55,7 +57,7 @@ export default class JalffmpegService {
     })
     
     // // Start the merging. Calling this makes the result available to us
-    // merger.start()
+    merger.start()
     
     // // We now have a merged MediaStream!
     // // merger.result
@@ -64,7 +66,7 @@ export default class JalffmpegService {
     outputElement.srcObject = merger.result
     outputElement.autoplay = true}
 
-
+return merger.result;
 
 
 

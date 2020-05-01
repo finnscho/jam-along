@@ -244,9 +244,11 @@ export default class VideoRecorderGrid extends Vue {
 
     let i = 1;
     const data: any[] = [];
+    
     store.state.players.forEach((element) => {
 
-      data.push(element?.recordedData);
+      data.push(element);
+    
       if (element.record() !== undefined) {
         console.log("save");
       //element.record().saveAs({ video: "video" + i + ".webm" });
