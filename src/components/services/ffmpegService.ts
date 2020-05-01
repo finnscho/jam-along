@@ -25,7 +25,8 @@ export default class JalffmpegService {
     video.src = URL.createObjectURL(videos[0]);
     // video.autoplay=true;
 
-
+    const mp4Element = document.createElement('video')
+     mp4Element.src = URL.createObjectURL(videos[0]);
     // if(test !== null){
     // test.srcObject = videos[0];
     // test.autoplay = true}
@@ -33,35 +34,35 @@ export default class JalffmpegService {
     // // elem.srcObject = videos[0]
 
 
-    // const  merger = new VideoStreamMerger()
+    const  merger = new VideoStreamMerger()
 
-    // // Add the screen capture. Position it to fill the whole stream (the default)
-    // merger.addMediaElement(test, {
-    //   x: 0, // position of the topleft corner
-    //   y: 0,
-    //   width: merger.width/2,
-    //   height: merger.height,
-    //   mute: true // we don't want sound from the screen (if there is any)
-    // })
+    // Add the screen capture. Position it to fill the whole stream (the default)
+    merger.addMediaElement('webm',mp4Element, {
+      x: 0, // position of the topleft corner
+      y: 0,
+      width: merger.width/2,
+      height: merger.height,
+      mute: true // we don't want sound from the screen (if there is any)
+    })
     
-    // // Add the webcam stream. Position it on the bottom left and resize it to 100x100.
-    // merger.addMediaElement(test, {
-    //   x: merger.width / 2,
-    //   y: 0,
-    //   width: merger.width/2,
-    //   height: merger.height,
-    //   mute: false
-    // })
+    // Add the webcam stream. Position it on the bottom left and resize it to 100x100.
+    merger.addMediaElement('webm',mp4Element, {
+      x: merger.width / 2,
+      y: 0,
+      width: merger.width/2,
+      height: merger.height,
+      mute: false
+    })
     
     // // Start the merging. Calling this makes the result available to us
     // merger.start()
     
     // // We now have a merged MediaStream!
     // // merger.result
-    // const outputElement = document.querySelector('#output');
-    // if(outputElement !== null){
-    // outputElement.srcObject = merger.result
-    // outputElement.autoplay = true}
+    const outputElement = document.querySelector('#output');
+    if(outputElement !== null){
+    outputElement.srcObject = merger.result
+    outputElement.autoplay = true}
 
 
 
