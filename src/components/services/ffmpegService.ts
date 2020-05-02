@@ -40,6 +40,7 @@ export default class JalffmpegService {
         y: y,
         width: merger.width / 2,
         height: merger.height / 2,
+
         // we don't want sound from the screen (if there is any)
       })
       i++;

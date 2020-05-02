@@ -43,6 +43,7 @@
                 v-model="slider"
                 class="align-center"
                 style="margin-bottom:2%;"
+                max=3000
               >
                 <template v-slot:append>
                   <v-text-field
@@ -94,9 +95,10 @@
 
         <v-row>
           <v-col>
-            <v-row>
+            <v-row style="padding-top: 5%;padding-left: 10%;">
               <v-col
-                height:200px
+                 height:200px
+                padding-top=10%
                 v-for="n in children"
                 :key="n"
                 cols="6"
@@ -104,10 +106,7 @@
               >
                 <div id="app" v-cloak @drop.prevent="addFile" @dragover.prevent>
                   <video-js-recorder
-                    v-bind:id="
-                      'mycomponent' +
-                        Math.floor(Math.random() * Math.floor(9)).toString()
-                    "
+                    v-bind:id="n"
                   />
                 </div>
               </v-col>
@@ -255,7 +254,7 @@ export default class VideoRecorderGrid extends Vue {
   }
   public addPlayer(){
 
-  this.children.push('Hallo')
+  this.children.push('JALvideojs' +Date.now());
   this.mediaRecorder  = null;
   }
 

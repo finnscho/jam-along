@@ -86,6 +86,8 @@ export default class VideoJSRecord extends Vue {
       videojs.log(msg);
     });
 
+this.player.width = 1920;
+this.player.height = 1080;
     store.commit("addPlayer", this);
     try {
       this.player.record().getDevice();
