@@ -1,5 +1,4 @@
 <template>
-
   <v-container style="padding-top='5%'" fluid>
     <v-layout>
       <v-app-bar fixed dense style="vertical-align: bottom;">
@@ -18,10 +17,18 @@
           <v-icon color="orange">mdi-stop</v-icon>
         </v-btn>
         <v-btn v-on:click="save" style="margin-left:50px">
-          <v-icon color="orange">mdi-download</v-icon>
+          <v-icon color="orange" v-if="downloading == false">mdi-download</v-icon>
+          <v-progress-circular
+          v-if="downloading == true"
+        :width="3"
+        color="orange"
+        indeterminate
+      ></v-progress-circular>
         </v-btn>
+
+           
         <v-btn
-          v-on:click="children.push('Hallo')"
+          v-on:click="addPlayer"
           v-on:mouseover="mouseoverAddBtn"
           v-on:mouseleave="mouseleaveAddBtn"
         >
@@ -96,18 +103,23 @@
                 md="5"
               >
                 <div id="app" v-cloak @drop.prevent="addFile" @dragover.prevent>
-                  <video-js-recorder  v-bind:id="'mycomponent' + Math.floor(Math.random() * Math.floor(9)).toString()"/>
+                  <video-js-recorder
+                    v-bind:id="
+                      'mycomponent' +
+                        Math.floor(Math.random() * Math.floor(9)).toString()
+                    "
+                  />
                 </div>
               </v-col>
-                <v-col
-                height:200px
-                cols="6"
-                md="5"
-              >
-              <div id="app" v-cloak @drop.prevent="addFile" @dragover.prevent>              
-                <video playsinline
-        controls
-        preload="auto" id="output"></video>
+              <v-col height:200px cols="6" md="5">
+                <div id="app" v-cloak @drop.prevent="addFile" @dragover.prevent>
+                  <video
+                    playsinline
+                    controls muted
+                    style="display:none"
+                    preload="auto"
+                    id="output"
+                  ></video>
                 </div>
               </v-col>
 
@@ -123,9 +135,9 @@
               </v-col>
             </v-row>
           </v-col>
-        </v-row>           
+        </v-row>
       </v-card>
-       <!-- <v v-bind:id="'output'"/> -->
+      <!-- <v v-bind:id="'output'"/> -->
     </v-layout>
   </v-container>
 </template>
@@ -148,6 +160,7 @@ export default class VideoRecorderGrid extends Vue {
   files: any;
   data: any;
   hover = false;
+  downloading = false;
   slider: number;
   recording = false;
   mediaRecorder: MediaRecorder =  null;
@@ -161,7 +174,7 @@ export default class VideoRecorderGrid extends Vue {
     this.data = [];
     this.slider = 0;
     this.recordedChunks = []
-   
+
   }
 
   addFile(e) {
@@ -206,23 +219,59 @@ export default class VideoRecorderGrid extends Vue {
   mouseleaveAddBtn() {
     this.hover = false;
   }
-  // public addPlayer(){
 
-  // alert('')
-  // //   const ComponentClass = Vue.extend(VideoJSRecord)
+  refreshMergedStream(){
 
-  // // const componentInstance = new Vue( Object.assign({}, VideoJSRecord))
-  //   this.children.push({nam:'Hallo'});
-  // }
+    console.log('Try to refresh merged Stream:');
+
+
+    let i = 1;
+    const data: any[] = [];
+
+    store.state.players.forEach((element) => {
+
+      data.push(element.player);
+
+      if (element.player.record() !== undefined) {
+        console.log("save");
+      //element.record().saveAs({ video: "video" + i + ".webm" });
+        i++;
+      }
+    });
+
+    const stream = this.service.mergeVideos(data);
+    console.log(stream);
+
+    const recordedChunks = [];
+    const  options = { mimeType: "video/webm; codecs=vp9" };
+     this.mediaRecorder= new MediaRecorder(stream, options);
+    store.state.players.forEach(element => {
+
+       const  oldPlayer = document.getElementById(element.id);
+       //Todo dispose
+     //  oldPlayer.muted = true;
+        // videojs(oldPlayer).dispose();
+  });
+  }
+  public addPlayer(){
+
+  this.children.push('Hallo')
+  this.mediaRecorder  = null;
+  }
+
+
 
   record() {
-
+   
+    
     if(this.mediaRecorder != null)
     {
       if(this.recording != true){
         this.mediaRecorder.ondataavailable = this.handleDataAvailable;
         this.mediaRecorder?.start();
         this.recording = true;
+        this.click();
+
       }
       else
       {
@@ -236,9 +285,9 @@ export default class VideoRecorderGrid extends Vue {
     if(this.service.player != undefined){recorder = this.service.player.record()}
     else
     {
-recorder = store?.state?.activePlayer?.record();
+      recorder = store?.state?.activePlayer?.record();
     }
-      
+
     if (!recorder.isRecording()) {
       recorder.start();
       this.recording = true;
@@ -247,6 +296,16 @@ recorder = store?.state?.activePlayer?.record();
       this.recording = false;
     }
     }
+
+    if(this.recording)
+    {
+              store.state.players.forEach(element => {
+          element.player.on("ended", () => {
+            if(this.recording){this.record();}
+      });
+        });
+    }
+    
   }
   public click() {
     store.state.players.forEach((element) => {
@@ -276,47 +335,21 @@ recorder = store?.state?.activePlayer?.record();
     });
   }
   public save() {
-
- console.log('FFMPEG:')
-   
-    
-
-    let i = 1;
-    const data: any[] = [];
-    
-    store.state.players.forEach((element) => {
-
-      data.push(element.player);
-    
-      if (element.player.record() !== undefined) {
-        console.log("save");
-      //element.record().saveAs({ video: "video" + i + ".webm" });
-        i++;
-      }
-    });
-    const stream = this.service.mergeVideos(data);
-    console.log(stream);
-
-    const recordedChunks = [];
-    const  options = { mimeType: "video/webm; codecs=vp9" };
-     this.mediaRecorder= new MediaRecorder(stream, options);
- store.state.players.forEach(element => {
-   
-       const  oldPlayer = document.getElementById(element.id);
-       //Todo dispose 
-     //  oldPlayer.muted = true;
-        // videojs(oldPlayer).dispose();
-});
+console.log('todoSave')
+this.downloading = true;
+    this.refreshMergedStream();
+    this.record();
+}
 
 
-  }
-  
+
 handleDataAvailable(event) {
   console.log("data-available");
   if (event.data.size > 0) {
     this.recordedChunks.push(event.data);
     console.log(this.recordedChunks);
     this.download();
+    this.downloading = false;
   } else {
     // ...
   }

@@ -30,11 +30,12 @@ export default class JalffmpegService {
     videos.forEach(element => {
     //  const media = { ...element.record().mediaElement };
 
-
+      
       //DeepCopy 
         const  media = element.record().mediaElement as HTMLMediaElement;
 
-      merger.addMediaElement('webm', media, {
+       merger.addMediaElement('webm', media, {
+        //merger.addStream(videos[i].record().stream, {
         x: x, // position of the topleft corner
         y: y,
         width: merger.width / 2,
