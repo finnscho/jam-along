@@ -55,9 +55,14 @@ export default class VideoJSRecord extends Vue {
           // configure videojs-record plugin
           record: {
             audio: true,
-            video: true,
+           
             maxLength: 500,
             debug: true,
+            video: {
+                // video media constraints: set resolution of camera
+                width: 1920,
+                height: 1080
+            },
           },
         },
       },
@@ -81,7 +86,7 @@ export default class VideoJSRecord extends Vue {
       videojs.log(msg);
     });
 
-    store.commit("addPlayer", this.player);
+    store.commit("addPlayer", this);
     try {
       this.player.record().getDevice();
     } catch {
@@ -101,7 +106,7 @@ export default class VideoJSRecord extends Vue {
         //if(element.recordedData !== undefined)
         {
           console.log("play");
-          element.play();
+          element.player.play();
         }
       });
       const y = new Date().getTime();

@@ -137,7 +137,7 @@ import store from "../../store";
 import { VideoStreamMerger } from "video-stream-merger";
 import "videojs-offset";
 import JalffmpegService  from "../services/ffmpegService";
-
+import videojs from "video.js";
 @Component({
   components: {
     "video-js-recorder": VideoJSRecord,
@@ -253,7 +253,7 @@ recorder = store?.state?.activePlayer?.record();
       // if(element.recordedData !== undefined)
       {
         console.log("play");
-        element.play();
+        element.player.play();
       }
     });
   }
@@ -262,7 +262,7 @@ recorder = store?.state?.activePlayer?.record();
       // if(element.recordedData !== undefined)
       {
         console.log("pause");
-        element.pause();
+        element.player.pause();
       }
     });
   }
@@ -271,7 +271,7 @@ recorder = store?.state?.activePlayer?.record();
       // if(element.recordedData !== undefined)
       {
         console.log("stop");
-        element.stop();
+        element.player.stop();
       }
     });
   }
@@ -286,9 +286,9 @@ recorder = store?.state?.activePlayer?.record();
     
     store.state.players.forEach((element) => {
 
-      data.push(element);
+      data.push(element.player);
     
-      if (element.record() !== undefined) {
+      if (element.player.record() !== undefined) {
         console.log("save");
       //element.record().saveAs({ video: "video" + i + ".webm" });
         i++;
@@ -300,6 +300,14 @@ recorder = store?.state?.activePlayer?.record();
     const recordedChunks = [];
     const  options = { mimeType: "video/webm; codecs=vp9" };
      this.mediaRecorder= new MediaRecorder(stream, options);
+ store.state.players.forEach(element => {
+   
+       const  oldPlayer = document.getElementById(element.id);
+       //Todo dispose 
+     //  oldPlayer.muted = true;
+        // videojs(oldPlayer).dispose();
+});
+
 
   }
   
