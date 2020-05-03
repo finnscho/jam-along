@@ -69,6 +69,9 @@
         >
       </v-app-bar>
 
+
+      
+
       <!-- <v-card :style="{background-color: bulkselected?'primary':'black'}" > -->
       <v-card class="maincard" width="100%" height="50%" style="padding:2%; ">
         
@@ -115,6 +118,8 @@
           </v-col>
         </v-row>
       </v-card>
+
+      
       <!-- <v v-bind:id="'output'"/> -->
     </v-layout>
   </v-container>

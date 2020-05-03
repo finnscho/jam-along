@@ -38,12 +38,14 @@ private convertBase64ToBlob(Base64Image: any) {
 
 
 saveState() {
+
+  //saveState()
   //@ts-ignore
   //JSON.parse(sessionStorage.getItem("JamAlong"));
-  const newBlob = new Blob([sessionStorage.getItem("JamAlong")], { type: 'application/json;' });
-  const filename = `jam-along-${new Date().getTime()}.json`;
-  saveAs(newBlob, filename);
-  sessionStorage.clear();
+  // const newBlob = new Blob([sessionStorage.getItem("JamAlong")], { type: 'application/json;' });
+  // const filename = `jam-along-${new Date().getTime()}.json`;
+  // saveAs(newBlob, filename);
+  // sessionStorage.clear();
 
 
 
@@ -55,85 +57,55 @@ saveState() {
     // saveAs(newBlob, filename);
 
 
-    // let cache: any[] = [];
-   // const c = store.state.activePlayer.recordedData;
+    let cache: any[] = [];
+   const c = store.state.activePlayer.recordedData;
     
 
-//     const s = JSON.stringify(store.state
-//       , (key, value) => {
-//       if (typeof value === 'object') {
+    const s = JSON.stringify(store.state
+      , (key, value) => {
+        // let process = true;
+      if (typeof value === 'object') {
         
-//         if(value.arrayBuffer !== undefined){
-
-//     //       var arrayBuffer = value.arrayBuffer // Note: not oReq.responseText
-//     //       if (arrayBuffer) {
-//     //         var byteArray = new Uint8Array(arrayBuffer);
-//     //         value = byteArray;
-//     //         // for (var i = 0; i < byteArray.byteLength; i++) {
-//     //         //   // do something with each byte in the array
-//     //         // }
-//     //       }
-
-//     const reader = new FileReader();
-
-//     // The magic always begins after the Blob is successfully loaded
-//       reader.onload = function () {
-//         // Since it contains the Data URI, we should remove the prefix and keep only Base64 string
-//         //@ts-ignore
-//         const b64 = reader.result.replace(/^data:.+;base64,/, '');
-//         console.log(b64); //-> "V2VsY29tZSB0byA8Yj5iYXNlNjQuZ3VydTwvYj4h"
-
-
-
-//         const i = JALStateService.prototype.convertBase64ToBlob(b64);
-        
-//         // Decode the Base64 string and show result just to make sure that everything is OK
-//         const html = atob(b64);
-//         console.log(html); //-> "Welcome to <b>base64.guru</b>!"
-//       };
-
-//       // Since everything is set up, let’s read the Blob and store the result as Data URI
-//       reader.readAsDataURL(value);
-
-
-
-
-
-//           // let process = false;
-//           // const reader = new FileReader();
-//           // reader.onload = function(event){
-//           //   console.log(JSON.stringify(reader.result));
-//           //   process = true;
-//           //   value = JSON.stringify(reader.result);
-//           // };
-//           // reader.readAsText(value);
+       
+        if(value instanceof Blob){
   
-//         }
-//       // }
+          // const reader = new FileReader();
 
+          // // let process = false;
+          // reader.onload = function(event){
+          //   console.log(JSON.stringify(reader.result));
 
+          //   value = JSON.stringify(reader.result);
+          //   return value;
+          // };
+          
+          // reader.readAsText(value);
+          // process = false;
+          return"HERBERT"
+            // for (var i = 0; i < byteArray.byteLength; i++) {
+            //   // do something with each byte in the array
+            // }
+          }
 
+        // Duplicate reference found, discard key
+        if (cache.includes(value)) return;
 
-
-
-//         // Duplicate reference found, discard key
-//         if (cache.includes(value)) return;
-
-//         // Store value in our collection
-//         cache.push(value);
-//        }
-
-//       return value;
-//     })
-//       const newBlob = new Blob([s], { type: 'application/json;' });
-//     const filename = `jam-along-${new Date().getTime()}.json`;
-//     saveAs(newBlob, filename);
-//     cache = [];
+        // Store value in our collection
+        cache.push(value);
+       }
+       if(process){
+      return value;
+       }
+    })
+      const newBlob = new Blob([s], { type: 'application/json;' });
+    const filename = `jam-along-${new Date().getTime()}.json`;
+    saveAs(newBlob, filename);
+    cache = [];
 
 // // Note: cache should not be re-used by repeated calls to JSON.stringify.
     
    
-//     //cache = null;
+    //cache = null;
 
 
 
@@ -141,6 +113,7 @@ saveState() {
   }
 
   loadState(files: any) {
+    //sessionStorage.
     // this.$refs.fileupload.click();
     // this.$refs.fileupload.addEventListener('change', () => {
     //   const files = this.$refs.fileupload.files;
@@ -148,6 +121,8 @@ saveState() {
       fileReader.onload = (e: any) => {
         const loadedState = JSON.parse(e.target.result);
         store.replaceState(loadedState);
+
+        
       };
       fileReader.readAsText(files);
     }

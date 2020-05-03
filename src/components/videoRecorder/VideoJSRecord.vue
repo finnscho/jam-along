@@ -126,7 +126,7 @@ this.player.height = 1080;
       // the blob object contains the recorded data that
       // can be downloaded by the user, stored on server etc.
       console.log("finished recording: ", this.player.recordedData);
-      store.commit("addVideo", this.player.recordedData);
+      // store.commit("addVideo", this.player.recordedData);
     });
 
     // error handling
