@@ -9,7 +9,14 @@
       extended="false"
       extension-height="auto"
     >
-
+    <v-card width="100%">
+    <v-row align-start>
+        <v-col cols="12">
+            <div height="30%" class="waveform"></div>
+        </v-col>
+    </v-row>
+    <v-row>
+        <v-col cols="12">
         <v-tabs color="orange" centered="true">
           <v-tab href="#tab-up">
             <v-icon>mdi-chevron-down</v-icon>
@@ -67,7 +74,9 @@
           <v-tab-item color="orange" value="tab-filter" height="300px">
           </v-tab-item>
         </v-tabs>
- 
+        </v-col>
+    </v-row>
+    </v-card>
       <!-- </div> -->
     </v-app-bar>
   </v-container>
@@ -107,9 +116,11 @@ export default class DetailPanel extends Vue {
 </script>
 
 <style>
-#waveform {
-  border-color: black;
-  border-width: 2px;
-  border-style: solid;
+.waveform {
+   height:5px
 }
+.vjs-wavedisplay{
+    height:10%!important
+}
+
 </style>

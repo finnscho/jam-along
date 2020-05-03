@@ -9,7 +9,7 @@
         controls
         preload="auto"
       ></video>
-  <div id="waveform"></div>
+
     </div>      
   </v-container>
 </template>
@@ -79,7 +79,7 @@ export default class VideoJSRecord extends Vue {
             waveColor: 'white',
             progressColor: 'orange',
             cursorColor: 'yellow',
-             container: '#waveform',
+             container: '.waveform',
             hideScrollbar: true
             }
 
