@@ -2,6 +2,7 @@
   <v-container style="padding-top='5%'" fluid>
     <v-layout>
       <v-app-bar fixed dense style="vertical-align: bottom;">
+            <input type="file" @change="onFileChange">
         <v-btn v-on:click="record">
           <v-icon v-bind:color="recording ? 'red' : 'orange'"
             >mdi-record</v-icon
@@ -26,7 +27,9 @@
       ></v-progress-circular>
         </v-btn>
 
-           
+        <v-btn v-on:click="saveProject" style="margin-left:50px">
+        <v-icon color="orange">mdi-zip-disk</v-icon>
+        </v-btn>
         <v-btn
           v-on:click="addPlayer"
           v-on:mouseover="mouseoverAddBtn"
@@ -75,7 +78,7 @@
               <v-col
                  height:200px
                 padding-top=10%
-                v-for="n in children"
+                v-for="n in this.$store.state.children"
                 :key="n"
                 cols="6"
                 md="5"
@@ -124,14 +127,16 @@ import store from "../../store";
 import { VideoStreamMerger } from "video-stream-merger";
 import "videojs-offset";
 import JalffmpegService  from "../services/ffmpegService";
+import JalStateService from "../services/JALStateService"
 import videojs from "video.js";
+import JALStateService from '../services/JALStateService';
 @Component({
   components: {
     "video-js-recorder": VideoJSRecord,
   },
 })
 export default class VideoRecorderGrid extends Vue {
-  children: any;
+  // children: any;
   files: any;
   data: any;
   hover = false;
@@ -142,9 +147,11 @@ export default class VideoRecorderGrid extends Vue {
  service = new JalffmpegService();
  recordedChunks: any[]
 
-  constructor(params) {
+  constructor(params) { 
     super(params);
-    this.children = ["Gustav"];
+       sessionStorage.clear();
+    //this.children = ["Gustav"];
+    store.commit("addChildren", "Gustav");
     this.files = [];
     this.data = [];
     this.slider = 0;
@@ -230,7 +237,8 @@ export default class VideoRecorderGrid extends Vue {
   }
   public addPlayer(){
 
-  this.children.push('JALvideojs' +Date.now());
+store.commit("addChildren", 'JALvideojs' +Date.now());
+  //this.children.push('JALvideojs' +Date.now());
   this.mediaRecorder  = null;
   }
 
@@ -282,6 +290,21 @@ export default class VideoRecorderGrid extends Vue {
     }
     
   }
+      onFileChange(e) {
+      alert()
+      const files = e.target.files || e.dataTransfer.files;
+      if (!files.length)
+        return;
+      JALStateService.prototype.loadState(files[0]);
+
+      store.state.players.forEach(element => {
+
+       store.commit("addChildren", 'JALvideojs' +Date.now());
+        
+      })
+    }
+
+
   public click() {
     store.state.players.forEach((element) => {
       // if(element.recordedData !== undefined)
@@ -309,6 +332,10 @@ export default class VideoRecorderGrid extends Vue {
       }
     });
   }
+saveProject(){
+  JalStateService.prototype.saveState();
+}
+
   public save() {
 console.log('todoSave')
 this.downloading = true;
