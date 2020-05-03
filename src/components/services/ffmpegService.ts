@@ -23,7 +23,7 @@ export default class JalffmpegService {
   mergeVideos(videos: any[]) {
 
     const merger = new VideoStreamMerger()
-
+    merger.setOutputSize(1920, 1080)
     let x = 0;
     let y = videos.length > 2 ? 0 : merger.height / 4;
     let i = 0;
@@ -33,7 +33,7 @@ export default class JalffmpegService {
       
       //DeepCopy 
         const  media = element.record().mediaElement as HTMLMediaElement;
-
+        
        merger.addMediaElement('webm', media, {
         //merger.addStream(videos[i].record().stream, {
         x: x, // position of the topleft corner

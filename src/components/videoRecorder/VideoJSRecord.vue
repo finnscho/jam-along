@@ -4,7 +4,7 @@
       <video
         :id="id"
         class="video-js vjs-layout-large"
-        v-bind:style="active ? 'border: dashed;' : ''"
+        v-bind:style="isActive() ? 'border: dashed;' : ''"
         playsinline
         controls
         preload="auto"
@@ -30,23 +30,23 @@ import store from "@/store";
 @Component()
 export default class VideoJSRecord extends Vue {
 @Prop()id;
+@Prop()active;
   data() {
     return {
       src: {},
       min: 0,
       max: 3000,
-      active: false,
       slider: 0,
      
       player: "",
       options: {
-        controls: true,
+        controls: false,
         autoplay: false,
         fluid: true,
         responsive: true,
         loop: false,
-        width: 1800,
-        height: 240,
+        width: 1920,
+        height: 1080,
         controlBar: {
           volumePanel: true,
           seeking: true,
@@ -67,6 +67,10 @@ export default class VideoJSRecord extends Vue {
         },
       },
     };
+  }
+    isActive(){
+  
+    return store.state.activePlayer == this.player;
   }
   created() {
     this.$root.$refs.A = this;
@@ -180,9 +184,12 @@ this.player.height = 1080;
       return f != file;
     });
   }
-
+style(){
+  alert('')
+  return store.state.activePlayer == this.player ? 'border: dashed;' : ''
+  
+}
   activate() {
-    this.active = true;
     store.commit("activePlayer", this.player);
   }
 

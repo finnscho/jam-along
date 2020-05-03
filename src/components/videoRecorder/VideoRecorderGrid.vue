@@ -68,31 +68,7 @@
 
       <!-- <v-card :style="{background-color: bulkselected?'primary':'black'}" > -->
       <v-card class="maincard" width="100%" height="50%" style="padding:2%; ">
-        <!-- 
-<div class="grid-container grid-container--fit">
-  <div class="grid-element">
-    1
-  </div>
-  <div class="grid-element">
-    2
-  </div>
-  <div class="grid-element">
-    3
-  </div>
-  <div class="grid-element">
-    4
-  </div>
-  <div class="grid-element">
-    5
-  </div>
-  <div class="grid-element">
-    6
-  </div>
-  <div class="grid-element">
-    7
-  </div>
-</div> -->
-
+        
         <v-row>
           <v-col>
             <v-row style="padding-top: 5%;padding-left: 10%;">
