@@ -9,11 +9,18 @@
         controls
         preload="auto"
       ></video>
-    </div>
+  <div id="waveform"></div>
+    </div>      
   </v-container>
 </template>
 
+
+
 <script>
+import  "../../../node_modules/videojs-wavesurfer/dist/videojs.wavesurfer.min.js"
+import  "../../../node_modules/videojs-wavesurfer/dist/css/videojs.wavesurfer.css"
+import "../../../node_modules/video.js/dist/video.min.js"
+import waveSurfer from "../../../node_modules/wavesurfer.js/dist/wavesurfer.min.js"
 import "video.js/dist/video-js.css";
 import "videojs-record/dist/css/videojs.record.css";
 import Vue from "vue";
@@ -25,6 +32,7 @@ import videojs from "video.js";
 // eslint-disable-next-line
 import Record from "videojs-record/dist/videojs.record.js";
 import "videojs-offset";
+
 import store from "@/store";
 
 @Component()
@@ -64,6 +72,17 @@ export default class VideoJSRecord extends Vue {
                 height: 1080
             },
           },
+          wavesurfer: {
+
+            msDisplayMax: 10,
+            debug: true,
+            waveColor: 'white',
+            progressColor: 'orange',
+            cursorColor: 'yellow',
+             container: '#waveform',
+            hideScrollbar: true
+            }
+
         },
       },
     };
@@ -80,13 +99,10 @@ export default class VideoJSRecord extends Vue {
     /* eslint-disable no-console */
     this.player = videojs("#" + this.id, this.options, () => {
       // print version information at startup
-      const msg =
-        "Using video.js " +
-        videojs.VERSION +
-        " with videojs-record " +
-        videojs.getPluginVersion("record") +
-        " and recordrtc " +
-        RecordRTC.version;
+      const msg ='Using video.js '+ videojs.VERSION +
+        ' with videojs-wavesurfer ' +
+        videojs.getPluginVersion('wavesurfer') +
+        ' and wavesurfer.js ' + waveSurfer.VERSION;
       videojs.log(msg);
     });
 
@@ -123,6 +139,27 @@ this.player.height = 1080;
 
     // user completed recording and stream is available
     this.player.on("finishRecord", () => {
+      this.player.wavesurfer().load(this.player.recordedData)
+  //   const wavesurfer = waveSurfer.create({
+  //       container: '#waveform',
+        
+  //       waveColor: '#A8DBA8',
+  // progressColor: '#3B8686',
+  // backend: 'MediaElement',
+  // scrollParent: true,
+  //   });
+//     const mediaElt = document.querySelector('video');
+
+// wavesurfer.load(mediaElt);
+
+      // this.player.options.plugins.push(        {wavesurfer: {
+      //       backend: 'MediaElement',
+      //       msDisplayMax: 10,
+      //       debug: true,
+      //       waveColor: 'green',
+      //       progressColor: 'blue',
+      //       cursorColor: 'red',
+      //       hideScrollbar: true,}})
       // the blob object contains the recorded data that
       // can be downloaded by the user, stored on server etc.
       console.log("finished recording: ", this.player.recordedData);

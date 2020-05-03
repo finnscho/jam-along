@@ -1,12 +1,12 @@
 <template>
   <v-container style="padding-top='5%'" fluid>
     <v-layout>
-      <v-app-bar fixed dense style="vertical-align: bottom;">
-            <input type="file" @change="onFileChange">
+      <v-app-bar fixed dense style="vertical-align: bottom;" >
+         <v-file-input accept="image/*" style="color:'orange'" width="5%" @change="onFileChange" label="Projekt öffnen"></v-file-input>
+        
         <v-btn v-on:click="record">
           <v-icon v-bind:color="recording ? 'red' : 'orange'"
-            >mdi-record</v-icon
-          >
+            >mdi-record</v-icon>
         </v-btn>
         <v-btn v-on:click="click">
           <v-icon color="orange">mdi-play</v-icon>
@@ -38,35 +38,7 @@
           <v-icon color="orange">mdi-view-grid-plus-outline</v-icon>
         </v-btn>
 
-        <v-card-text>
-          <label>offset</label>
-          <v-row>
-            <v-col class="pr-4">
-              <v-slider
-                v-model="slider"
-                class="align-center"
-                style="margin-bottom:2%;"
-                max=3000
-              >
-                <template v-slot:append>
-                  <v-text-field
-                    v-model="slider"
-                    thumb-label
-                    class="mt-0 pt-0"
-                    hide-details
-                    single-line
-                    type="number"
-                    style="width: 60px"
-                  ></v-text-field>
-                </template>
-              </v-slider>
-            </v-col>
-          </v-row>
-        </v-card-text>
-
-        <v-btn v-on:click="setOffset" margin="auto"
-          ><v-icon color="orange">mdi-pokeball</v-icon></v-btn
-        >
+       
       </v-app-bar>
 
 
@@ -146,7 +118,7 @@ export default class VideoRecorderGrid extends Vue {
   data: any;
   hover = false;
   downloading = false;
-  slider: number;
+
   recording = false;
   mediaRecorder: MediaRecorder =  null;
  service = new JalffmpegService();
@@ -193,13 +165,7 @@ export default class VideoRecorderGrid extends Vue {
       return f != file;
     });
   }
-  setOffset() {
-    console.log("offset: " + this.slider / 1000);
-    store.state.activePlayer.offset({
-      start: this.slider / 1000,
-      //Should the video go to the beginning when it ends
-    });
-  }
+
   mouseoverAddBtn() {
     this.hover = true;
   }
@@ -315,7 +281,12 @@ store.commit("addChildren", 'JALvideojs' +Date.now());
       // if(element.recordedData !== undefined)
       {
         console.log("play");
-        element.player.play();
+        //
+      // element.player.play();
+        element.player.wavesurfer().play();
+        element.player.wavesurfer().surfer.setVolume(0);
+       // element.player.wavesurfer().pause();
+        // element.player.pause();
       }
     });
   }

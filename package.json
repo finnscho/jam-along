@@ -22,6 +22,7 @@
     "video-stream-merger": "^3.4.0",
     "videojs-offset": "^2.1.2",
     "videojs-record": "^3.11.0",
+    "videojs-wavesurfer": "^2.11.0",
     "vue": "^2.6.11",
     "vue-class-component": "^7.2.3",
     "vue-property-decorator": "^8.4.2",
