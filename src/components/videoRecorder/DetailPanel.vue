@@ -120,7 +120,9 @@ export default class DetailPanel extends Vue {
    height:5px
 }
 .vjs-wavedisplay{
-    height:10%!important
+    height:400%!important;
+    /* background:orange; */
+    border: 1px solid;
 }
 
 </style>

@@ -74,10 +74,12 @@ export default class VideoJSRecord extends Vue {
           },
           wavesurfer: {
 
-            msDisplayMax: 10,
+           
+           
+            barHeight:100,
             debug: true,
-            waveColor: 'white',
-            progressColor: 'orange',
+            waveColor: 'orange',
+            progressColor: 'orangered',
             cursorColor: 'yellow',
              container: '.waveform',
             hideScrollbar: true
