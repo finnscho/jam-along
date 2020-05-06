@@ -5,8 +5,8 @@ pool:
 
 # define variables to use during the build
 variables:
-  projectFolder: '/'
-  buildOutputFolder: '/dist'
+  projectFolder: '/jam-along'
+  buildOutputFolder: '/jam-along/dist'
 
 # define the steps of the build
 steps:
