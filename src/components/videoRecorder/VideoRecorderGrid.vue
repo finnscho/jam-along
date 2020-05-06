@@ -239,7 +239,7 @@ store.commit("addChildren", 'JALvideojs' +Date.now());
     if(this.service.player != undefined){recorder = this.service.player.record()}
     else
     {
-      recorder = store?.state?.activePlayer?.record();
+      recorder = store?.state?.activePlayer?.player.record();
     }
 
     if (!recorder.isRecording()) {

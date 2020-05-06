@@ -70,8 +70,9 @@ export default class JalffmpegService {
 
     const outputElement = document.querySelector('#output');
     if (outputElement !== null) {
-      outputElement.srcObject = merger.result
-      outputElement.autoplay = true
+      const media = outputElement as HTMLMediaElement;
+      media.srcObject = merger.result
+      media.autoplay = true
     }
 
 

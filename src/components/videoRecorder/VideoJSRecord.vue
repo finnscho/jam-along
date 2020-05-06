@@ -91,7 +91,7 @@ export default class VideoJSRecord extends Vue {
   }
     isActive(){
   
-    return store.state.activePlayer == this.player;
+    return store.state.activePlayer == this;
   }
   created() {
     this.$root.$refs.A = this;
@@ -225,11 +225,11 @@ this.player.height = 1080;
   }
 style(){
   alert('')
-  return store.state.activePlayer == this.player ? 'border: dashed;' : ''
+  return store.state.activePlayer == this ? 'border: dashed;' : ''
   
 }
   activate() {
-    store.commit("activePlayer", this.player);
+    store.commit("activePlayer", this);
   }
 
   // ync(action, target, param, callback) {
@@ -254,6 +254,8 @@ style(){
     }
   }
 }
+
+VideoJSRecord.player=undefined;
 </script>
 
 <style>

@@ -13,7 +13,7 @@ export default new Vuex.Store({
         children:  [], 
     // eslint-disable-next-line
           players: Array<VideoJSRecord>(),
-          activePlayer: videojs, 
+          activePlayer: VideoJSRecord, 
         },
           
   mutations: {
