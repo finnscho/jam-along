@@ -107,6 +107,7 @@ export default class DetailPanel extends Vue {
   }
   setOffset() {
     console.log("offset: " + this.slider / 1000);
+    //@ts-ignore
     store.state.activePlayer.slider = this.slider / 1000;
     store.state.activePlayer.player.offset({
       start: this.slider / 1000,

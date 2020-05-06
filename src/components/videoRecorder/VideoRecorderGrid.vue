@@ -120,6 +120,7 @@ export default class VideoRecorderGrid extends Vue {
   downloading = false;
 
   recording = false;
+   //@ts-ignore
   mediaRecorder: MediaRecorder =  null;
  service = new JalffmpegService();
  recordedChunks: any[]
@@ -131,7 +132,7 @@ export default class VideoRecorderGrid extends Vue {
     store.commit("addChildren", "Gustav");
     this.files = [];
     this.data = [];
-    this.slider = 0;
+  
     this.recordedChunks = []
 
   }
@@ -197,6 +198,7 @@ export default class VideoRecorderGrid extends Vue {
 
     const recordedChunks = [];
     const  options = { mimeType: "video/webm; codecs=vp9" };
+    //@ts-ignore
      this.mediaRecorder= new MediaRecorder(stream, options);
     store.state.players.forEach(element => {
 

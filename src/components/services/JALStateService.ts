@@ -12,10 +12,13 @@ export default class JALStateService {
   saveState() {
     const projectData: Array<JALVideo> = new Array<JALVideo>();
     store.state.players.forEach((element) => {
+      //@ts-ignore
       let slider = store.state.activePlayer.slider;
       const videoElement = element as VideoJSRecord;
+      //@ts-ignore
       if(videoElement.id != store.state.activePlayer.id)
       {
+        //@ts-ignore
         slider = videoElement.slider;
       }
       //@ts-ignore
