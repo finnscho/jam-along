@@ -5,8 +5,8 @@ pool:
 
 # define variables to use during the build
 variables:
-  projectFolder: 'src/vue'
-  buildOutputFolder: 'src/vue/dist'
+  projectFolder: '/'
+  buildOutputFolder: '/dist'
 
 # define the steps of the build
 steps:
