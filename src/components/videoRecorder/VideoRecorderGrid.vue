@@ -2,7 +2,7 @@
   <v-container style="padding-top='5%'" fluid>
     <v-layout>
       <v-app-bar fixed dense style="vertical-align: bottom;" >
-         <v-file-input accept="image/*" style="color:'orange'" width="5%" @change="onFileChange" label="Projekt öffnen"></v-file-input>
+         <!-- <v-file-input accept="image/*" style="color:'orange'" width="5%" @change="onFileChange" label="Projekt öffnen"></v-file-input> -->
         
         <v-btn v-on:click="record">
           <v-icon v-bind:color="recording ? 'red' : 'orange'"
@@ -27,7 +27,7 @@
       ></v-progress-circular>
         </v-btn>
 
-        <v-btn v-on:click="saveProject" style="margin-left:50px">
+        <!-- <v-btn v-on:click="saveProject" style="margin-left:50px">
         <v-icon color="orange">mdi-zip-disk</v-icon>
         </v-btn>
         <v-btn
@@ -36,7 +36,7 @@
           v-on:mouseleave="mouseleaveAddBtn"
         >
           <v-icon color="orange">mdi-view-grid-plus-outline</v-icon>
-        </v-btn>
+        </v-btn> -->
 
        
       </v-app-bar>
