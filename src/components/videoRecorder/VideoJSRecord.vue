@@ -118,7 +118,7 @@ this.player.height = 1080;
     } catch {
       alert("fehler");
     }
-
+  store.commit("activePlayer", this);
     // device is ready
     this.player.on("deviceReady", () => {
       console.log("device is ready!");

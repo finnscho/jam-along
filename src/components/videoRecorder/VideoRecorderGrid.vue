@@ -29,14 +29,14 @@
 
         <!-- <v-btn v-on:click="saveProject" style="margin-left:50px">
         <v-icon color="orange">mdi-zip-disk</v-icon>
-        </v-btn>
+        </v-btn>-->
         <v-btn
           v-on:click="addPlayer"
           v-on:mouseover="mouseoverAddBtn"
           v-on:mouseleave="mouseleaveAddBtn"
         >
           <v-icon color="orange">mdi-view-grid-plus-outline</v-icon>
-        </v-btn> -->
+        </v-btn> 
 
        
       </v-app-bar>
