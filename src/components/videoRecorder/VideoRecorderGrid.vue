@@ -216,7 +216,6 @@ store.commit("addChildren", 'JALvideojs' +Date.now());
   }
 
 
-
   record() {
    
     
