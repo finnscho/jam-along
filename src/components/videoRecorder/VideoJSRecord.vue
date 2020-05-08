@@ -138,7 +138,7 @@ export default class VideoJSRecord extends Vue {
 
     // user completed recording and stream is available
     this.player.on("finishRecord", () => {
-      this.player.wavesurfer().load(this.player.recordedData);
+      //this.player.wavesurfer().load(this.player.recordedData);
       //   const wavesurfer = waveSurfer.create({
       //       container: '#waveform',
 
