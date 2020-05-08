@@ -40,6 +40,10 @@
         >
           <v-icon color="orange">mdi-view-grid-plus-outline</v-icon>
         </v-btn>
+
+        <v-btn v-on:click="removePlayer">
+          <v-icon color="orange">mdi-delete</v-icon>
+        </v-btn>
       </v-app-bar>
       <v-card id="myCard" style="margin-top: 8vh;">
         <v-row id="VideoRow">
@@ -250,6 +254,11 @@ export default class VideoRecorderGrid extends Vue {
     store.commit("addChildren", "JALvideojs" + Date.now());
     //this.children.push('JALvideojs' +Date.now());
     this.mediaRecorder = null;
+  }
+
+  public removePlayer() {
+    //@ts-ignore
+    store.commit("removeChildren", store.state.activePlayer.id);
   }
 
   record() {
