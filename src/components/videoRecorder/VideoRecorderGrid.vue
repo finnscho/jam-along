@@ -1,12 +1,13 @@
 <template>
   <v-container style="padding-top='5%'" fluid>
     <v-layout>
-      <v-app-bar fixed dense style="vertical-align: bottom;" >
-         <!-- <v-file-input accept="image/*" style="color:'orange'" width="5%" @change="onFileChange" label="Projekt öffnen"></v-file-input> -->
-        
+      <v-app-bar fixed dense style="vertical-align: bottom;">
+        <!-- <v-file-input accept="image/*" style="color:'orange'" width="5%" @change="onFileChange" label="Projekt öffnen"></v-file-input> -->
+
         <v-btn v-on:click="record">
           <v-icon v-bind:color="recording ? 'red' : 'orange'"
-            >mdi-record</v-icon>
+            >mdi-record</v-icon
+          >
         </v-btn>
         <v-btn v-on:click="click">
           <v-icon color="orange">mdi-play</v-icon>
@@ -14,17 +15,19 @@
         <v-btn v-on:click="pause">
           <v-icon color="orange">mdi-pause</v-icon>
         </v-btn>
-        <v-btn v-on:click="stop">
+        <!-- <v-btn v-on:click="stop">
           <v-icon color="orange">mdi-stop</v-icon>
-        </v-btn>
+        </v-btn> -->
         <v-btn v-on:click="save" style="margin-left:50px">
-          <v-icon color="orange" v-if="downloading == false">mdi-download</v-icon>
+          <v-icon color="orange" v-if="downloading == false"
+            >mdi-download</v-icon
+          >
           <v-progress-circular
-          v-if="downloading == true"
-        :width="3"
-        color="orange"
-        indeterminate
-      ></v-progress-circular>
+            v-if="downloading == true"
+            :width="3"
+            color="orange"
+            indeterminate
+          ></v-progress-circular>
         </v-btn>
 
         <!-- <v-btn v-on:click="saveProject" style="margin-left:50px">
@@ -36,39 +39,32 @@
           v-on:mouseleave="mouseleaveAddBtn"
         >
           <v-icon color="orange">mdi-view-grid-plus-outline</v-icon>
-        </v-btn> 
-
-       
+        </v-btn>
       </v-app-bar>
-
-
-      
 
       <!-- <v-card :style="{background-color: bulkselected?'primary':'black'}" > -->
       <v-card class="maincard" width="100%" height="50%" style="padding:2%; ">
-        
         <v-row>
           <v-col>
             <v-row style="padding-top: 5%;padding-left: 10%;">
               <v-col
-                 height:200px
-                padding-top=10%
+                height:200px
+                padding-top="10%"
                 v-for="n in this.$store.state.children"
                 :key="n"
                 cols="6"
                 md="5"
               >
                 <div id="app" v-cloak @drop.prevent="addFile" @dragover.prevent>
-                  <video-js-recorder
-                    v-bind:id="n"
-                  />
+                  <video-js-recorder v-bind:id="n" />
                 </div>
               </v-col>
               <v-col height:200px cols="6" md="5">
                 <div id="app" v-cloak @drop.prevent="addFile" @dragover.prevent>
                   <video
                     playsinline
-                    controls muted
+                    controls
+                    muted
                     style="display:none"
                     preload="auto"
                     id="output"
@@ -91,7 +87,6 @@
         </v-row>
       </v-card>
 
-      
       <!-- <v v-bind:id="'output'"/> -->
     </v-layout>
   </v-container>
@@ -103,10 +98,10 @@ import VideoJSRecord from "./VideoJSRecord.vue";
 import store from "../../store";
 import { VideoStreamMerger } from "video-stream-merger";
 import "videojs-offset";
-import JalffmpegService  from "../services/ffmpegService";
-import JalStateService from "../services/JALStateService"
+import JalffmpegService from "../services/ffmpegService";
+import JalStateService from "../services/JALStateService";
 import videojs from "video.js";
-import JALStateService from '../services/JALStateService';
+import JALStateService from "../services/JALStateService";
 @Component({
   components: {
     "video-js-recorder": VideoJSRecord,
@@ -120,21 +115,20 @@ export default class VideoRecorderGrid extends Vue {
   downloading = false;
 
   recording = false;
-   //@ts-ignore
-  mediaRecorder: MediaRecorder =  null;
- service = new JalffmpegService();
- recordedChunks: any[]
+  //@ts-ignore
+  mediaRecorder: MediaRecorder = null;
+  service = new JalffmpegService();
+  recordedChunks: any[];
 
-  constructor(params) { 
+  constructor(params) {
     super(params);
-       sessionStorage.clear();
+    sessionStorage.clear();
     //this.children = ["Gustav"];
     store.commit("addChildren", "Gustav");
     this.files = [];
     this.data = [];
-  
-    this.recordedChunks = []
 
+    this.recordedChunks = [];
   }
 
   addFile(e) {
@@ -174,21 +168,18 @@ export default class VideoRecorderGrid extends Vue {
     this.hover = false;
   }
 
-  refreshMergedStream(){
-
-    console.log('Try to refresh merged Stream:');
-
+  refreshMergedStream() {
+    console.log("Try to refresh merged Stream:");
 
     let i = 1;
     const data: any[] = [];
 
     store.state.players.forEach((element) => {
-
       data.push(element.player);
 
       if (element.player.record() !== undefined) {
         console.log("save");
-      //element.record().saveAs({ video: "video" + i + ".webm" });
+        //element.record().saveAs({ video: "video" + i + ".webm" });
         i++;
       }
     });
@@ -197,85 +188,70 @@ export default class VideoRecorderGrid extends Vue {
     console.log(stream);
 
     const recordedChunks = [];
-    const  options = { mimeType: "video/webm; codecs=vp9" };
+    const options = { mimeType: "video/webm; codecs=vp9" };
     //@ts-ignore
-     this.mediaRecorder= new MediaRecorder(stream, options);
-    store.state.players.forEach(element => {
-
-       const  oldPlayer = document.getElementById(element.id);
-       //Todo dispose
-     //  oldPlayer.muted = true;
-        // videojs(oldPlayer).dispose();
-  });
+    this.mediaRecorder = new MediaRecorder(stream, options);
+    store.state.players.forEach((element) => {
+      const oldPlayer = document.getElementById(element.id);
+      //Todo dispose
+      //  oldPlayer.muted = true;
+      // videojs(oldPlayer).dispose();
+    });
   }
-  public addPlayer(){
-
-store.commit("addChildren", 'JALvideojs' +Date.now());
-  //this.children.push('JALvideojs' +Date.now());
-  this.mediaRecorder  = null;
+  public addPlayer() {
+    store.commit("addChildren", "JALvideojs" + Date.now());
+    //this.children.push('JALvideojs' +Date.now());
+    this.mediaRecorder = null;
   }
-
 
   record() {
-   
-    
-    if(this.mediaRecorder != null)
-    {
-      if(this.recording != true){
+    if (this.mediaRecorder != null) {
+      if (this.recording != true) {
         this.mediaRecorder.ondataavailable = this.handleDataAvailable;
         this.mediaRecorder?.start();
         this.recording = true;
         this.click();
-
-      }
-      else
-      {
+      } else {
         this.mediaRecorder?.stop();
         this.recording = false;
       }
-    }
-    else
-    {
-    let recorder: any;
-    if(this.service.player != undefined){recorder = this.service.player.record()}
-    else
-    {
-      recorder = store?.state?.activePlayer?.player.record();
-    }
-
-    if (!recorder.isRecording()) {
-      recorder.start();
-      this.recording = true;
     } else {
-      recorder.stop();
-      this.recording = false;
-    }
+      let recorder: any;
+      if (this.service.player != undefined) {
+        recorder = this.service.player.record();
+      } else {
+        recorder = store?.state?.activePlayer?.player.record();
+      }
+
+      if (!recorder.isRecording()) {
+        recorder.start();
+        this.recording = true;
+      } else {
+        recorder.stop();
+        this.recording = false;
+      }
     }
 
-    if(this.recording)
-    {
-              store.state.players.forEach(element => {
-          element.player.on("ended", () => {
-            if(this.recording){this.record();}
-      });
+    if (this.recording) {
+      store.state.players.forEach((element) => {
+        element.player.on("ended", () => {
+          if (this.recording) {
+            this.record();
+          }
         });
+      });
     }
-    
   }
-      onFileChange(e) {
-      alert()
-      const files = e.target.files || e.dataTransfer.files;
-      if (!files.length)
-        return;
-      JALStateService.prototype.loadState(files[0]);
+  onFileChange(e) {
+    alert();
+    const files = e.target.files || e.dataTransfer.files;
+    if (!files.length) return;
+    JALStateService.prototype.loadState(files[0]);
 
-      store.state.players.forEach(element => {
-
-       store.commit("addChildren", 'JALvideojs' +Date.now());
-        
-      })
-    }
-
+    store.state.players.forEach((element) => {
+      store.commit("addChildren", "JALvideojs" + Date.now());
+    });
+  }
 
   public click() {
     store.state.players.forEach((element) => {
@@ -283,10 +259,10 @@ store.commit("addChildren", 'JALvideojs' +Date.now());
       {
         console.log("play");
         //
-      // element.player.play();
+        // element.player.play();
         element.player.wavesurfer().play();
         element.player.wavesurfer().surfer.setVolume(0);
-       // element.player.wavesurfer().pause();
+        // element.player.wavesurfer().pause();
         // element.player.pause();
       }
     });
@@ -309,43 +285,41 @@ store.commit("addChildren", 'JALvideojs' +Date.now());
       }
     });
   }
-saveProject(){
-  JalStateService.prototype.saveState();
-}
+  saveProject() {
+    JalStateService.prototype.saveState();
+  }
 
   public save() {
-console.log('todoSave')
-this.downloading = true;
+    console.log("todoSave");
+    this.downloading = true;
     this.refreshMergedStream();
     this.record();
-}
-
-
-
-handleDataAvailable(event) {
-  console.log("data-available");
-  if (event.data.size > 0) {
-    this.recordedChunks.push(event.data);
-    console.log(this.recordedChunks);
-    this.download();
-    this.downloading = false;
-  } else {
-    // ...
   }
-}
- download() {
-  const blob = new Blob(this.recordedChunks, {
-    type: "video/webm"
-  });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  document.body.appendChild(a);
-  //a.style = "display: none";
-  a.href = url;
-  a.download = "test.webm";
-  a.click();
-  window.URL.revokeObjectURL(url);
-}
+
+  handleDataAvailable(event) {
+    console.log("data-available");
+    if (event.data.size > 0) {
+      this.recordedChunks.push(event.data);
+      console.log(this.recordedChunks);
+      this.download();
+      this.downloading = false;
+    } else {
+      // ...
+    }
+  }
+  download() {
+    const blob = new Blob(this.recordedChunks, {
+      type: "video/webm",
+    });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    document.body.appendChild(a);
+    //a.style = "display: none";
+    a.href = url;
+    a.download = "test.webm";
+    a.click();
+    window.URL.revokeObjectURL(url);
+  }
 }
 </script>
 

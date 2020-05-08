@@ -9,18 +9,15 @@
         controls
         preload="auto"
       ></video>
-
-    </div>      
+    </div>
   </v-container>
 </template>
 
-
-
 <script>
-import  "../../../node_modules/videojs-wavesurfer/dist/videojs.wavesurfer.min.js"
-import  "../../../node_modules/videojs-wavesurfer/dist/css/videojs.wavesurfer.css"
-import "../../../node_modules/video.js/dist/video.min.js"
-import waveSurfer from "../../../node_modules/wavesurfer.js/dist/wavesurfer.min.js"
+import "../../../node_modules/videojs-wavesurfer/dist/videojs.wavesurfer.min.js";
+import "../../../node_modules/videojs-wavesurfer/dist/css/videojs.wavesurfer.css";
+import "../../../node_modules/video.js/dist/video.min.js";
+import waveSurfer from "../../../node_modules/wavesurfer.js/dist/wavesurfer.min.js";
 import "video.js/dist/video-js.css";
 import "videojs-record/dist/css/videojs.record.css";
 import Vue from "vue";
@@ -37,15 +34,15 @@ import store from "@/store";
 
 @Component()
 export default class VideoJSRecord extends Vue {
-@Prop()id;
-@Prop()active;
+  @Prop() id;
+  @Prop() active;
   data() {
     return {
       src: {},
       min: 0,
       max: 3000,
       slider: 0,
-     
+
       player: "",
       options: {
         controls: false,
@@ -63,34 +60,30 @@ export default class VideoJSRecord extends Vue {
           // configure videojs-record plugin
           record: {
             audio: true,
-           
+
             maxLength: 500,
             debug: true,
             video: {
-                // video media constraints: set resolution of camera
-                width: 1920,
-                height: 1080
+              // video media constraints: set resolution of camera
+              width: 1920,
+              height: 1080,
             },
           },
-          wavesurfer: {
+          // wavesurfer: {
 
-           
-           
-            barHeight:100,
-            debug: true,
-            waveColor: 'orange',
-            progressColor: 'orangered',
-            cursorColor: 'yellow',
-             container: '.waveform',
-            hideScrollbar: true
-            }
-
+          //   barHeight:100,
+          //   debug: true,
+          //   waveColor: 'orange',
+          //   progressColor: 'orangered',
+          //   cursorColor: 'yellow',
+          //    container: '.waveform',
+          //   hideScrollbar: true
+          //   }
         },
       },
     };
   }
-    isActive(){
-  
+  isActive() {
     return store.state.activePlayer == this;
   }
   created() {
@@ -101,16 +94,18 @@ export default class VideoJSRecord extends Vue {
     /* eslint-disable no-console */
     this.player = videojs("#" + this.id, this.options, () => {
       // print version information at startup
-      const msg ='Using video.js '+ videojs.VERSION +
-        ' with videojs-wavesurfer ' +
-        videojs.getPluginVersion('wavesurfer') +
-        ' and wavesurfer.js ' + waveSurfer.VERSION;
+      const msg =
+        "Using video.js " +
+        videojs.VERSION +
+        " with videojs-wavesurfer " +
+        videojs.getPluginVersion("wavesurfer") +
+        " and wavesurfer.js " +
+        waveSurfer.VERSION;
       videojs.log(msg);
     });
 
-this.player.width = 1920;
-this.player.height = 1080;
-
+    this.player.width = 1920;
+    this.player.height = 1080;
 
     store.commit("addPlayer", this);
     try {
@@ -118,7 +113,7 @@ this.player.height = 1080;
     } catch {
       alert("fehler");
     }
-  store.commit("activePlayer", this);
+    store.commit("activePlayer", this);
     // device is ready
     this.player.on("deviceReady", () => {
       console.log("device is ready!");
@@ -143,18 +138,18 @@ this.player.height = 1080;
 
     // user completed recording and stream is available
     this.player.on("finishRecord", () => {
-      this.player.wavesurfer().load(this.player.recordedData)
-  //   const wavesurfer = waveSurfer.create({
-  //       container: '#waveform',
-        
-  //       waveColor: '#A8DBA8',
-  // progressColor: '#3B8686',
-  // backend: 'MediaElement',
-  // scrollParent: true,
-  //   });
-//     const mediaElt = document.querySelector('video');
+      this.player.wavesurfer().load(this.player.recordedData);
+      //   const wavesurfer = waveSurfer.create({
+      //       container: '#waveform',
 
-// wavesurfer.load(mediaElt);
+      //       waveColor: '#A8DBA8',
+      // progressColor: '#3B8686',
+      // backend: 'MediaElement',
+      // scrollParent: true,
+      //   });
+      //     const mediaElt = document.querySelector('video');
+
+      // wavesurfer.load(mediaElt);
 
       // this.player.options.plugins.push(        {wavesurfer: {
       //       backend: 'MediaElement',
@@ -225,11 +220,10 @@ this.player.height = 1080;
       return f != file;
     });
   }
-style(){
-  alert('')
-  return store.state.activePlayer == this ? 'border: dashed;' : ''
-  
-}
+  style() {
+    alert("");
+    return store.state.activePlayer == this ? "border: dashed;" : "";
+  }
   activate() {
     store.commit("activePlayer", this);
   }
@@ -257,7 +251,7 @@ style(){
   }
 }
 
-VideoJSRecord.player=undefined;
+VideoJSRecord.player = undefined;
 </script>
 
 <style>
