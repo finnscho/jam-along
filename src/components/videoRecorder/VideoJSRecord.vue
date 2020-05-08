@@ -69,16 +69,15 @@ export default class VideoJSRecord extends Vue {
               height: 1080,
             },
           },
-          // wavesurfer: {
-
-          //   barHeight:100,
-          //   debug: true,
-          //   waveColor: 'orange',
-          //   progressColor: 'orangered',
-          //   cursorColor: 'yellow',
-          //    container: '.waveform',
-          //   hideScrollbar: true
-          //   }
+          wavesurfer: {
+            barHeight: 100,
+            debug: true,
+            waveColor: "orange",
+            progressColor: "orangered",
+            cursorColor: "yellow",
+            container: ".waveform",
+            hideScrollbar: true,
+          },
         },
       },
     };
@@ -138,7 +137,9 @@ export default class VideoJSRecord extends Vue {
 
     // user completed recording and stream is available
     this.player.on("finishRecord", () => {
-      //this.player.wavesurfer().load(this.player.recordedData);
+      const isMobileDevice = /Mobi/i.test(window.navigator.userAgent);
+      if (!isMobileDevice)
+        this.player.wavesurfer().load(this.player.recordedData);
       //   const wavesurfer = waveSurfer.create({
       //       container: '#waveform',
 

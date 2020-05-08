@@ -258,12 +258,12 @@ export default class VideoRecorderGrid extends Vue {
       // if(element.recordedData !== undefined)
       {
         console.log("play");
-        //
-        // element.player.play();
-        element.player.wavesurfer().play();
-        element.player.wavesurfer().surfer.setVolume(0);
-        // element.player.wavesurfer().pause();
-        // element.player.pause();
+
+        const isMobileDevice = /Mobi/i.test(window.navigator.userAgent);
+        if (!isMobileDevice) {
+          element.player.wavesurfer().play();
+          element.player.wavesurfer().surfer.setVolume(0);
+        }
       }
     });
   }
