@@ -1,34 +1,30 @@
 <template>
-<v-app>
-  <div id="app">
-    <v-card>
-
-    <VideoRecorderGrid />
-    <div height="50%">    <DetailPanel />
+  <v-app>
+    <div id="app" style="width=100vw">
+      <v-card>
+        <VideoRecorderGrid />
+        <div height="50%"><DetailPanel /></div>
+      </v-card>
     </div>
-
-    
-    </v-card>
-  </div>
-</v-app>
+  </v-app>
 </template>
 
 <script>
-import VideoRecorderGrid from './components/videoRecorder/VideoRecorderGrid.vue'
-import DetailPanel from './components/videoRecorder/DetailPanel.vue'
+import VideoRecorderGrid from "./components/videoRecorder/VideoRecorderGrid.vue";
+import DetailPanel from "./components/videoRecorder/DetailPanel.vue";
 
 export default {
-  name: 'app',
+  name: "app",
   components: {
     VideoRecorderGrid,
-    DetailPanel
-  }
-}
+    DetailPanel,
+  },
+};
 </script>
 
 <style>
 /* change player background color */
 #myVideo {
-  background-color: #95DDF5;
+  background-color: #95ddf5;
 }
 </style>

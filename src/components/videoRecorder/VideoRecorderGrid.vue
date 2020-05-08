@@ -41,12 +41,43 @@
           <v-icon color="orange">mdi-view-grid-plus-outline</v-icon>
         </v-btn>
       </v-app-bar>
-
+      <v-card id="myCard" style="margin-top: 8vh;">
+        <v-row id="VideoRow">
+          <v-col
+            v-for="n in this.$store.state.children"
+            :key="n"
+            v-bind:md="{ getColMd }"
+          >
+            <div
+              id="addFile"
+              centered
+              v-bind:style="{ width: videoWidth }"
+              v-cloak
+              @drop.prevent="addFile"
+              @dragover.prevent
+            >
+              <video-js-recorder v-bind:id="n" />
+            </div>
+          </v-col>
+          <v-col cols="1" md="6">
+            <div id="blib" v-cloak @drop.prevent="addFile" @dragover.prevent>
+              <video
+                playsinline
+                controls
+                muted
+                style="display:none"
+                preload="auto"
+                id="output"
+              ></video>
+            </div>
+          </v-col>
+        </v-row>
+      </v-card>
       <!-- <v-card :style="{background-color: bulkselected?'primary':'black'}" > -->
-      <v-card class="maincard" width="100%" height="50%" style="padding:2%; ">
+      <!-- <v-card class="maincard" width="100%" height="100%" style="padding:2%; ">
         <v-row>
           <v-col>
-            <v-row style="padding-top: 5%;padding-left: 10%;">
+            <v-row>
               <v-col
                 height:200px
                 padding-top="10%"
@@ -85,7 +116,7 @@
             </v-row>
           </v-col>
         </v-row>
-      </v-card>
+      </v-card> -->
 
       <!-- <v v-bind:id="'output'"/> -->
     </v-layout>
@@ -130,7 +161,24 @@ export default class VideoRecorderGrid extends Vue {
 
     this.recordedChunks = [];
   }
-
+  get videoWidth() {
+    switch (store.state.children.length) {
+      case 1:
+        return "100vw";
+      case 2:
+        return "48vw";
+      case 3:
+      case 4:
+      case 5:
+      case 6:
+        return "32vw";
+      default:
+        return "15vw";
+    }
+  }
+  get getColMd() {
+    return 6;
+  }
   addFile(e) {
     const droppedFiles = e.dataTransfer.files;
 
@@ -333,6 +381,9 @@ maincard {
 .container {
   padding: 0;
 }
+.col {
+  padding: 0;
+}
 .col-md-5 {
   /* flex: 0 0 41.6666666667%;
     max-width: 41.6666666667%; */
@@ -351,7 +402,9 @@ maincard {
 .grid-container--fill {
   grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
 }
-
+#addFile {
+  max-height: 60%;
+}
 .grid-container--fit {
   grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
 }

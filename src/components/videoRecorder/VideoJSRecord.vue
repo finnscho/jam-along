@@ -1,11 +1,12 @@
 <template>
   <v-container v-on:click="activate" v-on:touchstart="activate">
-    <div id="app" v-cloak @drop.prevent="addFile" @dragover.prevent>
+    <div id="videoJs" v-cloak @drop.prevent="addFile" @dragover.prevent>
       <video
         :id="id"
         class="video-js vjs-layout-large"
         v-bind:style="isActive() ? 'border: dashed;' : ''"
         playsinline
+  
         controls
         preload="auto"
       ></video>
