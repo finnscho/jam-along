@@ -20,3 +20,28 @@ yarn-error.log*
 *.njsproj
 *.sln
 *.sw?
+
+# Cordova
+/src-cordova/platforms
+/src-cordova/plugins
+/public/cordova.js
+
+# Cordova
+/src/platforms
+/src/plugins
+/public/cordova.js
+
+# Cordova
+/C:\jam-along\jam-along/platforms
+/C:\jam-along\jam-along/plugins
+/public/cordova.js
+
+# Cordova
+/src-cordova/platforms
+/src-cordova/plugins
+/public/cordova.js
+
+# Cordova
+/src-cordova/platforms
+/src-cordova/plugins
+/public/cordova.js

@@ -1,10 +1,13 @@
 module.exports = {
-  publicPath: process.env.NODE_ENV === 'production'
-    ? '"/jam-along/'
-    : '/',
+  publicPath: '',
+
   "transpileDependencies": [
     "vuetify"
-  ]
+  ],
+
+  pluginOptions: {
+    cordovaPath: 'src-cordova'
+  }
 }
 
 const webpack = require('webpack');
@@ -25,5 +28,11 @@ module.exports = {
             RecordRTC: 'recordrtc'
         })
     ]
+  },
+
+  publicPath: '',
+
+  pluginOptions: {
+    cordovaPath: 'src-cordova'
   }
 }
