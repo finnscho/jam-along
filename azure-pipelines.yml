@@ -23,8 +23,3 @@ steps:
   inputs:
     artifactName: dist
     pathtoPublish: 'dist'
-- task: CordovaBuild@1
-  inputs:
-    platform: 'android'
-    configuration: '$(Configuration)'
-    outputPattern: 'bin'
