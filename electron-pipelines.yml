@@ -22,6 +22,6 @@ steps:
   displayName: 'npm install and build for android, ios, windows'
 - task: PublishBuildArtifacts@1
   inputs:
-    artifactName: dist
-    pathtoPublish: 'dist'
+    artifactName: src-cordova
+    pathtoPublish: 'src-cordova'
 
