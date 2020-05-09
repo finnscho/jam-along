@@ -28,5 +28,5 @@ steps:
     platform: 'windows'
     configuration: 'Release'
     archs: 'anycpu'
-    cordovaVersion: 'CORDOVA_DEFAULT_VERSION'
+    cordovaVersion: '9.0.0'
     outputPattern: 'bin'
