@@ -23,3 +23,10 @@ steps:
   inputs:
     artifactName: dist
     pathtoPublish: 'dist'
+- task: CordovaBuild@1
+  inputs:
+    platform: 'windows'
+    configuration: 'Release'
+    archs: 'anycpu'
+    cordovaVersion: 'CORDOVA_DEFAULT_VERSION'
+    outputPattern: 'bin'
