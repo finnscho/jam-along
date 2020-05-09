@@ -157,6 +157,7 @@ export default class VideoRecorderGrid extends Vue {
   hover = false;
   downloading = false;
   file: any = "";
+  merger: any;
 
   recording = false;
   //@ts-ignore
@@ -224,7 +225,7 @@ export default class VideoRecorderGrid extends Vue {
   loadData(e2) {
     if (e2 !== null && e2.target !== null) {
       // finished reading file data.
-      alert(e2?.target.result);
+
       this.data.push(e2.target.result);
 
       const name = "JALvideojs" + Date.now();
@@ -251,7 +252,7 @@ export default class VideoRecorderGrid extends Vue {
     const data: any[] = [];
 
     store.state.players.forEach((element) => {
-      data.push(element.player);
+      data.push(element);
 
       if (element.player.record() !== undefined) {
         console.log("save");
@@ -260,7 +261,8 @@ export default class VideoRecorderGrid extends Vue {
       }
     });
 
-    const stream = this.service.mergeVideos(data);
+    this.merger = this.service.mergeVideos(data);
+    const stream = this.merger.result;
     console.log(stream);
 
     const recordedChunks = [];
@@ -295,6 +297,7 @@ export default class VideoRecorderGrid extends Vue {
       } else {
         this.mediaRecorder?.stop();
         this.recording = false;
+        this.merger.destroy();
       }
     } else {
       let recorder: any;
@@ -341,9 +344,11 @@ export default class VideoRecorderGrid extends Vue {
         console.log("play");
 
         const isMobileDevice = /Mobi/i.test(window.navigator.userAgent);
-        if (!isMobileDevice) {
+        if (isMobileDevice) {
           element.player.wavesurfer().play();
           element.player.wavesurfer().surfer.setVolume(0);
+        } else {
+          element.player.play();
         }
       }
     });

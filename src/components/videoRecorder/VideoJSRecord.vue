@@ -111,6 +111,10 @@ export default class VideoJSRecord extends Vue {
     this.player.width = 1920;
     this.player.height = 1080;
 
+    const isMobileDevice = /Mobi/i.test(window.navigator.userAgent);
+    // if (!isMobileDevice && this.src != null)
+    //   this.player.wavesurfer().load(this.player.src);
+
     store.commit("addPlayer", this);
     if (this.src !== null) {
       this.player.src = this.src;
@@ -266,6 +270,10 @@ VideoJSRecord.player = undefined;
 
 <style>
 .video-js .vjs-control-bar {
+  display: none !important;
+}
+
+.vjs-record .vjs-device-button.vjs-control {
   display: none !important;
 }
 .video-js .vjs-tech {

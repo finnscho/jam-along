@@ -28,13 +28,19 @@ export default class JalffmpegService {
     let y = videos.length > 2 ? 0 : merger.height / 4;
     let i = 0;
     videos.forEach(element => {
-    //  const media = { ...element.record().mediaElement };
-
+      //  const media = { ...element.record().mediaElement };
+      let media: HTMLMediaElement;
+      if (element.src != null) {
       
-      //DeepCopy 
-        const  media = element.record().mediaElement as HTMLMediaElement;
-        
-       merger.addMediaElement('webm', media, {
+        media = document.getElementById(element.id +'_html5_api') as HTMLMediaElement;
+
+      }
+      else {
+        //DeepCopy 
+        media = element.player.record().mediaElement as HTMLMediaElement;
+      }
+
+      merger.addMediaElement('webm', media, {
         //merger.addStream(videos[i].record().stream, {
         x: x, // position of the topleft corner
         y: y,
@@ -73,11 +79,13 @@ export default class JalffmpegService {
       const media = outputElement as HTMLMediaElement;
       media.srcObject = merger.result
       media.autoplay = true
+
+
     }
 
 
 
-    return merger.result;
+    return merger;
   }
 
 
