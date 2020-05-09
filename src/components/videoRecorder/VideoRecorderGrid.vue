@@ -15,9 +15,6 @@
         <v-btn v-on:click="pause">
           <v-icon color="orange">mdi-pause</v-icon>
         </v-btn>
-        <!-- <v-btn v-on:click="stop">
-          <v-icon color="orange">mdi-stop</v-icon>
-        </v-btn> -->
         <v-btn v-on:click="save" style="margin-left:50px">
           <v-icon color="orange" v-if="downloading == false"
             >mdi-download</v-icon
@@ -348,9 +345,16 @@ export default class VideoRecorderGrid extends Vue {
 
   public save() {
     console.log("todoSave");
+
     this.downloading = true;
-    this.refreshMergedStream();
-    this.record();
+    try {
+      this.refreshMergedStream();
+      this.record();
+    } catch (e) {
+      alert(e.message);
+    } finally {
+      this.downloading = false;
+    }
   }
 
   handleDataAvailable(event) {

@@ -1,9 +1,7 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
-import videojs from 'video.js'
 import VideoJSRecord from '../components/videoRecorder/VideoJSRecord.vue'
-import VuexPersistence from 'vuex-persist'
-import { saveAs } from 'file-saver';
+
 
 Vue.use(Vuex);
 
@@ -36,10 +34,19 @@ export default new Vuex.Store({
     },
     removeChildren(state, n: any) {
 
-      for (let i = 0; i < state.children.length; i++) { if (state.children[i] === n) { state.children.splice(i, 1); } }
+      for (let i = 0; i < state.children.length; i++) {
+        if (state.children[i] === n) {
+          state.children.splice(i, 1);
+        }
+      }
 
       //@ts-ignore
-      for (let i = 0; i < state.players.length; i++) { if (state.players[i].id === n) { state.children.splice(i, 1); } }
+      for (let j = 0; j < state.players.length; j++) {
+        //@ts-ignore
+        if (state.players[j].id === n) {
+          state.players.splice(j, 1);
+        }
+      }
 
     }
   },
