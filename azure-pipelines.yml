@@ -26,6 +26,7 @@ steps:
 
 - script: |
     npm run cordova-build-android
+    jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore ./src-cordova/my-release-key.keystore app.apk jam_along
 
   displayName: 'build for android'
 
