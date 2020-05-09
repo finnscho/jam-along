@@ -17,10 +17,15 @@ steps:
 
 - script: |
     npm install
+  displayName: 'npm install '
+- task: CordovaCommand@1
+  inputs:
+    cordovaCommand: 'cordova platform add android'
+
+- script: |
     npm run cordova-build-android
 
-  displayName: 'npm install and build for android, ios, windows'
-
+  displayName: 'build for android, ios, windows'
 - task: PublishBuildArtifacts@1
   inputs:
     artifactName: src-cordova
