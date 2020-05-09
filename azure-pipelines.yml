@@ -20,7 +20,7 @@ steps:
   displayName: 'npm install '
 - task: CordovaCommand@1
   inputs:
-    cordovaCommand: 'cordova platform add android'
+    cordovaCommand: 'platform add android'
 
 - script: |
     npm run cordova-build-android
