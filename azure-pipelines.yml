@@ -17,16 +17,10 @@ steps:
 
 - script: |
     npm install
-    npm run build
+    npm run cordova-build-android
   displayName: 'npm install and build'
 - task: PublishBuildArtifacts@1
   inputs:
     artifactName: dist
     pathtoPublish: 'dist'
-- task: CordovaBuild@1
-  inputs:
-    platform: 'windows'
-    configuration: 'Release'
-    archs: 'anycpu'
-    cordovaVersion: '9.0.0'
-    outputPattern: 'bin'
+
