@@ -99,11 +99,10 @@ import JALStateService from "../services/JALStateService";
   },
 })
 export default class DetailPanel extends Vue {
-  slider: number;
+  slider = store.state.activePlayer.slider;
 
   constructor(params) {
     super(params);
-    this.slider = 0;
   }
   setOffset() {
     console.log("offset: " + this.slider / 1000);

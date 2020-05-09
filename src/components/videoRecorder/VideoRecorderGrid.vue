@@ -4,6 +4,24 @@
       <v-app-bar fixed dense style="vertical-align: bottom;">
         <!-- <v-file-input accept="image/*" style="color:'orange'" width="5%" @change="onFileChange" label="Projekt öffnen"></v-file-input> -->
 
+        <v-btn
+          v-on:click="addPlayer"
+          v-on:mouseover="mouseoverAddBtn"
+          v-on:mouseleave="mouseleaveAddBtn"
+        >
+          <v-icon color="orange">mdi-camera-plus</v-icon>
+        </v-btn>
+        <input
+          type="file"
+          ref="file"
+          style="display: none"
+          v-on:change="handleFileUpload()"
+        />
+
+        <v-btn @click="$refs.file.click()">
+          <v-icon color="orange">mdi-movie-open</v-icon>
+        </v-btn>
+
         <v-btn v-on:click="record">
           <v-icon v-bind:color="recording ? 'red' : 'orange'"
             >mdi-record</v-icon
@@ -15,7 +33,7 @@
         <v-btn v-on:click="pause">
           <v-icon color="orange">mdi-pause</v-icon>
         </v-btn>
-        <v-btn v-on:click="save" style="margin-left:50px">
+        <v-btn v-on:click="save" style="margin-left:10vw">
           <v-icon color="orange" v-if="downloading == false"
             >mdi-download</v-icon
           >
@@ -30,13 +48,6 @@
         <!-- <v-btn v-on:click="saveProject" style="margin-left:50px">
         <v-icon color="orange">mdi-zip-disk</v-icon>
         </v-btn>-->
-        <v-btn
-          v-on:click="addPlayer"
-          v-on:mouseover="mouseoverAddBtn"
-          v-on:mouseleave="mouseleaveAddBtn"
-        >
-          <v-icon color="orange">mdi-view-grid-plus-outline</v-icon>
-        </v-btn>
 
         <v-btn v-on:click="removePlayer">
           <v-icon color="orange">mdi-delete</v-icon>
@@ -46,7 +57,7 @@
         <v-row id="VideoRow">
           <v-col
             v-for="n in this.$store.state.children"
-            :key="n"
+            :key="n.id"
             v-bind:md="{ getColMd }"
           >
             <div
@@ -57,7 +68,7 @@
               @drop.prevent="addFile"
               @dragover.prevent
             >
-              <video-js-recorder v-bind:id="n" />
+              <video-js-recorder v-bind:id="n.id" v-bind:src="n.src" />
             </div>
           </v-col>
           <v-col cols="1" md="6">
@@ -127,7 +138,7 @@
 import Vue from "vue";
 import { Component, Prop } from "vue-property-decorator";
 import VideoJSRecord from "./VideoJSRecord.vue";
-import store from "../../store";
+import store, { Child } from "../../store";
 import { VideoStreamMerger } from "video-stream-merger";
 import "videojs-offset";
 import JalffmpegService from "../services/ffmpegService";
@@ -145,18 +156,33 @@ export default class VideoRecorderGrid extends Vue {
   data: any;
   hover = false;
   downloading = false;
+  file: any = "";
 
   recording = false;
   //@ts-ignore
   mediaRecorder: MediaRecorder = null;
   service = new JalffmpegService();
   recordedChunks: any[];
+  handleFileUpload() {
+    const file = this.$refs.file.files[0];
+    const reader = new FileReader();
 
+    reader.onload = this.loadData;
+
+    reader.readAsDataURL(file);
+    this.files.push(file);
+  }
   constructor(params) {
     super(params);
+    const isMobileDevice = /Mobi/i.test(window.navigator.userAgent);
+    if (isMobileDevice) {
+      alert(
+        "Jam-Along might not work with mobile devices. Please use Google Chrome on a Desktop PC"
+      );
+    }
+
     sessionStorage.clear();
     //this.children = ["Gustav"];
-    store.commit("addChildren", "Gustav");
     this.files = [];
     this.data = [];
 
@@ -199,9 +225,9 @@ export default class VideoRecorderGrid extends Vue {
       // finished reading file data.
       alert(e2?.target.result);
       this.data.push(e2.target.result);
-      // var img = document.createElement('img');
-      // img.src= e2.target.result;
-      // document.body.appendChild(img);
+
+      const name = "JALvideojs" + Date.now();
+      store.commit("addChildren", new Child(name, e2.target.result));
     }
   }
   removeFile(file) {
@@ -248,7 +274,7 @@ export default class VideoRecorderGrid extends Vue {
     });
   }
   public addPlayer() {
-    store.commit("addChildren", "JALvideojs" + Date.now());
+    store.commit("addChildren", new Child("JALvideojs" + Date.now(), null));
     //this.children.push('JALvideojs' +Date.now());
     this.mediaRecorder = null;
   }
@@ -303,7 +329,7 @@ export default class VideoRecorderGrid extends Vue {
     JALStateService.prototype.loadState(files[0]);
 
     store.state.players.forEach((element) => {
-      store.commit("addChildren", "JALvideojs" + Date.now());
+      store.commit("addChildren", new Child("JALvideojs" + Date.now(), null));
     });
   }
 

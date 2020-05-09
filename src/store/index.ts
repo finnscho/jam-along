@@ -5,10 +5,19 @@ import VideoJSRecord from '../components/videoRecorder/VideoJSRecord.vue'
 
 Vue.use(Vuex);
 
+export class Child {
+  id: string;
+  src: any;
+
+  constructor(id, src) {
+    this.id = id;
+    this.src = src;
+  }
+}
 export default new Vuex.Store({
   state: {
     // videos: Array<Blob>(),
-    children: [],
+    children: Array<Child>(),
     // eslint-disable-next-line
     players: Array<VideoJSRecord>(),
     activePlayer: VideoJSRecord,
@@ -35,7 +44,7 @@ export default new Vuex.Store({
     removeChildren(state, n: any) {
 
       for (let i = 0; i < state.children.length; i++) {
-        if (state.children[i] === n) {
+        if (state.children[i].id === n) {
           state.children.splice(i, 1);
         }
       }

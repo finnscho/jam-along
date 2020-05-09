@@ -6,10 +6,11 @@
         class="video-js vjs-layout-large"
         v-bind:style="isActive() ? 'border: dashed;' : ''"
         playsinline
-  
         controls
         preload="auto"
-      ></video>
+      >
+        <source v-if="src != null" :src="src" type="video/mp4" />
+      </video>
     </div>
   </v-container>
 </template>
@@ -37,50 +38,14 @@ import store from "@/store";
 export default class VideoJSRecord extends Vue {
   @Prop() id;
   @Prop() active;
+  @Prop() src;
   data() {
     return {
-      src: {},
       min: 0,
       max: 3000,
       slider: 0,
 
       player: "",
-      options: {
-        controls: false,
-        autoplay: false,
-        fluid: true,
-        responsive: true,
-        loop: false,
-        width: 1920,
-        height: 1080,
-        controlBar: {
-          volumePanel: true,
-          seeking: true,
-        },
-        plugins: {
-          // configure videojs-record plugin
-          record: {
-            audio: true,
-
-            maxLength: 500,
-            debug: true,
-            video: {
-              // video media constraints: set resolution of camera
-              width: 1920,
-              height: 1080,
-            },
-          },
-          wavesurfer: {
-            barHeight: 100,
-            debug: true,
-            waveColor: "orange",
-            progressColor: "orangered",
-            cursorColor: "yellow",
-            container: ".waveform",
-            hideScrollbar: true,
-          },
-        },
-      },
     };
   }
   isActive() {
@@ -90,9 +55,48 @@ export default class VideoJSRecord extends Vue {
     this.$root.$refs.A = this;
   }
   mounted() {
+    const options = {
+      controls: false,
+      autoplay: false,
+      fluid: true,
+      responsive: true,
+      loop: false,
+      width: 1920,
+      height: 1080,
+      controlBar: {
+        volumePanel: true,
+        seeking: true,
+      },
+      plugins: {
+        // configure videojs-record plugin
+        record:
+          this.src == null
+            ? {
+                audio: true,
+
+                maxLength: 500,
+                debug: true,
+                video: {
+                  // video media constraints: set resolution of camera
+                  width: 1920,
+                  height: 1080,
+                },
+              }
+            : {},
+        wavesurfer: {
+          barHeight: 100,
+          debug: true,
+          waveColor: "orange",
+          progressColor: "orangered",
+          cursorColor: "yellow",
+          container: ".waveform",
+          hideScrollbar: true,
+        },
+      },
+    };
     //  this.myid = '234'// + (Math.floor(Math.random() * Math.floor(100)))
     /* eslint-disable no-console */
-    this.player = videojs("#" + this.id, this.options, () => {
+    this.player = videojs("#" + this.id, options, () => {
       // print version information at startup
       const msg =
         "Using video.js " +
@@ -108,10 +112,14 @@ export default class VideoJSRecord extends Vue {
     this.player.height = 1080;
 
     store.commit("addPlayer", this);
-    try {
-      this.player.record().getDevice();
-    } catch {
-      alert("fehler");
+    if (this.src !== null) {
+      this.player.src = this.src;
+    } else {
+      try {
+        this.player.record().getDevice();
+      } catch {
+        alert("fehler");
+      }
     }
     store.commit("activePlayer", this);
     // device is ready
