@@ -17,16 +17,11 @@ steps:
 
 - script: |
     npm install
-    npm run cordova-build-android
+    npm run cordova-build-ios 
 
   displayName: 'npm install and build for android, ios, windows'
 - task: PublishBuildArtifacts@1
   inputs:
     artifactName: dist
     pathtoPublish: 'dist'
-
-- task: PublishBuildArtifacts@1
-  inputs:
-    artifactName: src-cordova
-    pathtoPublish: 'src-cordova'
 
