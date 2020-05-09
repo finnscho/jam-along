@@ -99,7 +99,7 @@ import JALStateService from "../services/JALStateService";
   },
 })
 export default class DetailPanel extends Vue {
-  slider = store.state.activePlayer.slider;
+  slider = store.state.activePlayer.player.slider;
 
   constructor(params) {
     super(params);

@@ -164,6 +164,7 @@ export default class VideoRecorderGrid extends Vue {
   service = new JalffmpegService();
   recordedChunks: any[];
   handleFileUpload() {
+    //@ts-ignore
     const file = this.$refs.file.files[0];
     const reader = new FileReader();
 
