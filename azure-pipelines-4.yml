@@ -33,5 +33,5 @@ steps:
 - task: PublishBuildArtifacts@1
   inputs:
     artifactName: src-cordova
-    pathtoPublish: 'src-cordova/platform/ios'
+    pathtoPublish: 'src-cordova/platforms/ios'
 
