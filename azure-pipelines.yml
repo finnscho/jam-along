@@ -36,7 +36,7 @@ steps:
   inputs:
     apkFiles: '**/*.apk' 
     apksign: true
-    apksignerKeystoreFile: 'deployment_cert.der'
+    apksignerKeystoreFile: 'production.keystore'
     apksignerKeystorePassword: 'keystorepwd'
     apksignerKeystoreAlias: 'key0'
     apksignerKeyPassword: 'aliaspwd'
@@ -55,8 +55,4 @@ steps:
     pathtoPublish: '$(Build.ArtifactStagingDirectory)/app/build/outputs/apk/release/'
     artifactName: 'apks' 
     publishLocation: 'container'
-- task: PublishBuildArtifacts@1
-  inputs:
-    artifactName: src-cordova
-    pathtoPublish: 'src-cordova/platforms'
 
