@@ -11,6 +11,7 @@ pool:
 
 steps:
 - task: DownloadSecureFile@1
+  name: caCertificate
   inputs:
     secureFile: 'ios_certificate.p12'
 - task: CordovaBuild@1
@@ -18,7 +19,7 @@ steps:
     platform: 'ios'
     configuration: '$(Configuration)'
     cordovaVersion: '9.0.0'
-    p12: 'ios_certificate.p12'
+    p12: '$(caCertificate.secureFilePath)'
     p12pwd: '$(key.password)'
     outputPattern: 'bin'
 
