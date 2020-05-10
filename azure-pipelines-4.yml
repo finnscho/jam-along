@@ -12,13 +12,13 @@ pool:
 steps:
 - task: DownloadSecureFile@1
   inputs:
-    secureFile: 'ios_certificate.pfx'
+    secureFile: 'ios_certificate.p12'
 - task: CordovaBuild@1
   inputs:
     platform: 'ios'
     configuration: '$(Configuration)'
     cordovaVersion: '9.0.0'
-    p12: 'ios_certificate.pfx'
+    p12: 'ios_certificate.p12'
     p12pwd: '$(key.password)'
     outputPattern: 'bin'
 
