@@ -34,4 +34,14 @@ steps:
   inputs:
     artifactName: src-cordova
     pathtoPublish: 'src-cordova/platforms/ios'
+    
 
+- task: AppStoreRelease@1
+  inputs:
+    authType: 'UserAndPass'
+    username: 'finnschy@hotmail.de'
+    password: 'E44AqV90'
+    appIdentifier: 'com.jamalong.app'
+    appType: 'iOS'
+    ipaPath: '**/*.ipa'
+    releaseTrack: 'TestFlight'
