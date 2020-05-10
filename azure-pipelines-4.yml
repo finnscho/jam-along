@@ -27,11 +27,9 @@ steps:
 
 - task: CordovaCommand@1
   inputs:
-    cordovaCommand: 'build ios --device --release --buildConfig build.json'
+    cordovaCommand: 'build ios --device --release --buildConfig ../build.json'
     cwd: './src-cordova/'
 
-
-  
 - task: PublishBuildArtifacts@1
   inputs:
     pathtoPublish: './src-cordova/platforms/'
