@@ -40,18 +40,12 @@ steps:
     apksignerKeystoreAlias: 'jam_alias'
     apksignerKeyPassword: 'E44AqV90'
     apksignerArguments: --out ./src-cordova/platforms/android/app/build/outputs/apk/release/jam-along.release.apk
-    zipalign: false
+    zipalign: true
 
-- task: CopyFiles@2
-  inputs:
-    SourceFolder: $(Build.SourcesDirectory)
-    contents: '**/*.release.apk' 
-    targetFolder: '$(build.artifactStagingDirectory)'
-    overWrite: true
 
 - task: PublishBuildArtifacts@1
   inputs:
-    pathtoPublish: '$(Build.ArtifactStagingDirectory)/app/'
+    pathtoPublish: './src-cordova/platforms/android/app/build/'
     # pathtoPublish: '$(Build.ArtifactStagingDirectory)/app/build/outputs/apk/release/'
     artifactName: 'apks' 
     publishLocation: 'container'
