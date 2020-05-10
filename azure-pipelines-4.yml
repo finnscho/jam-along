@@ -10,37 +10,25 @@ pool:
   vmImage: 'macOS-latest'
 
 steps:
-- task: NodeTool@0
+
+- task: DownloadSecureFile@1
   inputs:
-    versionSpec: '10.x'
-  displayName: 'Install Node.js'
+    secureFile: '$(key.secureFilePath)'
 
-
-- script: |
-    npm install
-  displayName: 'npm install '
-
-- task: CordovaCommand@1
+- task: CordovaBuild@1
   inputs:
-    cordovaCommand: 'platform add ios'
-    cwd: './src-cordova/'
-
-- script: |
-    npm run cordova-build-ios
-
-  displayName: 'build for ios'
-
-- task: PublishBuildArtifacts@1
-  inputs:
-    artifactName: src-cordova
-    pathtoPublish: 'src-cordova/platforms/ios'
-    
+    platform: 'ios'
+    configuration: '$(Configuration)'
+    cordovaVersion: '9.0.0'
+    p12: '$(key.secureFilePath)'
+    p12pwd: '$(key.password)'
+    outputPattern: 'bin'
 
 - task: AppStoreRelease@1
   inputs:
     authType: 'UserAndPass'
-    username: 'finnschy@hotmail.de'
-    password: 'E44AqV90'
+    username: '$(username)'
+    password: '$(Password)'
     appIdentifier: 'com.jamalong.app'
     appType: 'iOS'
     ipaPath: '**/*.ipa'
