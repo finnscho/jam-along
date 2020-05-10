@@ -1,5 +1,5 @@
 {
-  "name": "com.jam-along.release.app",
+  "name": "com.jam-along.app",
   "displayName": "VueExampleAppName",
   "version": "1.0.0",
   "description": "A sample Apache Cordova application that responds to the deviceready event.",
