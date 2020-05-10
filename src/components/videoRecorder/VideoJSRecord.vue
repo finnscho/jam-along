@@ -61,8 +61,8 @@ export default class VideoJSRecord extends Vue {
       fluid: true,
       responsive: true,
       loop: false,
-      width: 1920,
-      height: 1080,
+      width: 320,
+      height: 240,
       controlBar: {
         volumePanel: true,
         seeking: true,
@@ -73,14 +73,11 @@ export default class VideoJSRecord extends Vue {
           this.src == null
             ? {
                 audio: true,
-
                 maxLength: 500,
                 debug: true,
-                video: {
-                  // video media constraints: set resolution of camera
-                  width: 1920,
-                  height: 1080,
-                },
+                video: true,
+                frameWidth: 320,
+                frameHeight: 240,
               }
             : {},
         wavesurfer: {

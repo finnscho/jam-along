@@ -23,7 +23,7 @@ export default class JalffmpegService {
   mergeVideos(videos: any[]) {
 
     const merger = new VideoStreamMerger()
-    merger.setOutputSize(1920, 1080)
+    merger.setOutputSize(1280, 960)
     let x = 0;
     let y = videos.length > 2 ? 0 : merger.height / 4;
     let i = 0;
@@ -31,8 +31,8 @@ export default class JalffmpegService {
       //  const media = { ...element.record().mediaElement };
       let media: HTMLMediaElement;
       if (element.src != null) {
-      
-        media = document.getElementById(element.id +'_html5_api') as HTMLMediaElement;
+
+        media = document.getElementById(element.id + '_html5_api') as HTMLMediaElement;
 
       }
       else {
