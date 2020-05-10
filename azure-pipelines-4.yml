@@ -7,31 +7,28 @@ trigger:
 - master
 
 pool:
-  vmImage: 'macOS-latest'
+  vmImage: 'macOS-10.14'
 
 steps:
-- task: NodeTool@0
+- task: DownloadSecureFile@1
+  name: caCertificate
   inputs:
-    versionSpec: '10.x'
-  displayName: 'Install Node.js'
-
-
-- script: |
-    npm install
-  displayName: 'npm install '
-
-- task: CordovaCommand@1
+    secureFile: 'ios_certificate.p12'
+- task: CordovaBuild@1
   inputs:
-    cordovaCommand: 'platform add ios'
-    cwd: './src-cordova/'
+    platform: 'ios'
+    configuration: '$(Configuration)'
+    cordovaVersion: '7.1.0'
+    p12: '$(caCertificate.secureFilePath)'
+    p12pwd: '$(key.password)'
+    outputPattern: 'bin'
 
-- script: |
-    npm run cordova-build-ios
-
-  displayName: 'build for ios'
-
-- task: PublishBuildArtifacts@1
+- task: AppStoreRelease@1
   inputs:
-    artifactName: src-cordova
-    pathtoPublish: 'src-cordova/platforms/ios'
-
+    authType: 'UserAndPass'
+    username: '$(username)'
+    password: '$(Password)'
+    appIdentifier: 'com.jamalong.app'
+    appType: 'iOS'
+    ipaPath: '**/*.ipa'
+    releaseTrack: 'TestFlight'
