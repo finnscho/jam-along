@@ -6,7 +6,7 @@
     </v-overlay>
     <v-layout>
       <v-app-bar fixed dense style="vertical-align: bottom;">
-        <!-- <v-file-input accept="image/*" style="color:'orange'" width="5%" @change="onFileChange" label="Projekt öffnen"></v-file-input> -->
+        <!-- <v-file-input accept="image/*" style="color:"#FF914C"" width="5%" @change="onFileChange" label="Projekt öffnen"></v-file-input> -->
 
         <v-btn
           v-on:click="addPlayer"
@@ -27,7 +27,7 @@
         </v-btn>
 
         <v-btn v-on:click="record">
-          <v-icon v-bind:color="recording ? 'red' : 'orange'"
+          <v-icon v-bind:color="recording ? 'red' : '#FF914C'"
             >mdi-record</v-icon
           >
         </v-btn>
