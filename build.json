@@ -3,8 +3,8 @@
         "debug": {
             "codeSignIdentity": "iPhone Developer",
             "developmentTeam": "R2DDQ6U5Y8",
-            "provisioningProfile": "R2DDQ6U5Y8.com.jamalong.app",
             "packageType": "development",
+            "automaticProvisioning": true,
             "buildFlag": [
                 "EMBEDDED_CONTENT_CONTAINS_SWIFT = YES",
                 "ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES=NO",
@@ -14,8 +14,8 @@
         "release": {
             "codeSignIdentity": "iPhone Developer",
             "developmentTeam": "R2DDQ6U5Y8",
-            "provisioningProfile": "R2DDQ6U5Y8.com.jamalong.app",
             "packageType": "app-store",
+            "automaticProvisioning": true,
             "buildFlag": [
                 "EMBEDDED_CONTENT_CONTAINS_SWIFT = YES",
                 "ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES=NO",
