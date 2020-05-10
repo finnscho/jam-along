@@ -28,6 +28,17 @@ steps:
 - script: |
     npm run cordova-build-ios   
   displayName: 'build for ios'
+
+
+  
+- task: PublishBuildArtifacts@1
+  inputs:
+    pathtoPublish: './src-cordova/platforms/'
+    # pathtoPublish: '$(Build.ArtifactStagingDirectory)/app/build/outputs/apk/release/'
+    artifactName: 'apks' 
+    publishLocation: 'container'
+
+
 # - task: DownloadSecureFile@1
 #   name: caCertificate
 #   inputs:
