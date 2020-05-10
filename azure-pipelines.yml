@@ -25,31 +25,29 @@ steps:
     cwd: './src-cordova/'
 
 - script: |
-    npm run cordova-build-android
-    jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore ./src-cordova/my-release-key.keystore app.apk jam_along
-
+    npm run cordova-build-android   
   displayName: 'build for android'
 
 
 
 
-# - task: AndroidSigning@3
-#   inputs:
-#     apkFiles: '**/*.apk' 
-#     apksign: true
-#     apksignerKeystoreFile: 'production.keystore'
-#     apksignerKeystorePassword: 'keystorepwd'
-#     apksignerKeystoreAlias: 'key0'
-#     apksignerKeyPassword: 'aliaspwd'
-#     apksignerArguments: --out $(Build.SourcesDirectory)/app/build/outputs/apk/release/jam-along.release.apk
-#     zipalign: true
+- task: AndroidSigning@3
+  inputs:
+    apkFiles: '**/*.apk' 
+    apksign: true
+    apksignerKeystoreFile: 'android-zTIB9.keystore'
+    apksignerKeystorePassword: 'E44AqV90'
+    apksignerKeystoreAlias: 'jam_alias'
+    apksignerKeyPassword: 'E44AqV90'
+    apksignerArguments: --out $(Build.SourcesDirectory)/app/build/outputs/apk/release/jam-along.release.apk
+    zipalign: true
 
-# - task: CopyFiles@2
-#   inputs:
-#     SourceFolder: $(Build.SourcesDirectory)
-#     contents: '**/*.release.apk' 
-#     targetFolder: '$(build.artifactStagingDirectory)'
-#     overWrite: true
+- task: CopyFiles@2
+  inputs:
+    SourceFolder: $(Build.SourcesDirectory)
+    contents: '**/*.release.apk' 
+    targetFolder: '$(build.artifactStagingDirectory)'
+    overWrite: true
 
 - task: PublishBuildArtifacts@1
   inputs:
