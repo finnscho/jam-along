@@ -10,26 +10,44 @@ pool:
   vmImage: 'macOS-10.14'
 
 steps:
-- task: DownloadSecureFile@1
-  name: caCertificate
+
+- task: NodeTool@0
   inputs:
-    secureFile: 'ios_certificate.p12'
-- task: CordovaBuild@1
+    versionSpec: '10.x'
+  displayName: 'Install Node.js'
+
+- script: |
+    npm install
+  displayName: 'npm install '
+
+- task: CordovaCommand@1
   inputs:
-    platform: 'ios'
-    configuration: '$(Configuration)'
-    cordovaVersion: '9.0.0'
-    p12: '$(caCertificate.secureFilePath)'
-    p12pwd: '$(key.password)'
-    outputPattern: 'bin'
+    cordovaCommand: 'platform add ios'
     cwd: './src-cordova/'
 
-- task: AppStoreRelease@1
-  inputs:
-    authType: 'UserAndPass'
-    username: '$(username)'
-    password: '$(Password)'
-    appIdentifier: 'com.jamalong.app'
-    appType: 'iOS'
-    ipaPath: '**/*.ipa'
-    releaseTrack: 'TestFlight'
+- script: |
+    npm run cordova-build-ios   
+  displayName: 'build for ios'
+# - task: DownloadSecureFile@1
+#   name: caCertificate
+#   inputs:
+#     secureFile: 'ios_certificate.p12'
+# - task: CordovaBuild@1
+#   inputs:
+#     platform: 'ios'
+#     configuration: '$(Configuration)'
+#     cordovaVersion: '9.0.0'
+#     p12: '$(caCertificate.secureFilePath)'
+#     p12pwd: '$(key.password)'
+#     outputPattern: 'bin'
+#     cwd: './src-cordova/'
+
+# - task: AppStoreRelease@1
+#   inputs:
+#     authType: 'UserAndPass'
+#     username: '$(username)'
+#     password: '$(Password)'
+#     appIdentifier: 'com.jamalong.app'
+#     appType: 'iOS'
+#     ipaPath: '**/*.ipa'
+#     releaseTrack: 'TestFlight'
