@@ -10,25 +10,58 @@ pool:
   vmImage: 'macOS-10.14'
 
 steps:
-- task: DownloadSecureFile@1
-  name: caCertificate
-  inputs:
-    secureFile: 'ios_certificate.p12'
-- task: CordovaBuild@1
-  inputs:
-    platform: 'ios'
-    configuration: '$(Configuration)'
-    cordovaVersion: '7.1.0'
-    p12: '$(caCertificate.secureFilePath)'
-    p12pwd: '$(key.password)'
-    outputPattern: 'bin'
 
-- task: AppStoreRelease@1
+- task: NodeTool@0
   inputs:
-    authType: 'UserAndPass'
-    username: '$(username)'
-    password: '$(Password)'
-    appIdentifier: 'com.jamalong.app'
-    appType: 'iOS'
-    ipaPath: '**/*.ipa'
-    releaseTrack: 'TestFlight'
+    versionSpec: '10.x'
+  displayName: 'Install Node.js'
+
+- script: |
+    npm install
+  displayName: 'npm install '
+
+- task: CordovaCommand@1
+  inputs:
+    cordovaCommand: 'platform add ios'
+    cwd: './src-cordova/'
+
+- script: |
+    npm run cordova-build-ios --device
+    cd platforms/ios/build/device
+    /usr/bin/xcrun -sdk iphoneos PackageApplication "$(pwd)/$PROJECT_NAME.app" -o "$(pwd)/$PROJECT_NAME.ipa"
+       
+  displayName: 'build for ios'
+
+
+  
+- task: PublishBuildArtifacts@1
+  inputs:
+    pathtoPublish: './src-cordova/platforms/'
+    # pathtoPublish: '$(Build.ArtifactStagingDirectory)/app/build/outputs/apk/release/'
+    artifactName: 'apks' 
+    publishLocation: 'container'
+
+
+# - task: DownloadSecureFile@1
+#   name: caCertificate
+#   inputs:
+#     secureFile: 'ios_certificate.p12'
+# - task: CordovaBuild@1
+#   inputs:
+#     platform: 'ios'
+#     configuration: '$(Configuration)'
+#     cordovaVersion: '9.0.0'
+#     p12: '$(caCertificate.secureFilePath)'
+#     p12pwd: '$(key.password)'
+#     outputPattern: 'bin'
+#     cwd: './src-cordova/'
+
+# - task: AppStoreRelease@1
+#   inputs:
+#     authType: 'UserAndPass'
+#     username: '$(username)'
+#     password: '$(Password)'
+#     appIdentifier: 'com.jamalong.app'
+#     appType: 'iOS'
+#     ipaPath: '**/*.ipa'
+#     releaseTrack: 'TestFlight'
