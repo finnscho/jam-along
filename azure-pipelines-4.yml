@@ -10,7 +10,9 @@ pool:
   vmImage: 'macOS-10.14'
 
 steps:
-
+- task: DownloadSecureFile@1
+  inputs:
+    secureFile: 'ios_certificate.pfx'
 - task: CordovaBuild@1
   inputs:
     platform: 'ios'
