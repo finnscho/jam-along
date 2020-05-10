@@ -17,7 +17,7 @@
         </v-row>
         <v-row>
           <v-col cols="12">
-            <v-tabs color="orange" :centered="true">
+            <v-tabs color="#FF914C" :centered="true">
               <v-tab href="#tab-up">
                 <v-icon>mdi-chevron-down</v-icon>
               </v-tab>
@@ -33,13 +33,13 @@
                 <v-icon hint="Camera...">mdi-camera</v-icon>
               </v-tab>
 
-              <v-tab-item color="orange" value="tab-sync" height="300px">
+              <v-tab-item color="#FF914C" value="tab-sync" height="300px">
                 <v-card flat tile>
                   <v-row>
                     <v-col cols="1"></v-col>
                     <v-col cols="10">
                       <v-btn v-on:click="setOffset" margin="auto">
-                        <v-icon color="orange">mdi-check</v-icon>
+                        <v-icon color="#FF914C">mdi-check</v-icon>
                       </v-btn>
                       <v-card-text>
                         <label>Offset</label>
@@ -71,7 +71,7 @@
                   </v-row>
                 </v-card>
               </v-tab-item>
-              <v-tab-item color="orange" value="tab-filter" height="300px">
+              <v-tab-item color="#FF914C" value="tab-filter" height="300px">
               </v-tab-item>
             </v-tabs>
           </v-col>

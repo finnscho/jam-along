@@ -1,5 +1,9 @@
 <template>
   <v-container style="padding-top='5%'" fluid>
+    <v-overlay :opacity="1" :value="overlay" :z-index="99">
+      <v-img src="../../assets/logo_transparent_background.png" />
+      <v-progress-linear indeterminate color="#FF914C"></v-progress-linear>
+    </v-overlay>
     <v-layout>
       <v-app-bar fixed dense style="vertical-align: bottom;">
         <!-- <v-file-input accept="image/*" style="color:'orange'" width="5%" @change="onFileChange" label="Projekt öffnen"></v-file-input> -->
@@ -9,7 +13,7 @@
           v-on:mouseover="mouseoverAddBtn"
           v-on:mouseleave="mouseleaveAddBtn"
         >
-          <v-icon color="orange">mdi-camera-plus</v-icon>
+          <v-icon color="#FF914C">mdi-camera-plus</v-icon>
         </v-btn>
         <input
           type="file"
@@ -19,7 +23,7 @@
         />
 
         <v-btn @click="$refs.file.click()">
-          <v-icon color="orange">mdi-movie-open</v-icon>
+          <v-icon color="#FF914C">mdi-movie-open</v-icon>
         </v-btn>
 
         <v-btn v-on:click="record">
@@ -28,29 +32,29 @@
           >
         </v-btn>
         <v-btn v-on:click="click">
-          <v-icon color="orange">mdi-play</v-icon>
+          <v-icon color="#FF914C">mdi-play</v-icon>
         </v-btn>
         <v-btn v-on:click="pause">
-          <v-icon color="orange">mdi-pause</v-icon>
+          <v-icon color="#FF914C">mdi-pause</v-icon>
         </v-btn>
         <v-btn v-on:click="save" style="margin-left:10vw">
-          <v-icon color="orange" v-if="downloading == false"
+          <v-icon color="#FF914C" v-if="downloading == false"
             >mdi-download</v-icon
           >
           <v-progress-circular
             v-if="downloading == true"
             :width="3"
-            color="orange"
+            color="#FF914C"
             indeterminate
           ></v-progress-circular>
         </v-btn>
 
         <!-- <v-btn v-on:click="saveProject" style="margin-left:50px">
-        <v-icon color="orange">mdi-zip-disk</v-icon>
+        <v-icon color="#FF914C">mdi-zip-disk</v-icon>
         </v-btn>-->
 
         <v-btn v-on:click="removePlayer">
-          <v-icon color="orange">mdi-delete</v-icon>
+          <v-icon color="#FF914C">mdi-delete</v-icon>
         </v-btn>
       </v-app-bar>
       <v-card id="myCard" style="margin-top: 8vh;">
@@ -121,7 +125,7 @@
                     padding="10%"
                     style="width:560px;height:420px;border-style: dashed;border-color: orange;"
                   >
-                    <v-icon color="orange">mdi-music-box-multiple</v-icon>
+                    <v-icon color="#FF914C">mdi-music-box-multiple</v-icon>
                   </div>
                 </div>
               </v-col>
@@ -158,8 +162,9 @@ export default class VideoRecorderGrid extends Vue {
   downloading = false;
   file: any = "";
   merger: any;
-
+  valueDeterminate = 0;
   recording = false;
+  overlay = false;
   //@ts-ignore
   mediaRecorder: MediaRecorder = null;
   service = new JalffmpegService();
@@ -189,6 +194,23 @@ export default class VideoRecorderGrid extends Vue {
     this.data = [];
 
     this.recordedChunks = [];
+  }
+
+  async init() {
+    console.log(1);
+    await this.sleep(2000);
+    console.log(2);
+
+    this.overlay = false;
+  }
+  sleep(ms) {
+    return new Promise((resolve) => {
+      setTimeout(resolve, ms);
+    });
+  }
+  mounted() {
+    this.overlay = true;
+    this.init();
   }
   get videoWidth() {
     switch (store.state.children.length) {
