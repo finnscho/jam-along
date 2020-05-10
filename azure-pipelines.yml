@@ -40,7 +40,7 @@ steps:
     apksignerKeystoreAlias: 'jam_alias'
     apksignerKeyPassword: 'E44AqV90'
     apksignerArguments: --out ./src-cordova/platforms/android/app/build/outputs/apk/release/jam-along.release.apk
-    zipalign: false
+    zipalign: true
 
 
 - task: PublishBuildArtifacts@1
