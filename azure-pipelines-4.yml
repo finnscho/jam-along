@@ -18,7 +18,7 @@ steps:
   inputs:
     platform: 'ios'
     configuration: '$(Configuration)'
-    cordovaVersion: '9.0.0'
+    cordovaVersion: '7.1.0'
     p12: '$(caCertificate.secureFilePath)'
     p12pwd: '$(key.password)'
     outputPattern: 'bin'
