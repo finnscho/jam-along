@@ -2,9 +2,8 @@
     "ios": {
         "debug": {
             "codeSignIdentity": "iPhone Developer",
-            "developmentTeam": "R2DDQ6U5Y8",
+            "provisioningProfile": "50d620d4-abe8-449a-9761-d3f005944e44",
             "packageType": "development",
-            "automaticProvisioning": true,
             "buildFlag": [
                 "EMBEDDED_CONTENT_CONTAINS_SWIFT = YES",
                 "ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES=NO",
@@ -13,9 +12,8 @@
         },
         "release": {
             "codeSignIdentity": "iPhone Developer",
-            "developmentTeam": "R2DDQ6U5Y8",
+            "provisioningProfile": "50d620d4-abe8-449a-9761-d3f005944e44",
             "packageType": "app-store",
-            "automaticProvisioning": true,
             "buildFlag": [
                 "EMBEDDED_CONTENT_CONTAINS_SWIFT = YES",
                 "ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES=NO",
