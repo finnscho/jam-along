@@ -1,6 +1,5 @@
 <template>
   <v-content>
-    <v-img src="../assets/logo_transparent_background.png" />
     <v-container class="fill-height" fluid>
       <v-row align="center" justify="center">
         <v-col cols="5.5"> </v-col>
