@@ -33,8 +33,7 @@
               </v-form>
             </v-card-text>
             <v-card-actions>
-              <v-spacer></v-spacer>
-              <v-btn color="primary" @click="signUp">Sign Up</v-btn>
+              <v-btn class="primary--text" @click="signUp">Sign Up</v-btn>
               <br />
               <v-spacer></v-spacer>
               <p></p>

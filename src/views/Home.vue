@@ -1,9 +1,68 @@
 <template>
-  <div class="home">
-    <button @click="logout">Logout</button>
-    <VideoRecorderGrid />
-    <div height="50%"><DetailPanel /></div>
-  </div>
+  <v-app id="inspire">
+    <v-overlay :opacity="1" :value="overlay" :z-index="99">
+      <v-img src="../assets/logo_transparent_background.png" />
+      <v-progress-linear indeterminate color="#FF914C"></v-progress-linear>
+    </v-overlay>
+    <v-navigation-drawer v-model="drawer" app clipped>
+      <v-list dense>
+        <v-list-item link>
+          <v-list-item-action>
+            <v-icon>mdi-view-dashboard</v-icon>
+          </v-list-item-action>
+          <v-list-item-content>
+            <v-list-item-title>Dashboard</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+        <v-list-item link>
+          <v-list-item-action>
+            <v-icon>mdi-settings</v-icon>
+          </v-list-item-action>
+          <v-list-item-content>
+            <v-list-item-title>Settings</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+      </v-list>
+    </v-navigation-drawer>
+
+    <v-app-bar app clipped-left>
+      <v-app-bar-nav-icon
+        color="primary"
+        @click.stop="drawer = !drawer"
+      ></v-app-bar-nav-icon>
+
+      <v-toolbar-side-icon>
+        <v-img
+          class="mr-3"
+          src="../assets/logo_transparent_background.png"
+          width="30%"
+        >
+        </v-img>
+      </v-toolbar-side-icon>
+    </v-app-bar>
+    <v-container class="fill-height" fluid>
+      <v-row align="center" justify="center">
+        <v-col cols="4"></v-col>
+        <v-col align="center" cols="4" class=" center">
+          <p class="primary--text">Create your first <b>JAM</b></p>
+          <v-tooltip right>
+            <template v-slot:activator="{ on }">
+              <v-btn :href="source" icon large target="_blank" v-on="on">
+                <router-link to="/RecorderApp"
+                  ><v-icon large>mdi-plus</v-icon></router-link
+                >
+              </v-btn>
+            </template>
+            <span>Source</span>
+          </v-tooltip>
+        </v-col>
+        <v-col cols="4"></v-col>
+      </v-row>
+    </v-container>
+    <v-footer app>
+      <span>&copy; 2020</span>
+    </v-footer>
+  </v-app>
 </template>
 
 <script>
@@ -13,8 +72,30 @@ import DetailPanel from "../components/videoRecorder/DetailPanel.vue";
 
 export default {
   name: "home",
-  components: { VideoRecorderGrid, DetailPanel },
+  props: {
+    source: String,
+  },
+  data: () => ({
+    drawer: null,
+    overlay: true,
+  }),
+
+  mounted: function() {
+    this.overlay = true;
+    this.init();
+  },
+  //   components: { VideoRecorderGrid, DetailPanel },
   methods: {
+    async init() {
+      await this.sleep(1000);
+
+      this.overlay = false;
+    },
+    sleep(ms) {
+      return new Promise((resolve) => {
+        setTimeout(resolve, ms);
+      });
+    },
     logout: function() {
       firebase
         .auth()

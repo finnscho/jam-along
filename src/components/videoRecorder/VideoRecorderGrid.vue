@@ -202,7 +202,7 @@ export default class VideoRecorderGrid extends Vue {
 
   async init() {
     console.log(1);
-    await this.sleep(2000);
+    await this.sleep(1200);
     console.log(2);
 
     this.overlay = false;
