@@ -3,7 +3,6 @@
     <div id="app" style="width=100vw">
       <v-card>
         <router-view />
-
       </v-card>
     </div>
   </v-app>
@@ -31,8 +30,5 @@ export default {
 /* change player background color */
 #myVideo {
   background-color: #95ddf5;
-}
-html {
-  overflow-y: hidden !important;
 }
 </style>
