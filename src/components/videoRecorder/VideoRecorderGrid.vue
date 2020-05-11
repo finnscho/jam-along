@@ -37,7 +37,10 @@
         <v-btn v-on:click="pause">
           <v-icon color="#FF914C">mdi-pause</v-icon>
         </v-btn>
-        <v-btn v-on:click="save" style="margin-left:10vw">
+        <v-btn
+          v-on:click="save"
+          :style="!isMobileDevice ? 'margin-left:10vw' : ''"
+        >
           <v-icon color="#FF914C" v-if="downloading == false"
             >mdi-download</v-icon
           >
@@ -165,6 +168,7 @@ export default class VideoRecorderGrid extends Vue {
   valueDeterminate = 0;
   recording = false;
   overlay = false;
+  isMobileDevice: boolean;
   //@ts-ignore
   mediaRecorder: MediaRecorder = null;
   service = new JalffmpegService();
@@ -181,8 +185,8 @@ export default class VideoRecorderGrid extends Vue {
   }
   constructor(params) {
     super(params);
-    const isMobileDevice = /Mobi/i.test(window.navigator.userAgent);
-    if (isMobileDevice) {
+    this.isMobileDevice = /Mobi/i.test(window.navigator.userAgent);
+    if (this.isMobileDevice) {
       alert(
         "Jam-Along might not work with mobile devices. Please use Google Chrome on a Desktop PC"
       );
@@ -213,6 +217,9 @@ export default class VideoRecorderGrid extends Vue {
     this.init();
   }
   get videoWidth() {
+    if (this.isMobileDevice) {
+      return "150px";
+    }
     switch (store.state.children.length) {
       case 1:
         return "100vw";
@@ -365,8 +372,7 @@ export default class VideoRecorderGrid extends Vue {
       {
         console.log("play");
 
-        const isMobileDevice = /Mobi/i.test(window.navigator.userAgent);
-        if (isMobileDevice) {
+        if (this.isMobileDevice) {
           element.player.wavesurfer().play();
           element.player.wavesurfer().surfer.setVolume(0);
         } else {
