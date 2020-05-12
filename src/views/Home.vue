@@ -61,6 +61,9 @@
     </v-container>
     <v-footer app>
       <span>&copy; 2020</span>
+      <span>
+        <router-link to="/disclaimer">Disclaimer</router-link>
+      </span>
     </v-footer>
   </v-app>
 </template>
@@ -113,7 +116,5 @@ export default {
 #myVideo {
   background-color: #95ddf5;
 }
-html {
-  overflow-y: hidden !important;
-}
+
 </style>

@@ -2,7 +2,7 @@ import Vue from 'vue';
 import Vuex from 'vuex';
 import VideoJSRecord from '../components/videoRecorder/VideoJSRecord.vue'
 
-
+const fb = require('../firebaseConfig');
 Vue.use(Vuex);
 
 export class Child {
@@ -15,15 +15,24 @@ export class Child {
   }
 }
 export default new Vuex.Store({
+
   state: {
     // videos: Array<Blob>(),
     children: Array<Child>(),
     // eslint-disable-next-line
     players: Array<VideoJSRecord>(),
     activePlayer: VideoJSRecord,
+    currentUser: null,
+    userProfile: {}
   },
 
   mutations: {
+    setCurrentUser(state, val) {
+      state.currentUser = val
+    },
+    setUserProfile(state, val) {
+      state.userProfile = val
+    },
 
     // addVideo (state, n: Blob) {
 
@@ -59,34 +68,14 @@ export default new Vuex.Store({
 
     }
   },
-  // plugins: [new VuexPersistence({
-  //   key:"JamAlong",
-  //   storage:sessionStorage,
-  //   supportCircular: true,
-  //   // restoreState: (key, state )=>{
-  //   //   console.log('do nothing');
-  //   // },
-  //    saveState: (key, state, storage) =>{
-  //     // if(state.downloading){
-  //       //@ts-ignore
-  //     const newBlob = new Blob(JSON.stringify(state), { type: 'application/json;' });
-  //     const filename = `jam-along-${new Date().getTime()}.json`;
-  //     saveAs(newBlob, filename);
-  //     // }
-
-  //    }
-
-  //   //   const newBlob = new Blob([JSON.stringify(state)], { type: 'application/json;' });
-  //   //   const filename = `jam-along-${new Date().getTime()}.json`;
-  //   //   saveAs(newBlob, filename);}
-
-
-
-  //   //   const newBlob = new Blob([state], { type: 'application/json;' });
-  //   // const filename = `jam-along-${new Date().getTime()}.json`;
-  //   // saveAs(newBlob, filename);
-
-  //   // console.log(state)}
-  //   // ,
-  // }).plugin]
+  actions: {
+    fetchUserProfile({ commit, state }) {
+      //@ts-ignore
+      fb.usersCollection.doc(state.currentUser?.uid).get().then(res => {
+        commit('setUserProfile', res.data())
+      }).catch(err => {
+        console.log(err)
+      })
+    }
+  }
 })

@@ -43,6 +43,12 @@
         </v-col>
       </v-row>
     </v-container>
+    <v-footer app>
+      <span>&copy; 2020</span>
+      <p>
+        <router-link to="/disclaimer">Disclaimer</router-link>
+      </p>
+    </v-footer>
   </v-content>
 </template>
 <script>
