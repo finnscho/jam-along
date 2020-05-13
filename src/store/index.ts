@@ -1,3 +1,4 @@
+import { JALUser, JALProject } from './../components/models/models';
 import Vue from 'vue';
 import Vuex from 'vuex';
 import VideoJSRecord from '../components/videoRecorder/VideoJSRecord.vue'
@@ -22,16 +23,16 @@ export default new Vuex.Store({
     // eslint-disable-next-line
     players: Array<VideoJSRecord>(),
     activePlayer: VideoJSRecord,
-    currentUser: null,
-    userProfile: {}
+    userProfile: {} as JALUser,
+    activeProject: '',
   },
 
   mutations: {
-    setCurrentUser(state, val) {
-      state.currentUser = val
-    },
-    setUserProfile(state, val) {
+    setUser(state, val: JALUser) {
       state.userProfile = val
+    },
+    setProject(state, val) {
+      state.activeProject = val
     },
 
     // addVideo (state, n: Blob) {
@@ -76,6 +77,7 @@ export default new Vuex.Store({
       }).catch(err => {
         console.log(err)
       })
-    }
+    },
+
   }
 })

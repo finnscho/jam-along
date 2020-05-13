@@ -52,9 +52,9 @@
           ></v-progress-circular>
         </v-btn>
 
-        <!-- <v-btn v-on:click="saveProject" style="margin-left:50px">
-        <v-icon color="#FF914C">mdi-zip-disk</v-icon>
-        </v-btn>-->
+        <v-btn v-on:click="saveProject" style="margin-left:50px">
+          <v-icon color="#FF914C">mdi-zip-disk</v-icon>
+        </v-btn>
 
         <v-btn v-on:click="removePlayer">
           <v-icon color="#FF914C">mdi-delete</v-icon>
@@ -158,6 +158,7 @@ import JALStateService from "../services/JALStateService";
   },
 })
 export default class VideoRecorderGrid extends Vue {
+  @Prop() projectidprop: string | undefined;
   // children: any;
   files: any;
   data: any;
@@ -168,6 +169,7 @@ export default class VideoRecorderGrid extends Vue {
   valueDeterminate = 0;
   recording = false;
   overlay = false;
+  projectid = "";
   isMobileDevice: boolean;
   //@ts-ignore
   mediaRecorder: MediaRecorder = null;
@@ -204,6 +206,19 @@ export default class VideoRecorderGrid extends Vue {
     console.log(1);
     await this.sleep(1200);
     console.log(2);
+
+    if (store.state.activeProject == "") {
+      alert("ceate new project");
+      store.commit(
+        "setProject",
+        Math.random()
+          .toString(36)
+          .substring(2) + Date.now().toString(36)
+      );
+    } else {
+      alert("open existing project " + store.state.activeProject);
+      JALStateService.prototype.loadProject();
+    }
 
     this.overlay = false;
   }
@@ -400,7 +415,7 @@ export default class VideoRecorderGrid extends Vue {
     });
   }
   saveProject() {
-    JalStateService.prototype.saveState();
+    JalStateService.prototype.saveState(store.state.activeProject, "JAM#1");
   }
 
   public save() {

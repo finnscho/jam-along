@@ -44,17 +44,7 @@
       <v-row align="center" justify="center">
         <v-col cols="4"></v-col>
         <v-col align="center" cols="4" class=" center">
-          <p class="primary--text">Create your first <b>JAM</b></p>
-          <v-tooltip right>
-            <template v-slot:activator="{ on }">
-              <v-btn :href="source" icon large target="_blank" v-on="on">
-                <router-link to="/RecorderApp"
-                  ><v-icon large>mdi-plus</v-icon></router-link
-                >
-              </v-btn>
-            </template>
-            <span>Source</span>
-          </v-tooltip>
+          <ProjectGrid />
         </v-col>
         <v-col cols="4"></v-col>
       </v-row>
@@ -72,9 +62,14 @@
 import firebase from "firebase";
 import VideoRecorderGrid from "../components/videoRecorder/VideoRecorderGrid.vue";
 import DetailPanel from "../components/videoRecorder/DetailPanel.vue";
-
+import store from "../store";
+import JALStateService from "../components/services/JALStateService";
+import ProjectGrid from "../components/project/ProjectGrid.vue";
 export default {
   name: "home",
+  components: {
+    ProjectGrid: ProjectGrid,
+  },
   props: {
     source: String,
   },
@@ -90,8 +85,8 @@ export default {
   //   components: { VideoRecorderGrid, DetailPanel },
   methods: {
     async init() {
+      JALStateService.prototype.loadUser(firebase.auth().currentUser.uid);
       await this.sleep(1000);
-
       this.overlay = false;
     },
     sleep(ms) {
@@ -116,5 +111,4 @@ export default {
 #myVideo {
   background-color: #95ddf5;
 }
-
 </style>

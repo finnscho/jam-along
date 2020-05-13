@@ -1,45 +1,71 @@
-import store from "../../store";
+import store, { Child } from "../../store";
 import { saveAs } from 'file-saver';
 import VideoJSRecord from "../videoRecorder/VideoJSRecord.vue"
-import {JALVideo} from "../models/models"
+import { JALVideo, JALUser, JALProject } from "../models/models"
 
 
-
+import firebase from 'firebase';
 export default class JALStateService {
 
 
 
-  saveState() {
-    const projectData: Array<JALVideo> = new Array<JALVideo>();
-    store.state.players.forEach((element) => {
-      //@ts-ignore
-      let slider = store.state.activePlayer.slider;
-      const videoElement = element as VideoJSRecord;
-      //@ts-ignore
-      if(videoElement.id != store.state.activePlayer.id)
-      {
-        //@ts-ignore
-        slider = videoElement.slider;
-      }
-      //@ts-ignore
-      const video: JALVideo = new JALVideo("./assets/video1.webm",slider);
-
-      projectData.push(video)
-      
+  writeUserData(userId, videos: [], projectid, name) {
+    firebase.database().ref('project/' + projectid).set({
+      projectid: projectid,
+      name: name,
+      userid: userId,
+      videos: videos
     });
-    //@ts-ignore
-    const newBlob = new Blob([JSON.stringify(projectData)], { type: 'application/json;' });
-    const filename = `jam-along-${new Date().getTime()}.json`;
-    saveAs(newBlob, filename);
+
+    const ref = firebase.database().ref('users/' + userId);
+    ref.on('value', function (snapshot) {
+      alert()
+      const projects = snapshot.val().projects != undefined ? snapshot.val().projects.push(projectid) : { projectid }
+      ref.set({
+        userId: userId,
+        projects: { projects }
+      });
+    })
+  }
+  createUser(userId, email, name, lastname) {
+    firebase.database().ref('users/' + userId).set({
+      userId: userId,
+      email,
+      name,
+      lastname,
+      projects: {}
+    });
+  }
+
+  saveState(projectid: string, projetName: string) {
+    const videos = [];
+    store.state.players.forEach((element: VideoJSRecord) => {
+
+      const metadata = {
+        contentType: 'video/webm',
+      };
+      //@ts-ignore
+      const storageRef = firebase.storage().ref(`${element.id}`).put(element.player.recordedData, metadata);
+      storageRef.on(`state_changed`, snapshot => null, error => { console.log(error.message) },
+        () => {
+
+          storageRef.snapshot.ref.getDownloadURL().then((url) => {
+            //@ts-ignore
+            videos.push(new JALVideo(url, element.slider, element.id))
+
+            this.writeUserData(firebase.auth().currentUser?.uid, videos, projectid, projetName)
+          });
+        }
+      );
+
+    })
 
 
   }
 
+
   loadState(files: any) {
-    //sessionStorage.
-    // this.$refs.fileupload.click();
-    // this.$refs.fileupload.addEventListener('change', () => {
-    //   const files = this.$refs.fileupload.files;
+
     const fileReader = new FileReader();
     fileReader.onload = (e: any) => {
       const loadedState = JSON.parse(e.target.result) as Array<JALVideo>;
@@ -52,35 +78,51 @@ export default class JALStateService {
     };
     fileReader.readAsText(files);
   }
-  //   async shareState() {
-  //     try {
-  //       const res = await HttpService.post('/upload', this.$store.state);
-  //       addNotification({
-  //         title: 'Here is your code!',
-  //         text: 'Enter the following code on the target device: ' + res.data.code,
-  //       });
-  //     } catch (e) {
-  //       addNotification({
-  //         title: 'Something went wrong!',
-  //         text: 'Please try again!',
-  //       });
-  //     }
-  //   },
-  //   async loadStateFromServer(code: string) {
-  //     console.log(code);
-  //     try {
-  //       const res = await HttpService.get(`/share/${code}`);
-  //       this.replaceState(res.data.content);
-  //       addNotification({
-  //         title: 'Stories restored!',
-  //         text: 'Your stories are now transferred',
-  //       });
-  //       this.show = false;
-  //     } catch (e) {
-  //       addNotification({
-  //         title: 'Code is not valid!',
-  //         text: 'Stories can not be restored, please try again.',
-  //       });
-  //     }
-  //   },
+
+  loadUser(userid) {
+    const projectRef = firebase.database().ref('users/' + userid);
+    projectRef.on('value', function (snapshot) {
+
+      store.commit("setUser", snapshot.val());
+
+    })
+  }
+  loadProject() {
+
+    const projectRef = firebase.database().ref('project/' + store.state.activeProject);
+    projectRef.on('value', function (snapshot) {
+
+      snapshot.val().videos.forEach((element: JALVideo) => {
+
+        // const storage = firebase.storage();
+        // Get the download URL
+        try {
+
+          store.commit("addChildren", new Child(element.id, element.videourl));
+
+        }
+        catch (error) {
+          alert('error');
+          // A full list of error codes is available at
+          // https://firebase.google.com/docs/storage/web/handle-errors
+          switch (error.code) {
+            case 'storage/object-not-found':
+              // File doesn't exist
+              break;
+
+            case 'storage/unauthorized':
+              // User doesn't have permission to access the object
+              break;
+
+            case 'storage/canceled':
+              // User canceled the upload
+              break;
+            case 'storage/unknown':
+              // Unknown error occurred, inspect the server response
+              break;
+          }
+        }
+      });
+    })
+  }
 }

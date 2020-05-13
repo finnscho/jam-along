@@ -25,10 +25,24 @@
                   type="text"
                 ></v-text-field>
                 <v-text-field
+                  v-model="name"
+                  placeholder="Name"
+                  label="name"
+                  name="name"
+                  type="text"
+                ></v-text-field>
+                <v-text-field
+                  v-model="lastname"
+                  placeholder="Lastname"
+                  label="lastname"
+                  name="lastname"
+                  type="text"
+                ></v-text-field>
+                <v-text-field
                   id="password"
                   v-model="password"
                   placeholder="Password"
-                  type="text"
+                  type="password"
                 ></v-text-field>
               </v-form>
             </v-card-text>
@@ -53,13 +67,15 @@
 </template>
 <script>
 import firebase from "firebase";
-
+import JALStateService from "../components/services/JALStateService";
 export default {
   name: "signUp",
   data() {
     return {
       email: "",
       password: "",
+      name: "",
+      lastname: "",
     };
   },
   methods: {
@@ -69,6 +85,12 @@ export default {
         .createUserWithEmailAndPassword(this.email, this.password)
         .then(
           (user) => {
+            JALStateService.prototype.createUser(
+              firebase.auth().currentUser.uid,
+              this.email,
+              this.name,
+              this.lastname
+            );
             this.$router.replace("home");
           },
           (err) => {
