@@ -61,8 +61,8 @@ export default class VideoJSRecord extends Vue {
       fluid: true,
       responsive: true,
       loop: false,
-      width: 320,
-      height: 240,
+      // width: 320,
+      // height: 240,
       controlBar: {
         volumePanel: true,
         seeking: true,

@@ -62,11 +62,7 @@
       </v-app-bar>
       <v-card id="myCard" style="margin-top: 8vh;">
         <v-row id="VideoRow">
-          <v-col
-            v-for="n in this.$store.state.children"
-            :key="n.id"
-            v-bind:md="{ getColMd }"
-          >
+          <v-col v-for="n in this.$store.state.children" :key="n.id">
             <div
               id="addFile"
               centered
@@ -206,7 +202,7 @@ export default class VideoRecorderGrid extends Vue {
     console.log(1);
     await this.sleep(1200);
     console.log(2);
-
+    store.commit("resetChildren");
     if (store.state.activeProject == "") {
       alert("ceate new project");
       store.commit(
@@ -382,6 +378,7 @@ export default class VideoRecorderGrid extends Vue {
   }
 
   public click() {
+    alert();
     store.state.players.forEach((element) => {
       // if(element.recordedData !== undefined)
       {

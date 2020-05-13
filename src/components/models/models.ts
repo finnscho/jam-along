@@ -1,9 +1,11 @@
 export class JALVideo {
   videourl: string;
   offset: number;
-  constructor(url: string, offset: number) {
+  id: string;
+  constructor(url: string, offset: number, id: string) {
     this.offset = offset;
     this.videourl = url;
+    this.id = id;
 
   }
 

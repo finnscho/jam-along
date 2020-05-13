@@ -43,6 +43,10 @@ export default new Vuex.Store({
 
       state.players.push(n);
     },
+    resetChildren(state) {
+      state.players = Array<VideoJSRecord>();
+      state.children = new Array<Child>();
+    },
     activePlayer(state, n: any) {
 
       state.activePlayer = n;

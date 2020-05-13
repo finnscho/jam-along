@@ -46,6 +46,9 @@ export default class ProjectGrid extends Vue {
   constructor() {
     super();
   }
+  mounted() {
+    store.commit("setProject", "");
+  }
   click(item) {
     store.commit("setProject", item.item.projectid);
   }

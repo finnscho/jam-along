@@ -9,7 +9,7 @@ export default class JALStateService {
 
 
 
-  writeUserData(userId, videos: [], projectid, name) {
+  writeUserData(userId, videos: Array<JALVideo>, projectid, name) {
     firebase.database().ref('project/' + projectid).set({
       projectid: projectid,
       name: name,
@@ -21,7 +21,7 @@ export default class JALStateService {
     ref.on('value', function (snapshot) {
       alert()
       const projects = snapshot.val().projects != undefined ? snapshot.val().projects.push(projectid) : { projectid }
-      ref.set({
+      ref.update({
         userId: userId,
         projects: { projects }
       });
@@ -38,7 +38,7 @@ export default class JALStateService {
   }
 
   saveState(projectid: string, projetName: string) {
-    const videos = [];
+    const videos = new Array<JALVideo>();
     store.state.players.forEach((element: VideoJSRecord) => {
 
       const metadata = {
@@ -92,10 +92,9 @@ export default class JALStateService {
     const projectRef = firebase.database().ref('project/' + store.state.activeProject);
     projectRef.on('value', function (snapshot) {
 
+
       snapshot.val().videos.forEach((element: JALVideo) => {
 
-        // const storage = firebase.storage();
-        // Get the download URL
         try {
 
           store.commit("addChildren", new Child(element.id, element.videourl));
