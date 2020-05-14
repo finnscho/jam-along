@@ -412,7 +412,10 @@ export default class VideoRecorderGrid extends Vue {
     });
   }
   saveProject() {
-    JalStateService.prototype.saveState(store.state.activeProject, "JAM#1");
+    JalStateService.prototype.saveState(
+      store.state.activeProject,
+      store.state.activeProjectName
+    );
   }
 
   public save() {

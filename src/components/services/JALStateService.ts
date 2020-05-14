@@ -9,7 +9,7 @@ export default class JALStateService {
 
 
 
-  writeUserData(userId, videos: Array<JALVideo>, projectid, name) {
+  writeUserData(userId, videos: Array<JALVideo>, projectid: string, name) {
     firebase.database().ref('project/' + projectid).set({
       projectid: projectid,
       name: name,
@@ -17,15 +17,22 @@ export default class JALStateService {
       videos: videos
     });
 
-    const ref = firebase.database().ref('users/' + userId);
-    ref.on('value', function (snapshot) {
-      alert()
-      const projects = snapshot.val().projects != undefined ? snapshot.val().projects.push(projectid) : { projectid }
-      ref.update({
-        userId: userId,
-        projects: { projects }
-      });
-    })
+
+    firebase.database().ref('users/' + userId + '/projects').push(
+      projectid,
+      err => console.log(err ? 'error while pushing' : 'successful push')
+    )
+    // const ref = firebase.database().ref('users/' + userId + '/projects');
+    // ref.on('value', function (snapshot) {
+    //   list = snapshot.val() as Array<string>;
+    //   snapshot.val().projects != undefined ? list.push(projectid) : list = [projectid]
+    //   ref.set(list);
+
+    // })
+    // ref.update({
+    //   userId: userId,
+    //   projects: { list }
+    // });
   }
   createUser(userId, email, name, lastname) {
     firebase.database().ref('users/' + userId).set({
@@ -44,7 +51,7 @@ export default class JALStateService {
       const metadata = {
         contentType: 'video/webm',
       };
-      //@ts-ignore
+      //@ts-ignore  
       const storageRef = firebase.storage().ref(`${element.id}`).put(element.player.recordedData, metadata);
       storageRef.on(`state_changed`, snapshot => null, error => { console.log(error.message) },
         () => {
@@ -59,7 +66,7 @@ export default class JALStateService {
       );
 
     })
-
+    alert('project successfully stored')
 
   }
 

@@ -25,6 +25,7 @@ export default new Vuex.Store({
     activePlayer: VideoJSRecord,
     userProfile: {} as JALUser,
     activeProject: '',
+    activeProjectName: '',
   },
 
   mutations: {
@@ -33,6 +34,9 @@ export default new Vuex.Store({
     },
     setProject(state, val) {
       state.activeProject = val
+    },
+    setProjectName(state, val) {
+      state.activeProjectName = val
     },
 
     // addVideo (state, n: Blob) {

@@ -5,18 +5,22 @@
         <router-view />
       </v-card>
     </div>
+      <footer>
+    <cookie-law theme="royal"></cookie-law>
+  </footer>
   </v-app>
+  
 </template>
 
 <script>
 // import VideoRecorderGrid from "./components/videoRecorder/VideoRecorderGrid.vue";
 // import DetailPanel from "./components/videoRecorder/DetailPanel.vue";
+ import CookieLaw from 'vue-cookie-law'
 
 export default {
   name: "app",
   components: {
-    // VideoRecorderGrid,
-    // DetailPanel,
+    CookieLaw
   },
   data() {
     return {
@@ -31,4 +35,5 @@ export default {
 #myVideo {
   background-color: #95ddf5;
 }
+
 </style>
