@@ -1,49 +1,93 @@
 <template>
-  <v-row>
-    <v-col cols="12" >
-      <v-card>
-        <v-container fluid>
-          <v-row>
-            <v-col
-              v-for="item in $store.state.userProfile.projects"
-              :key="item.projectid"
-              class="d-flex child-flex"
-              cols="4"
-            >
-           <Project/>
-             
-            </v-col>
-
-            <v-col class="d-flex child-flex" cols="4">
-              <v-card flat tile class="d-flex">
-                <!-- <v-img
-                  src="../../assets/logo.png"
-                  aspect-ratio="1"
-                  class="grey lighten-2"
+  <div id="app">
+    <v-app id="inspire">
+      <v-container class="pa-4 text-center">
+        <v-row class="fill-height" align="center" justify="center">
+          <template v-for="item in $store.state.userProfile.projects">
+            <v-col :key="item.projectid" cols="12" md="4">
+              <v-hover v-slot:default="{ hover }">
+                <v-card
+                  :elevation="hover ? 12 : 2"
+                  :class="{ 'on-hover': hover }"
                 >
-                  <template v-slot:placeholder>
-                    <v-row
-                      class="fill-height ma-0"
-                      align="center"
-                      justify="center"
-                    >
-                      <v-card-text> -->
-                        <router-link to="/RecorderApp">
-                          <v-btn>
-                            <v-icon>mdi-plus</v-icon>
-                          </v-btn>
-                        </router-link>
-                      <!-- </v-card-text>
-                    </v-row>
-                  </template>
-                </v-img> -->
-              </v-card>
+                  <v-img
+                    src="../../assets/logo_transparent_background.png"
+                    height="150px"
+                  >
+                    <v-card-title class="title white--text">
+                      <v-row
+                        class="fill-height flex-column"
+                        justify="space-between"
+                      >
+                        <p class="mt-4 subheading text-left">
+                          JAM {{ item.name }}
+                        </p>
+
+                        <!-- <div>
+                        <p class="ma-0 body-1 font-weight-bold font-italic text-left">
+                          {{ item.text }}
+                        </p>
+                        <p class="caption font-weight-medium font-italic text-left">
+                          {{ item.subtext }}
+                        </p>
+                      </div> -->
+
+                        <div class="align-self-center">
+                          <router-link to="/RecorderApp">
+                            <v-btn
+                              :class="{ 'show-btns': hover }"
+                              @click="click({ item })"
+                              ><v-icon :class="{ 'show-btns': hover }"
+                                >mdi-pencil</v-icon
+                              ></v-btn
+                            ></router-link
+                          >
+                        </div>
+                      </v-row>
+                    </v-card-title>
+                  </v-img>
+                </v-card>
+              </v-hover>
             </v-col>
-          </v-row>
-        </v-container>
-      </v-card>
-    </v-col>
-  </v-row>
+          </template>
+          <template>
+            <v-col cols="12" md="4">
+              <v-hover v-slot:default="{ hover }">
+                <v-card
+                  :elevation="hover ? 12 : 2"
+                  :class="{ 'on-hover': hover }"
+                >
+                  <v-img
+                  
+                    height="150px"
+                  >
+                    <v-card-title class="title white--text">
+                      <v-row
+                        class="fill-height flex-column"
+                        justify="space-between"
+                      >
+                        <p class="mt-4 subheading text-left">
+                          New
+                        </p>
+                        <div class="align-self-center">
+                          <router-link to="/RecorderApp"
+                            ><v-btn :class="{ 'show-btns': hover }"
+                              ><v-icon>mdi-plus</v-icon></v-btn
+                            ></router-link
+                          >
+                          >
+                        </div>
+                      </v-row>
+                    </v-card-title>
+                  </v-img>
+                </v-card>
+              </v-hover>
+            </v-col>
+          </template>
+        </v-row>
+      </v-container>
+    </v-app>
+  </div>
 </template>
 
 <!-- 
@@ -93,10 +137,12 @@ import store from "../../store";
 import { JALProject } from "../models/models";
 import JALStateService from "../services/JALStateService";
 import firebase from "firebase";
-import Project from './Project.vue'
-@Component({  components: {
-   Project: Project
-  }})
+import Project from "./Project.vue";
+@Component({
+  components: {
+    Project: Project,
+  },
+})
 export default class ProjectGrid extends Vue {
   constructor() {
     super();
@@ -113,3 +159,16 @@ export default class ProjectGrid extends Vue {
   }
 }
 </script>
+<style scoped>
+.v-card {
+  transition: opacity 0.4s ease-in-out;
+}
+
+.v-card:not(.on-hover) {
+  opacity: 0.6;
+}
+
+.show-btns {
+  color: rgba(255, 255, 255, 1) !important;
+}
+</style>
