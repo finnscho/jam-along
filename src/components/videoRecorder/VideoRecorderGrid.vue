@@ -1,141 +1,20 @@
 <template>
-  <v-container style="padding-top='5%'" fluid>
-    <v-overlay :opacity="1" :value="overlay" :z-index="99">
+  <!-- <v-container style="padding-top='5%'" fluid>
+    <v-row>
+      <v-col cols="4"> </v-col>
+      <v-col cols="4"> -->
+  <!-- <v-overlay :opacity="1" :value="overlay" :z-index="99">
       <v-img src="../../assets/logo_transparent_background.png" />
       <v-progress-linear indeterminate color="#FF914C"></v-progress-linear>
-    </v-overlay>
-    <v-layout>
-      <v-app-bar fixed dense style="vertical-align: bottom;">
-        <!-- <v-file-input accept="image/*" style="color:"#FF914C"" width="5%" @change="onFileChange" label="Projekt öffnen"></v-file-input> -->
-
-        <v-btn
-          v-on:click="addPlayer"
-          v-on:mouseover="mouseoverAddBtn"
-          v-on:mouseleave="mouseleaveAddBtn"
-        >
-          <v-icon color="#FF914C">mdi-camera-plus</v-icon>
-        </v-btn>
-        <input
-          type="file"
-          ref="file"
-          style="display: none"
-          v-on:change="handleFileUpload()"
-        />
-
-        <v-btn @click="$refs.file.click()">
-          <v-icon color="#FF914C">mdi-movie-open</v-icon>
-        </v-btn>
-
-        <v-btn v-on:click="record">
-          <v-icon v-bind:color="recording ? 'red' : '#FF914C'"
-            >mdi-record</v-icon
-          >
-        </v-btn>
-        <v-btn v-on:click="click">
-          <v-icon color="#FF914C">mdi-play</v-icon>
-        </v-btn>
-        <v-btn v-on:click="pause">
-          <v-icon color="#FF914C">mdi-pause</v-icon>
-        </v-btn>
-        <v-btn
-          v-on:click="save"
-          :style="!isMobileDevice ? 'margin-left:10vw' : ''"
-        >
-          <v-icon color="#FF914C" v-if="downloading == false"
-            >mdi-download</v-icon
-          >
-          <v-progress-circular
-            v-if="downloading == true"
-            :width="3"
-            color="#FF914C"
-            indeterminate
-          ></v-progress-circular>
-        </v-btn>
-
-        <v-btn v-on:click="saveProject" style="margin-left:50px">
-          <v-icon color="#FF914C">mdi-zip-disk</v-icon>
-        </v-btn>
-
-        <v-btn v-on:click="removePlayer">
-          <v-icon color="#FF914C">mdi-delete</v-icon>
-        </v-btn>
-      </v-app-bar>
-      <v-card id="myCard" style="margin-top: 8vh;">
-        <v-row id="VideoRow">
-          <v-col v-for="n in this.$store.state.children" :key="n.id">
-            <div
-              id="addFile"
-              centered
-              v-bind:style="{ width: videoWidth }"
-              v-cloak
-              @drop.prevent="addFile"
-              @dragover.prevent
-            >
-              <video-js-recorder v-bind:id="n.id" v-bind:src="n.src" />
-            </div>
-          </v-col>
-          <v-col cols="1" md="6">
-            <div id="blib" v-cloak @drop.prevent="addFile" @dragover.prevent>
-              <video
-                playsinline
-                controls
-                muted
-                style="display:none"
-                preload="auto"
-                id="output"
-              ></video>
-            </div>
-          </v-col>
-        </v-row>
-      </v-card>
-      <!-- <v-card :style="{background-color: bulkselected?'primary':'black'}" > -->
-      <!-- <v-card class="maincard" width="100%" height="100%" style="padding:2%; ">
-        <v-row>
-          <v-col>
-            <v-row>
-              <v-col
-                height:200px
-                padding-top="10%"
-                v-for="n in this.$store.state.children"
-                :key="n"
-                cols="6"
-                md="5"
-              >
-                <div id="app" v-cloak @drop.prevent="addFile" @dragover.prevent>
-                  <video-js-recorder v-bind:id="n" />
-                </div>
-              </v-col>
-              <v-col height:200px cols="6" md="5">
-                <div id="app" v-cloak @drop.prevent="addFile" @dragover.prevent>
-                  <video
-                    playsinline
-                    controls
-                    muted
-                    style="display:none"
-                    preload="auto"
-                    id="output"
-                  ></video>
-                </div>
-              </v-col>
-
-              <v-col>
-                <div v-if="hover">
-                  <div
-                    padding="10%"
-                    style="width:560px;height:420px;border-style: dashed;border-color: orange;"
-                  >
-                    <v-icon color="#FF914C">mdi-music-box-multiple</v-icon>
-                  </div>
-                </div>
-              </v-col>
-            </v-row>
-          </v-col>
-        </v-row>
-      </v-card> -->
-
-      <!-- <v v-bind:id="'output'"/> -->
-    </v-layout>
-  </v-container>
+    </v-overlay> -->
+  <div class="Grid" >
+    <div class="Grid-selector addMode"></div>
+    <div class="Tiles"></div>
+  </div>
+  <!-- </v-col>
+      <v-col cols="4"> </v-col>
+    </v-row>
+  </v-container> -->
 </template>
 <script lang="ts">
 import Vue from "vue";
@@ -148,6 +27,10 @@ import JalffmpegService from "../services/ffmpegService";
 import JalStateService from "../services/JALStateService";
 import videojs from "video.js";
 import JALStateService from "../services/JALStateService";
+import jquery from "jquery";
+import $ from "jquery";
+import { Pt, Line } from "pts";
+
 @Component({
   components: {
     "video-js-recorder": VideoJSRecord,
@@ -204,16 +87,17 @@ export default class VideoRecorderGrid extends Vue {
     console.log(2);
     store.commit("resetChildren");
     if (store.state.activeProject == "") {
-     
       store.commit(
         "setProject",
         Math.random()
           .toString(36)
           .substring(2) + Date.now().toString(36)
       );
-      JALStateService.prototype.createProject(store.state.userProfile.userId, store.state.activeProject)
+      JALStateService.prototype.createProject(
+        store.state.userProfile.userId,
+        store.state.activeProject
+      );
     } else {
- 
       JALStateService.prototype.loadProject();
     }
 
@@ -225,9 +109,194 @@ export default class VideoRecorderGrid extends Vue {
     });
   }
   mounted() {
-    this.overlay = true;
-    this.init();
+    // this.overlay = true;
+    // this.init();
+    this.blub();
   }
+
+  blub() {
+    "use strict";
+    alert("");
+    console.log("START");
+
+    const Grid = {
+      // DEPENDANCIES: Pt.js
+
+      cellSize: 50,
+      curCell: new Pt(0, 0),
+      offset: new Pt(0, 0),
+      curTileType: "Tiles-floor",
+
+      cursor: {
+        enable: function() {
+          $("body").on("mousemove", ".Grid", Grid.cursor.run);
+          $(".Grid").css("cursor", "default");
+          $(".Grid-selector")
+            .css({
+              left: Grid.curCell.x * Grid.cellSize + Grid.offset.x,
+              top: Grid.curCell.y * Grid.cellSize + Grid.offset.y,
+            })
+            .show();
+        },
+        disable: function() {
+          $("body").off("mousemove", ".Grid", Grid.cursor.run);
+          $(".Grid-selector").hide();
+        },
+        run: function(e) {
+          const hoverCell = new Pt(
+            Math.floor((e.pageX - Grid.offset.x) / Grid.cellSize),
+            Math.floor((e.pageY - Grid.offset.y) / Grid.cellSize)
+          );
+          $(".Grid-selector").css({
+            left: hoverCell.x * Grid.cellSize + Grid.offset.x,
+            top: hoverCell.y * Grid.cellSize + Grid.offset.y,
+          });
+        },
+      },
+
+      modify: {
+        enable: function() {
+          $(".Grid").on("mousedown", Grid.modify.start);
+          $(".Grid").on("mouseup", Grid.modify.end);
+          $(".Grid").on("contextmenu", function() {
+            return false;
+          });
+        },
+        disable: function() {
+          $(".Grid").off("mousedown", Grid.modify.start);
+          $(".Grid").off("mousemove", Grid.modify.run);
+        },
+        start: function(e) {
+          const hoverCell = new Pt(
+            Math.floor((e.pageX - Grid.offset.x) / Grid.cellSize),
+            Math.floor((e.pageY - Grid.offset.y) / Grid.cellSize)
+          );
+          Grid.curCell = hoverCell;
+          if (e.which == 1) {
+            Grid.addTile(Grid.curTileType, Grid.curCell.x, Grid.curCell.y);
+          } else if (e.which == 3) {
+            $(".Grid-selector")
+              .removeClass("addMode")
+              .addClass("deleteMode")
+              .hide()
+              .show(1);
+            Grid.deleteTile(Grid.curTileType, Grid.curCell.x, Grid.curCell.y);
+          }
+          $(".Grid").on("mousemove", Grid.modify.run);
+        },
+        run: function(e) {
+          const hoverCell = new Pt(
+            Math.floor((e.pageX - Grid.offset.x) / Grid.cellSize),
+            Math.floor((e.pageY - Grid.offset.y) / Grid.cellSize)
+          );
+          if (!Grid.curCell.equalTo(hoverCell)) {
+            Grid.curCell = hoverCell;
+            if (e.which == 1) {
+              Grid.addTile(Grid.curTileType, Grid.curCell.x, Grid.curCell.y);
+            } else if (e.which == 3) {
+              Grid.deleteTile(Grid.curTileType, Grid.curCell.x, Grid.curCell.y);
+            }
+          }
+        },
+        end: function(e) {
+          $(".Grid-selector")
+            .removeClass("deleteMode")
+            .addClass("addMode")
+            .hide()
+            .show(1);
+        },
+      },
+
+      pan: {
+        lastPt: new Pt(0, 0),
+        enable: function() {
+          $(document).on("keydown", Grid.pan.start);
+          $(document).on("keyup", Grid.pan.disable);
+        },
+        disable: function(e) {
+          if (e.which == 32) {
+            e.preventDefault();
+            $(".Grid").off("mousedown", Grid.pan.begin);
+            $(".Grid").off("mouseup", Grid.pan.stop);
+            Grid.cursor.enable();
+            Grid.modify.enable();
+          }
+        },
+        start: function(e) {
+          if (e.which == 32) {
+            e.preventDefault();
+            Grid.cursor.disable();
+            Grid.modify.disable();
+            $(".Grid").css("cursor", "move");
+            $(".Grid").on("mousedown", Grid.pan.begin);
+            $(".Grid").on("mouseup", Grid.pan.stop);
+          }
+        },
+        begin: function(e) {
+          Grid.pan.lastPt = new Pt(e.pageX, e.pageY);
+          $(".Grid").on("mousemove", Grid.pan.run);
+        },
+        run: function(e) {
+          Grid.offset.x += e.pageX - Grid.pan.lastPt.x;
+          Grid.offset.y += e.pageY - Grid.pan.lastPt.y;
+          $(".Tiles").css({
+            left: Grid.offset.x,
+            top: Grid.offset.y,
+          });
+          $(".Grid").css(
+            "background-position",
+            Grid.offset.x + "px " + Grid.offset.y + "px"
+          );
+          Grid.pan.lastPt = new Pt(e.pageX, e.pageY);
+        },
+        stop: function(e) {
+          $(".Grid").off("mousemove", Grid.pan.run);
+        },
+      },
+
+      isTileAt: function(tileType, x, y) {
+        return (
+          $("." + tileType + "[data-x='" + x + "'][data-y='" + y + "']")
+            .length > 0
+        );
+      },
+
+      addTile: function(tileType, x, y) {
+        if (!Grid.isTileAt(tileType, x, y)) {
+          const html =
+            "<div class='" +
+            tileType +
+            "' data-x='" +
+            x +
+            "' data-y='" +
+            y +
+            "'></div>";
+          $(".Tiles").append(html);
+          $("." + tileType + "[data-x='" + x + "'][data-y='" + y + "']").css({
+            left: x * Grid.cellSize,
+            top: y * Grid.cellSize,
+          });
+        }
+      },
+
+      deleteTile: function(tileType, x, y) {
+        $("." + tileType + "[data-x='" + x + "'][data-y='" + y + "']").remove();
+      },
+
+      deleteAllTilesOfType: function(tileType) {
+        $("." + tileType).remove();
+      },
+    };
+
+    Grid.cursor.enable();
+    Grid.modify.enable();
+    Grid.pan.enable();
+
+    $("#btn-clearAll").click(function() {
+      Grid.deleteAllTilesOfType(Grid.curTileType);
+    });
+  }
+
   get videoWidth() {
     if (this.isMobileDevice) {
       return "150px";
@@ -368,7 +437,6 @@ export default class VideoRecorderGrid extends Vue {
     }
   }
   onFileChange(e) {
-  
     const files = e.target.files || e.dataTransfer.files;
     if (!files.length) return;
     JALStateService.prototype.loadState(files[0]);
@@ -379,7 +447,6 @@ export default class VideoRecorderGrid extends Vue {
   }
 
   public click() {
-  
     store.state.players.forEach((element) => {
       // if(element.recordedData !== undefined)
       {
@@ -460,56 +527,156 @@ export default class VideoRecorderGrid extends Vue {
 }
 </script>
 
-<style>
-maincard {
-  padding: 0px;
-}
-.maincard {
-  padding-top: 25%;
-}
-.container {
-  padding: 0;
-}
-.col {
-  padding: 0;
-}
-.col-md-5 {
-  /* flex: 0 0 41.6666666667%;
-    max-width: 41.6666666667%; */
-  padding: 0;
+<style lang="less" scoped>
+
+@cellSize: 50px;
+@lineColour:white;
+@gridColour: darken(#269, 0%);
+@tileColour: darken(@gridColour, 20%);
+.grid( @lineColour; @cellSize; @cellCount ) {
+  background-image: linear-gradient(fade(@lineColour, 50%) 3px, transparent 0),
+    linear-gradient(90deg, fade(@lineColour, 50%) 3px, transparent 0),
+    linear-gradient(fade(@lineColour, 30%) 1px, transparent 0),
+    linear-gradient(90deg, fade(@lineColour, 30%) 1px, transparent 0);
+  background-size: @cellSize* @cellCount @cellSize* @cellCount,
+    @cellSize* @cellCount @cellSize* @cellCount, @cellSize @cellSize,
+    @cellSize @cellSize;
 }
 
-.grid-container {
-  display: grid;
-}
-/* .video-js .vjs-tech .active{
-  margin: 2px;
-  border: dashed;
-
-
-} */
-.grid-container--fill {
-  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-}
-#addFile {
-  max-height: 60%;
-}
-.grid-container--fit {
-  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+*,
+:before,
+:after {
+  box-sizing: border-box;
 }
 
-/* .center-screen {
+body {
+  position: relative;
+  display: flex;
+  min-height: 100vh;
+}
+
+.Pannel {
+  box-sizing: content-box;
+  position: fixed;
+  margin: 1em;
+  padding: 0.5em 1em;
+  color: white;
+  text-shadow: 1px 1px 0 0 black;
+  background: hsl(0, 0, 10%);
+  border-radius: 0.5em;
+  box-shadow: 2px 2px 20px 0 rgba(0, 0, 0, 0.75);
+  //resize: horizontal;
+  opacity: 0.95;
+  overflow: auto;
+  z-index: 1;
+  h1 {
+    margin: 0.4em 0;
+    font-size: 1.3em;
+    color: papayawhip;
+  }
+  .btn {
+    margin: 0.4em 0;
+  }
+  .btn-default {
+    background-image: linear-gradient(hsl(0, 0, 90%), hsl(0, 0, 60%));
+    &:hover {
+      border-color: hsl(0, 0, 30%);
+    }
+  }
+  .btn-default.active {
+    color: white;
+    text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.3);
+    box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.2);
+  }
+  .btn-add.active {
+    background-image: linear-gradient(darken(limegreen, 20%), limegreen);
+    border-color: darken(limegreen, 20%);
+  }
+  .btn-delete.active {
+    background-image: linear-gradient(darken(crimson, 20%), crimson);
+    border-color: darken(crimson, 20%);
+  }
+  .btn-default:active {
+    box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.4);
+  }
+}
+
+.Grid {
+  margin-left:33vw ;
+  margin-top:10vh ;
+  width: 33vw;
+  height: 33vw;
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+  user-select: none;
+  background-color: @gridColour;
+  .grid(white; @cellSize; 5);
+  z-index: 0;
+  /*&:after {
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    .grid( white; @cellSize; 5 );
+  }*/
+}
+.Grid-selector {
   position: absolute;
-  top: 50%;
-  left: 50%;
-  margin-right: -50%;
-  transform: translate(-50%, -50%);
-} */
+  width: @cellSize;
+  height: @cellSize;
+  border-radius: 2px;
+  animation: pulse 2s infinite ease-in-out;
+  z-index: 100;
+  box-shadow: 0 0 20px currentColor;
+}
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 20px currentColor;
+  }
+  50% {
+    box-shadow: 0 0 10px currentColor;
+  }
+  100% {
+    box-shadow: 0 0 20px currentColor;
+  }
+}
+.Grid-selector.addMode {
+  color: limegreen;
+}
+.Grid-selector.deleteMode {
+  color: crimson;
+}
 
-.grid-element {
-  background-color: deepPink;
-  padding: 20px;
-  color: #fff;
-  border: 1px solid #fff;
+.Tiles {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 0;
+}
+
+.Tiles-floor {
+  position: absolute;
+  width: @cellSize;
+  height: @cellSize;
+  background: @tileColour;
+  animation: block-in 0.3s 0 ease-out;
+  z-index: 1;
+}
+@keyframes block-in {
+  0% {
+    width: 0;
+    height: 0;
+    margin: @cellSize / 2 @cellSize / 2;
+    border-radius: 50%;
+    background: transparent;
+  }
+  100% {
+    width: @cellSize;
+    height: @cellSize;
+    margin: 0 0;
+    border-radius: 0;
+    background: @tileColour;
+  }
 }
 </style>

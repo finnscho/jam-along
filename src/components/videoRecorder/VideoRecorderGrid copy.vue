@@ -1,0 +1,378 @@
+<template>
+  <VideoRecorderGrid />
+</template>
+<script lang="ts">
+import Vue from "vue";
+import { Component, Prop } from "vue-property-decorator";
+import VideoJSRecord from "./VideoJSRecord.vue";
+import store, { Child } from "../../store";
+import { VideoStreamMerger } from "video-stream-merger";
+import "videojs-offset";
+import JalffmpegService from "../services/ffmpegService";
+import JalStateService from "../services/JALStateService";
+import videojs from "video.js";
+import JALStateService from "../services/JALStateService";
+@Component({
+  components: {
+    "video-js-recorder": VideoJSRecord,
+  },
+})
+export default class VideoRecorderGrid extends Vue {
+  @Prop() projectidprop: string | undefined;
+  // children: any;
+  files: any;
+  data: any;
+  hover = false;
+  downloading = false;
+  file: any = "";
+  merger: any;
+  valueDeterminate = 0;
+  recording = false;
+  overlay = false;
+  projectid = "";
+  isMobileDevice: boolean;
+  //@ts-ignore
+  mediaRecorder: MediaRecorder = null;
+  service = new JalffmpegService();
+  recordedChunks: any[];
+  handleFileUpload() {
+    //@ts-ignore
+    const file = this.$refs.file.files[0];
+    const reader = new FileReader();
+
+    reader.onload = this.loadData;
+
+    reader.readAsDataURL(file);
+    this.files.push(file);
+  }
+  constructor(params) {
+    super(params);
+    this.isMobileDevice = /Mobi/i.test(window.navigator.userAgent);
+    if (this.isMobileDevice) {
+      alert(
+        "Jam-Along might not work with mobile devices. Please use Google Chrome on a Desktop PC"
+      );
+    }
+
+    sessionStorage.clear();
+    //this.children = ["Gustav"];
+    this.files = [];
+    this.data = [];
+
+    this.recordedChunks = [];
+  }
+
+  async init() {
+    console.log(1);
+    await this.sleep(1200);
+    console.log(2);
+    store.commit("resetChildren");
+    if (store.state.activeProject == "") {
+      store.commit(
+        "setProject",
+        Math.random()
+          .toString(36)
+          .substring(2) + Date.now().toString(36)
+      );
+      JALStateService.prototype.createProject(
+        store.state.userProfile.userId,
+        store.state.activeProject
+      );
+    } else {
+      JALStateService.prototype.loadProject();
+    }
+
+    this.overlay = false;
+  }
+  sleep(ms) {
+    return new Promise((resolve) => {
+      setTimeout(resolve, ms);
+    });
+  }
+  mounted() {
+    this.overlay = true;
+    this.init();
+  }
+  get videoWidth() {
+    if (this.isMobileDevice) {
+      return "150px";
+    }
+    switch (store.state.children.length) {
+      case 1:
+        return "100vw";
+      case 2:
+        return "48vw";
+      case 3:
+      case 4:
+      case 5:
+      case 6:
+        return "32vw";
+      default:
+        return "15vw";
+    }
+  }
+  get getColMd() {
+    return 6;
+  }
+  addFile(e) {
+    const droppedFiles = e.dataTransfer.files;
+
+    if (!droppedFiles) return;
+    // this tip, convert FileList to array, credit: https://www.smashingmagazine.com/2018/01/drag-drop-file-uploader-vanilla-js/
+    [...droppedFiles].forEach((f) => {
+      const reader = new FileReader();
+
+      reader.onload = this.loadData;
+
+      reader.readAsDataURL(f);
+      this.files.push(f);
+    });
+  }
+  loadData(e2) {
+    if (e2 !== null && e2.target !== null) {
+      // finished reading file data.
+
+      this.data.push(e2.target.result);
+
+      const name = "JALvideojs" + Date.now();
+      store.commit("addChildren", new Child(name, e2.target.result));
+    }
+  }
+  removeFile(file) {
+    this.files = this.files.filter((f) => {
+      return f != file;
+    });
+  }
+
+  mouseoverAddBtn() {
+    this.hover = true;
+  }
+  mouseleaveAddBtn() {
+    this.hover = false;
+  }
+
+  refreshMergedStream() {
+    console.log("Try to refresh merged Stream:");
+
+    let i = 1;
+    const data: any[] = [];
+
+    store.state.players.forEach((element) => {
+      data.push(element);
+
+      if (element.player.record() !== undefined) {
+        console.log("save");
+        //element.record().saveAs({ video: "video" + i + ".webm" });
+        i++;
+      }
+    });
+
+    this.merger = this.service.mergeVideos(data);
+    const stream = this.merger.result;
+    console.log(stream);
+
+    const recordedChunks = [];
+    const options = { mimeType: "video/webm; codecs=vp9" };
+    //@ts-ignore
+    this.mediaRecorder = new MediaRecorder(stream, options);
+    store.state.players.forEach((element) => {
+      const oldPlayer = document.getElementById(element.id);
+      //Todo dispose
+      //  oldPlayer.muted = true;
+      // videojs(oldPlayer).dispose();
+    });
+  }
+  public addPlayer() {
+    store.commit("addChildren", new Child("JALvideojs" + Date.now(), null));
+    //this.children.push('JALvideojs' +Date.now());
+    this.mediaRecorder = null;
+  }
+
+  public removePlayer() {
+    //@ts-ignore
+    store.commit("removeChildren", store.state.activePlayer.id);
+  }
+
+  record() {
+    if (this.mediaRecorder != null) {
+      if (this.recording != true) {
+        this.mediaRecorder.ondataavailable = this.handleDataAvailable;
+        this.mediaRecorder?.start();
+        this.recording = true;
+        this.click();
+      } else {
+        this.mediaRecorder?.stop();
+        this.recording = false;
+        this.merger.destroy();
+      }
+    } else {
+      let recorder: any;
+      if (this.service.player != undefined) {
+        recorder = this.service.player.record();
+      } else {
+        recorder = store?.state?.activePlayer?.player.record();
+      }
+
+      if (!recorder.isRecording()) {
+        recorder.start();
+        this.recording = true;
+      } else {
+        recorder.stop();
+        this.recording = false;
+      }
+    }
+
+    if (this.recording) {
+      store.state.players.forEach((element) => {
+        element.player.on("ended", () => {
+          if (this.recording) {
+            this.record();
+          }
+        });
+      });
+    }
+  }
+  onFileChange(e) {
+    const files = e.target.files || e.dataTransfer.files;
+    if (!files.length) return;
+    JALStateService.prototype.loadState(files[0]);
+
+    store.state.players.forEach((element) => {
+      store.commit("addChildren", new Child("JALvideojs" + Date.now(), null));
+    });
+  }
+
+  public click() {
+    store.state.players.forEach((element) => {
+      // if(element.recordedData !== undefined)
+      {
+        console.log("play");
+
+        if (this.isMobileDevice) {
+          element.player.wavesurfer().play();
+          element.player.wavesurfer().surfer.setVolume(0);
+        } else {
+          element.player.play();
+        }
+      }
+    });
+  }
+  public pause() {
+    store.state.players.forEach((element) => {
+      // if(element.recordedData !== undefined)
+      {
+        console.log("pause");
+        element.player.pause();
+      }
+    });
+  }
+  public stop() {
+    store.state.players.forEach((element) => {
+      // if(element.recordedData !== undefined)
+      {
+        console.log("stop");
+        element.player.stop();
+      }
+    });
+  }
+  saveProject() {
+    JalStateService.prototype.saveState(
+      store.state.activeProject,
+      store.state.activeProjectName
+    );
+  }
+
+  public save() {
+    console.log("todoSave");
+
+    this.downloading = true;
+    try {
+      this.refreshMergedStream();
+      this.record();
+    } catch (e) {
+      alert(e.message);
+    } finally {
+      this.downloading = false;
+    }
+  }
+
+  handleDataAvailable(event) {
+    console.log("data-available");
+    if (event.data.size > 0) {
+      this.recordedChunks.push(event.data);
+      console.log(this.recordedChunks);
+      this.download();
+      this.downloading = false;
+    } else {
+      // ...
+    }
+  }
+  download() {
+    const blob = new Blob(this.recordedChunks, {
+      type: "video/webm",
+    });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    document.body.appendChild(a);
+    //a.style = "display: none";
+    a.href = url;
+    a.download = "test.webm";
+    a.click();
+    window.URL.revokeObjectURL(url);
+  }
+}
+</script>
+
+<style>
+maincard {
+  padding: 0px;
+}
+.maincard {
+  padding-top: 25%;
+}
+.container {
+  padding: 0;
+}
+.col {
+  padding: 0;
+}
+.col-md-5 {
+  /* flex: 0 0 41.6666666667%;
+    max-width: 41.6666666667%; */
+  padding: 0;
+}
+
+.grid-container {
+  display: grid;
+}
+/* .video-js .vjs-tech .active{
+  margin: 2px;
+  border: dashed;
+
+
+} */
+.grid-container--fill {
+  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+}
+#addFile {
+  max-height: 60%;
+}
+.grid-container--fit {
+  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+}
+
+/* .center-screen {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-right: -50%;
+  transform: translate(-50%, -50%);
+} */
+
+.grid-element {
+  background-color: deepPink;
+  padding: 20px;
+  color: #fff;
+  border: 1px solid #fff;
+}
+</style>
