@@ -1,5 +1,141 @@
 <template>
-  <VideoRecorderGrid />
+  <v-container style="padding-top='5%'" fluid>
+    <v-overlay :opacity="1" :value="overlay" :z-index="99">
+      <v-img src="../../assets/logo_transparent_background.png" />
+      <v-progress-linear indeterminate color="#FF914C"></v-progress-linear>
+    </v-overlay>
+    <v-layout>
+      <v-app-bar fixed dense style="vertical-align: bottom;">
+        <!-- <v-file-input accept="image/*" style="color:"#FF914C"" width="5%" @change="onFileChange" label="Projekt öffnen"></v-file-input> -->
+
+        <v-btn
+          v-on:click="addPlayer"
+          v-on:mouseover="mouseoverAddBtn"
+          v-on:mouseleave="mouseleaveAddBtn"
+        >
+          <v-icon color="#FF914C">mdi-camera-plus</v-icon>
+        </v-btn>
+        <input
+          type="file"
+          ref="file"
+          style="display: none"
+          v-on:change="handleFileUpload()"
+        />
+
+        <v-btn @click="$refs.file.click()">
+          <v-icon color="#FF914C">mdi-movie-open</v-icon>
+        </v-btn>
+
+        <v-btn v-on:click="record">
+          <v-icon v-bind:color="recording ? 'red' : '#FF914C'"
+            >mdi-record</v-icon
+          >
+        </v-btn>
+        <v-btn v-on:click="click">
+          <v-icon color="#FF914C">mdi-play</v-icon>
+        </v-btn>
+        <v-btn v-on:click="pause">
+          <v-icon color="#FF914C">mdi-pause</v-icon>
+        </v-btn>
+        <v-btn
+          v-on:click="save"
+          :style="!isMobileDevice ? 'margin-left:10vw' : ''"
+        >
+          <v-icon color="#FF914C" v-if="downloading == false"
+            >mdi-download</v-icon
+          >
+          <v-progress-circular
+            v-if="downloading == true"
+            :width="3"
+            color="#FF914C"
+            indeterminate
+          ></v-progress-circular>
+        </v-btn>
+
+        <v-btn v-on:click="saveProject" style="margin-left:50px">
+          <v-icon color="#FF914C">mdi-zip-disk</v-icon>
+        </v-btn>
+
+        <v-btn v-on:click="removePlayer">
+          <v-icon color="#FF914C">mdi-delete</v-icon>
+        </v-btn>
+      </v-app-bar>
+      <v-card id="myCard" style="margin-top: 8vh;">
+        <v-row id="VideoRow">
+          <v-col v-for="n in this.$store.state.children" :key="n.id">
+            <div
+              id="addFile"
+              centered
+              v-bind:style="{ width: videoWidth }"
+              v-cloak
+              @drop.prevent="addFile"
+              @dragover.prevent
+            >
+              <video-js-recorder v-bind:id="n.id" v-bind:src="n.src" />
+            </div>
+          </v-col>
+          <v-col cols="1" md="6">
+            <div id="blib" v-cloak @drop.prevent="addFile" @dragover.prevent>
+              <video
+                playsinline
+                controls
+                muted
+                style="display:none"
+                preload="auto"
+                id="output"
+              ></video>
+            </div>
+          </v-col>
+        </v-row>
+      </v-card>
+      <!-- <v-card :style="{background-color: bulkselected?'primary':'black'}" > -->
+      <!-- <v-card class="maincard" width="100%" height="100%" style="padding:2%; ">
+        <v-row>
+          <v-col>
+            <v-row>
+              <v-col
+                height:200px
+                padding-top="10%"
+                v-for="n in this.$store.state.children"
+                :key="n"
+                cols="6"
+                md="5"
+              >
+                <div id="app" v-cloak @drop.prevent="addFile" @dragover.prevent>
+                  <video-js-recorder v-bind:id="n" />
+                </div>
+              </v-col>
+              <v-col height:200px cols="6" md="5">
+                <div id="app" v-cloak @drop.prevent="addFile" @dragover.prevent>
+                  <video
+                    playsinline
+                    controls
+                    muted
+                    style="display:none"
+                    preload="auto"
+                    id="output"
+                  ></video>
+                </div>
+              </v-col>
+
+              <v-col>
+                <div v-if="hover">
+                  <div
+                    padding="10%"
+                    style="width:560px;height:420px;border-style: dashed;border-color: orange;"
+                  >
+                    <v-icon color="#FF914C">mdi-music-box-multiple</v-icon>
+                  </div>
+                </div>
+              </v-col>
+            </v-row>
+          </v-col>
+        </v-row>
+      </v-card> -->
+
+      <!-- <v v-bind:id="'output'"/> -->
+    </v-layout>
+  </v-container>
 </template>
 <script lang="ts">
 import Vue from "vue";
@@ -68,17 +204,16 @@ export default class VideoRecorderGrid extends Vue {
     console.log(2);
     store.commit("resetChildren");
     if (store.state.activeProject == "") {
+     
       store.commit(
         "setProject",
         Math.random()
           .toString(36)
           .substring(2) + Date.now().toString(36)
       );
-      JALStateService.prototype.createProject(
-        store.state.userProfile.userId,
-        store.state.activeProject
-      );
+      JALStateService.prototype.createProject(store.state.userProfile.userId, store.state.activeProject)
     } else {
+ 
       JALStateService.prototype.loadProject();
     }
 
@@ -233,6 +368,7 @@ export default class VideoRecorderGrid extends Vue {
     }
   }
   onFileChange(e) {
+  
     const files = e.target.files || e.dataTransfer.files;
     if (!files.length) return;
     JALStateService.prototype.loadState(files[0]);
@@ -243,6 +379,7 @@ export default class VideoRecorderGrid extends Vue {
   }
 
   public click() {
+  
     store.state.players.forEach((element) => {
       // if(element.recordedData !== undefined)
       {

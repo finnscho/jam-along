@@ -7,6 +7,7 @@
       <v-img src="../../assets/logo_transparent_background.png" />
       <v-progress-linear indeterminate color="#FF914C"></v-progress-linear>
     </v-overlay> -->
+    
   <div class="Grid" >
     <div class="Grid-selector addMode"></div>
     <div class="Tiles"></div>
@@ -116,7 +117,7 @@ export default class VideoRecorderGrid extends Vue {
 
   blub() {
     "use strict";
-    alert("");
+
     console.log("START");
 
     const Grid = {
@@ -602,9 +603,9 @@ body {
 }
 
 .Grid {
-  margin-left:33vw ;
+  margin-left:32vw ;
   margin-top:10vh ;
-  width: 33vw;
+  width: 36vw;
   height: 33vw;
   flex: 1;
   position: relative;
