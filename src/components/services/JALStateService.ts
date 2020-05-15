@@ -99,7 +99,7 @@ export default class JALStateService {
     const projectRef = firebase.database().ref('project/' + store.state.activeProject);
     projectRef.on('value', function (snapshot) {
 
-
+   
       snapshot.val().videos.forEach((element: JALVideo) => {
 
         try {

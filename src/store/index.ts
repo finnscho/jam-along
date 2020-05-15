@@ -26,6 +26,7 @@ export default new Vuex.Store({
     userProfile: {} as JALUser,
     activeProject: '',
     activeProjectName: '',
+    projects: Array <any>()
   },
 
   mutations: {
@@ -38,7 +39,9 @@ export default new Vuex.Store({
     setProjectName(state, val) {
       state.activeProjectName = val
     },
-
+    addProject(state, val: any) {
+      state.projects.push({ name: val.name, projectid: val.projectid, userid: val.userid});
+    },
     // addVideo (state, n: Blob) {
 
     //   state.videos.push(n);

@@ -27,14 +27,12 @@ export default {
 };
 </script>
 
-<style>
+<style >
 /* change player background color */
 #myVideo {
   background-color: #95ddf5;
 }
-html {
-  overflow-y: hidden !important;
-}
+
 </style>
 
 ¨

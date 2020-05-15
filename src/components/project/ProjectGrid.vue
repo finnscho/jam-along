@@ -1,90 +1,53 @@
 <template>
-  <div id="app">
+  <div class="jo" style="margin-top:10vh">
     <v-app id="inspire">
-      <v-container class="pa-4 text-center">
-        <v-row class="fill-height" align="center" justify="center">
-          <template v-for="item in $store.state.userProfile.projects">
-            <v-col :key="item.projectid" cols="12" md="4">
-              <v-hover v-slot:default="{ hover }">
-                <v-card
-                  :elevation="hover ? 12 : 2"
-                  :class="{ 'on-hover': hover }"
-                >
-                  <v-img
-                    src="../../assets/logo_transparent_background.png"
-                    height="150px"
+      <v-container class="pa-4 text-center" style="background:#363636">
+        <v-card>
+          <h1 class="display-3 " style="color:FF914C">Jams</h1>
+          <v-row class="fill-height" align="center" justify="center">
+            <template>
+              <v-col cols="12" md="4">
+                <v-hover v-slot:default="{ hover }">
+                  <v-card
+                    :elevation="hover ? 12 : 2"
+                    :class="{ 'on-hover': hover }"
+                    style="background:#FF914C"
                   >
-                    <v-card-title class="title white--text">
-                      <v-row
-                        class="fill-height flex-column"
-                        justify="space-between"
-                      >
-                        <p class="mt-4 subheading text-left">
-                          JAM {{ item.name }}
-                        </p>
-
-                        <!-- <div>
-                        <p class="ma-0 body-1 font-weight-bold font-italic text-left">
-                          {{ item.text }}
-                        </p>
-                        <p class="caption font-weight-medium font-italic text-left">
-                          {{ item.subtext }}
-                        </p>
-                      </div> -->
-
-                        <div class="align-self-center">
-                          <router-link to="/RecorderApp">
-                            <v-btn
-                              :class="{ 'show-btns': hover }"
-                              @click="click({ item })"
-                              ><v-icon :class="{ 'show-btns': hover }"
-                                >mdi-pencil</v-icon
-                              ></v-btn
-                            ></router-link
-                          >
-                        </div>
-                      </v-row>
-                    </v-card-title>
-                  </v-img>
-                </v-card>
-              </v-hover>
-            </v-col>
-          </template>
-          <template>
-            <v-col cols="12" md="4">
-              <v-hover v-slot:default="{ hover }">
-                <v-card
-                  :elevation="hover ? 12 : 2"
-                  :class="{ 'on-hover': hover }"
-                >
-                  <v-img
-                  
-                    height="150px"
-                  >
-                    <v-card-title class="title white--text">
-                      <v-row
-                        class="fill-height flex-column"
-                        justify="space-between"
-                      >
-                        <p class="mt-4 subheading text-left">
-                          New
-                        </p>
-                        <div class="align-self-center">
-                          <router-link to="/RecorderApp"
-                            ><v-btn :class="{ 'show-btns': hover }"
-                              ><v-icon>mdi-plus</v-icon></v-btn
-                            ></router-link
-                          >
-                          >
-                        </div>
-                      </v-row>
-                    </v-card-title>
-                  </v-img>
-                </v-card>
-              </v-hover>
-            </v-col>
-          </template>
-        </v-row>
+                    <v-text-field
+                      :disabled="true"
+                      style="padding:30px"
+                      label="New Jam"
+                    ></v-text-field>
+                    <v-img height="150px">
+                      <v-card-title class="title white--text">
+                        <v-row
+                          class="fill-height flex-column"
+                          justify="space-between"
+                        >
+                          <!-- <p class="mt-4 subheading text-center">
+                     
+                        </p> -->
+                          <div class="align-self-center">
+                            <router-link to="/RecorderApp"
+                              ><v-btn
+                                background-opacity="0"
+                                :class="{ 'show-btns': hover }"
+                                ><v-icon>mdi-plus</v-icon></v-btn
+                              ></router-link
+                            >
+                          </div>
+                        </v-row>
+                      </v-card-title>
+                    </v-img>
+                  </v-card>
+                </v-hover>
+              </v-col>
+            </template>
+            <template v-for="item in $store.state.userProfile.projects">
+              <Project :key="item.key" :item="item.item" />
+            </template>
+          </v-row>
+        </v-card>
       </v-container>
     </v-app>
   </div>
@@ -150,25 +113,5 @@ export default class ProjectGrid extends Vue {
   mounted() {
     store.commit("setProject", "");
   }
-  click(item) {
-    store.commit("setProject", item.item.projectid);
-    store.commit(
-      "setProjectName",
-      item.item.name != "" ? "Jam" : item.item.name
-    );
-  }
 }
 </script>
-<style scoped>
-.v-card {
-  transition: opacity 0.4s ease-in-out;
-}
-
-.v-card:not(.on-hover) {
-  opacity: 0.6;
-}
-
-.show-btns {
-  color: rgba(255, 255, 255, 1) !important;
-}
-</style>

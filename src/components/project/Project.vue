@@ -1,33 +1,59 @@
 <template>
-  <v-card flat tile class="d-flex"  @mouseenter="alert('d')">
-    <v-overlay :absolute="absolute" :opacity="opacity" :value="overlay">
-      <v-btn color="orange lighten-2" @click="overlay = false">
-        Hide Overlay
-      </v-btn>
-    </v-overlay>
-<v-hover>
-    <v-img
-      src="../../assets/logo_transparent_background.png"
-      aspect-ratio="1"
-      class="grey lighten-2"
-    
-    >
-      <template v-slot:placeholder>
-        <v-row class="fill-height ma-0" align="center" justify="center">
-          <v-progress-circular
-            indeterminate
-            color="grey lighten-5"
-          ></v-progress-circular>
-        </v-row>
-      </template>
-    </v-img>
+  <v-col :key="item" cols="12" md="4">
+    <v-hover v-slot:default="{ hover }">
+      <v-card
+        style="background:#FF914C"
+        :elevation="hover ? 12 : 2"
+        :class="{ 'on-hover': hover }"
+      >
+        <v-text-field
+          autocomplete="off"
+          @change="updateProjectName"
+          style="padding:30px"
+          :key="item"
+          label="Jam"
+          color="white"
+          :value="name"
+        ></v-text-field>
+
+        <v-img height="150px">
+          <v-card-title class="title white--text">
+            <v-row class="fill-height flex-column" justify="space-between">
+              <!-- <p class="mt-4 subheading text-center">
+                          JAM {{ item.name }}
+                        </p> -->
+
+              <!-- <div>
+                        <p class="ma-0 body-1 font-weight-bold font-italic text-center">
+                          {{ item.text }}
+                        </p>
+                        <p class="caption font-weight-medium font-italic text-center">
+                          {{ item.subtext }}
+                        </p>
+                      </div> -->
+
+              <div class="align-self-center">
+                <router-link to="/RecorderApp">
+                  <v-btn
+                    :class="{ 'show-btns': hover }"
+                    @click="click({ item })"
+                    ><v-icon :class="{ 'show-btns': hover }"
+                      >mdi-pencil</v-icon
+                    ></v-btn
+                  ></router-link
+                >
+              </div>
+            </v-row>
+          </v-card-title>
+        </v-img>
+      </v-card>
     </v-hover>
-  </v-card>
+  </v-col>
 </template>
 
 <script lang="ts">
 import Vue from "vue";
-import { Component } from "vue-property-decorator";
+import { Component, Prop } from "vue-property-decorator";
 
 import store from "../../store";
 import { JALProject } from "../models/models";
@@ -36,14 +62,56 @@ import firebase from "firebase";
 
 @Component({})
 export default class Project extends Vue {
-  absolute = true;
-  opacity = 1;
-  overlay = false;7
+  @Prop() item: any;
+  projectName = "";
+  mounted() {
+    const ref = firebase.database().ref("project/" + this.item );
+    ref.on("value",function(snapshot,) {
+     store.commit("addProject",snapshot.val())
+    });
 
-  hover(){
-      alert('hover')
+    
+  }
+ get name(){
+   store.state.projects.forEach(element => {
+     if(element.projectid == this.item){
+       return element.name
+     }
+   });
+   return "Kein Name"
+ }
+  steValue(value) {
+    this.projectName = name;
+  }
+  click(item) {
+    store.commit("setProject", item.item.projectid);
+    store.commit(
+      "setProjectName",
+      item.item.name != "" ? "Jam" : item.item.name
+    );
+  }
+  updateProjectName(value) {
+    const updates = {};
+    updates["project/" + this.item + "/name"] = value;
+
+    return firebase
+      .database()
+      .ref()
+      .update(updates);
   }
 }
 </script>
 
-<style></style>
+<style scoped>
+.v-card {
+  transition: opacity 0.4s ease-in-out;
+}
+
+.v-card:not(.on-hover) {
+  opacity: 0.6;
+}
+
+.show-btns {
+  color: rgba(255, 255, 255, 1) !important;
+}
+</style>

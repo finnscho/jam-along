@@ -232,7 +232,7 @@ export default class VideoJSRecord extends Vue {
     });
   }
   style() {
-    alert("");
+   
     return store.state.activePlayer == this ? "border: dashed;" : "";
   }
   activate() {

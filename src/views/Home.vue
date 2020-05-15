@@ -25,7 +25,7 @@
       </v-list>
     </v-navigation-drawer>
 
-    <v-app-bar app clipped-left>
+    <v-app-bar  overflow-hidden app clipped-left>
       <v-app-bar-nav-icon
         color="primary"
         @click.stop="drawer = !drawer"
@@ -40,13 +40,13 @@
         </v-img>
       </v-toolbar-side-icon>
     </v-app-bar>
-    <v-container class="fill-height" fluid>
+    <v-container  class="fill-height" fluid style="background:#FF914C">
       <v-row align="center" justify="center">
-        <v-col cols="4"></v-col>
-        <v-col align="center" cols="4" class=" center">
+        <v-col cols="3"></v-col>
+        <v-col align="center" cols="6" style="flex-basis:auto"  class=" center">
           <ProjectGrid />
         </v-col>
-        <v-col cols="4"></v-col>
+        <v-col cols="3"></v-col>
       </v-row>
     </v-container>
     <v-footer app>
