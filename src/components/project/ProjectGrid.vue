@@ -44,7 +44,7 @@
               </v-col>
             </template>
             <template v-for="item in $store.state.userProfile.projects">
-              <Project :key="item.key" :item="item.item" />
+              <Project :key="item.key" :item="item" />
             </template>
           </v-row>
         </v-card>

@@ -61,12 +61,13 @@ export default class JALStateService {
             videos.push(new JALVideo(url, element.slider, element.id))
 
             this.writeUserData(firebase.auth().currentUser?.uid, videos, projectid, projetName)
+            alert('project successfully stored')
           });
         }
       );
 
     })
-    alert('project successfully stored')
+   
 
   }
 

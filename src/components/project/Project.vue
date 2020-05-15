@@ -33,14 +33,10 @@
                       </div> -->
 
               <div class="align-self-center">
-                <router-link to="/RecorderApp">
-                  <v-btn
-                    :class="{ 'show-btns': hover }"
-                    @click="click({ item })"
-                    ><v-icon :class="{ 'show-btns': hover }"
-                      >mdi-pencil</v-icon
-                    ></v-btn
-                  ></router-link
+                <v-btn :class="{ 'show-btns': hover }" @click="click"
+                  ><v-icon :class="{ 'show-btns': hover }"
+                    >mdi-pencil</v-icon
+                  ></v-btn
                 >
               </div>
             </v-row>
@@ -63,32 +59,30 @@ import firebase from "firebase";
 @Component({})
 export default class Project extends Vue {
   @Prop() item: any;
-  projectName = "";
-  mounted() {
-    const ref = firebase.database().ref("project/" + this.item );
-    ref.on("value",function(snapshot,) {
-     store.commit("addProject",snapshot.val())
-    });
+  projectName = "Kein Name";
 
-    
+  mounted() {
+    const ref = firebase.database().ref("project/" + this.item);
+    ref.on("value", function(snapshot) {
+      store.commit("addProject", snapshot.val());
+    });
   }
- get name(){
-   store.state.projects.forEach(element => {
-     if(element.projectid == this.item){
-       return element.name
-     }
-   });
-   return "Kein Name"
- }
-  steValue(value) {
-    this.projectName = name;
+  get name() {
+    store.state.projects.forEach((element) => {
+      if (element.projectid == this.item) {
+        this.projectName = element.name;
+      }
+    });
+    return this.projectName;
   }
-  click(item) {
-    store.commit("setProject", item.item.projectid);
+
+  click() {
+    store.commit("setProject", this.item);
     store.commit(
       "setProjectName",
-      item.item.name != "" ? "Jam" : item.item.name
+      this.projectName
     );
+    this.$router.replace("RecorderApp");
   }
   updateProjectName(value) {
     const updates = {};
