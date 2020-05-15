@@ -10,12 +10,23 @@ export default class JALStateService {
 
 
   writeUserData(userId, videos: Array<JALVideo>, projectid: string, name) {
-    firebase.database().ref('project/' + projectid).set({
+
+
+    const updates = {};
+      updates['project/' + projectid] = {
       projectid: projectid,
       name: name,
       userid: userId,
       videos: videos
-    });
+    }
+
+    return firebase.database().ref().update(updates);
+    // firebase.database().ref('project/' + projectid).set({
+    //   projectid: projectid,
+    //   name: name,
+    //   userid: userId,
+    //   videos: videos
+    // });
 
 
 
@@ -50,19 +61,18 @@ export default class JALStateService {
   }
 
   saveState(projectid: string, projetName: string) {
-    const videos = new Array<JALVideo>();
+    const Myvideos = new Array<JALVideo>();
     store.state.players.forEach((element: VideoJSRecord) => {
 
       const metadata = {
         contentType: 'video/webm',
       };
       //@ts-ignore  
-      if (element.player.src != null) {
+      if (element.player.src != null && typeof element.player.src == 'string') {
         //@ts-ignore
-        videos.push(new JALVideo(element.player.src, element.slider, element.id))
+        Myvideos.push(new JALVideo(element.player.src, element.slider, element.id))
+        this.writeUserData(firebase.auth().currentUser?.uid, Myvideos, projectid, projetName)
 
-        this.writeUserData(firebase.auth().currentUser?.uid, videos, projectid, projetName)
-        alert('project successfully stored')
       }
       else {
         //@ts-ignore  
@@ -72,16 +82,21 @@ export default class JALStateService {
 
             storageRef.snapshot.ref.getDownloadURL().then((url) => {
               //@ts-ignore
-              videos.push(new JALVideo(url, element.slider, element.id))
+              Myvideos.push(new JALVideo(url, element.slider, element.id))
 
-              this.writeUserData(firebase.auth().currentUser?.uid, videos, projectid, projetName)
-              alert('project successfully stored')
+              this.writeUserData(firebase.auth().currentUser?.uid, Myvideos, projectid, projetName)
+              // alert('project successfully stored')
             });
           }
         );
       }
 
-      })
+
+    })
+    
+
+    // this.writeUserData(firebase.auth().currentUser?.uid, Myvideos, projectid, projetName)
+    alert('project successfully stored')
 
    
 
@@ -114,38 +129,40 @@ export default class JALStateService {
   loadProject() {
 
     const projectRef = firebase.database().ref('project/' + store.state.activeProject);
-    projectRef.on('value', function (snapshot) {
+  
+    projectRef.once('value').then(function (snapshot) {
 
-   
-      snapshot.val().videos.forEach((element: JALVideo) => {
+      if (snapshot.val().videos !== undefined) {
+        snapshot.val().videos.forEach((element: JALVideo) => {
 
-        try {
+          try {
 
-          store.commit("addChildren", new Child(element.id, element.videourl));
+            store.commit("addChildren", new Child(element.id, element.videourl));
 
-        }
-        catch (error) {
-          alert('error');
-          // A full list of error codes is available at
-          // https://firebase.google.com/docs/storage/web/handle-errors
-          switch (error.code) {
-            case 'storage/object-not-found':
-              // File doesn't exist
-              break;
-
-            case 'storage/unauthorized':
-              // User doesn't have permission to access the object
-              break;
-
-            case 'storage/canceled':
-              // User canceled the upload
-              break;
-            case 'storage/unknown':
-              // Unknown error occurred, inspect the server response
-              break;
           }
-        }
-      });
+          catch (error) {
+            alert('error');
+            // A full list of error codes is available at
+            // https://firebase.google.com/docs/storage/web/handle-errors
+            switch (error.code) {
+              case 'storage/object-not-found':
+                // File doesn't exist
+                break;
+
+              case 'storage/unauthorized':
+                // User doesn't have permission to access the object
+                break;
+
+              case 'storage/canceled':
+                // User canceled the upload
+                break;
+              case 'storage/unknown':
+                // Unknown error occurred, inspect the server response
+                break;
+            }
+          }
+        });
+      }
     })
   }
 }

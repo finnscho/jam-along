@@ -59,7 +59,7 @@ export default new Vuex.Store({
       state.activePlayer = n;
     },
     addChildren(state, n: any) {
-      //@ts-ignore
+
       state.children.push(n);
     },
     removeChildren(state, n: any) {

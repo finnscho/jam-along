@@ -55,6 +55,8 @@ export default class VideoJSRecord extends Vue {
     this.$root.$refs.A = this;
   }
   mounted() {
+    console.log(store.state.children.length);
+    
     const options = {
       controls: false,
       autoplay: false,
