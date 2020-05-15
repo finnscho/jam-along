@@ -204,16 +204,17 @@ export default class VideoRecorderGrid extends Vue {
     console.log(2);
     store.commit("resetChildren");
     if (store.state.activeProject == "") {
-     
       store.commit(
         "setProject",
         Math.random()
           .toString(36)
           .substring(2) + Date.now().toString(36)
       );
-      JALStateService.prototype.createProject(store.state.userProfile.userId, store.state.activeProject)
+      JALStateService.prototype.createProject(
+        store.state.userProfile.userId,
+        store.state.activeProject
+      );
     } else {
- 
       JALStateService.prototype.loadProject();
     }
 
@@ -368,7 +369,6 @@ export default class VideoRecorderGrid extends Vue {
     }
   }
   onFileChange(e) {
-  
     const files = e.target.files || e.dataTransfer.files;
     if (!files.length) return;
     JALStateService.prototype.loadState(files[0]);
@@ -379,7 +379,6 @@ export default class VideoRecorderGrid extends Vue {
   }
 
   public click() {
-  
     store.state.players.forEach((element) => {
       // if(element.recordedData !== undefined)
       {
@@ -460,7 +459,7 @@ export default class VideoRecorderGrid extends Vue {
 }
 </script>
 
-<style>
+<style scoped>
 maincard {
   padding: 0px;
 }

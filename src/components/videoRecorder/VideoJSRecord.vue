@@ -56,7 +56,7 @@ export default class VideoJSRecord extends Vue {
   }
   mounted() {
     console.log(store.state.children.length);
-    
+
     const options = {
       controls: false,
       autoplay: false,
@@ -234,7 +234,6 @@ export default class VideoJSRecord extends Vue {
     });
   }
   style() {
-   
     return store.state.activePlayer == this ? "border: dashed;" : "";
   }
   activate() {
@@ -267,7 +266,7 @@ export default class VideoJSRecord extends Vue {
 VideoJSRecord.player = undefined;
 </script>
 
-<style>
+<style scoped>
 .video-js .vjs-control-bar {
   display: none !important;
 }

@@ -119,7 +119,7 @@ export default class DetailPanel extends Vue {
 }
 </script>
 
-<style>
+<style scoped>
 .waveform {
   height: 5px;
 }

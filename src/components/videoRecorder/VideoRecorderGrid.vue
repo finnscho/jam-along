@@ -112,20 +112,45 @@ export default class VideoRecorderGrid extends Vue {
   mounted() {
     // this.overlay = true;
     // this.init();
-    this.blub();
+     this.blub();
+//     window.addEventListener(‘resize’, function() {
+// this.getWindowWidth()
+// });
   }
+ 
+ vwTOpx(value) {
+  const w = window,
+    d = document,
+    e = d.documentElement,
+    g = d.getElementsByTagName('body')[0],
+    x = w.innerWidth || e.clientWidth || g.clientWidth,
+    y = w.innerHeight|| e.clientHeight|| g.clientHeight;
 
+  return (x*value)/100; // affichage du résultat (facultatif)
+  
+}
   blub() {
     "use strict";
 
     console.log("START");
-
+const size  = this.vwTOpx(22);
     const Grid = {
       // DEPENDANCIES: Pt.js
 
-      cellSize: 50,
+ pxTOvw(value) {
+  const w = window,
+    d = document,
+    e = d.documentElement,
+    g = d.getElementsByTagName('body')[0],
+    x = w.innerWidth || e.clientWidth || g.clientWidth,
+    y = w.innerHeight|| e.clientHeight|| g.clientHeight;
+
+  const result = (100*value)/x;  // affichage du résultat (facultatif)
+  return result;
+},
+      cellSize: 12,
       curCell: new Pt(0, 0),
-      offset: new Pt(0, 0),
+      offset: new Pt(32, 10),
       curTileType: "Tiles-floor",
 
       cursor: {
@@ -134,8 +159,8 @@ export default class VideoRecorderGrid extends Vue {
           $(".Grid").css("cursor", "default");
           $(".Grid-selector")
             .css({
-              left: Grid.curCell.x * Grid.cellSize + Grid.offset.x,
-              top: Grid.curCell.y * Grid.cellSize + Grid.offset.y,
+              left: Grid.curCell.x * Grid.cellSize + Grid.offset.x + 'vh',
+              top: Grid.curCell.y * Grid.cellSize + Grid.offset.y+ 'vh',
             })
             .show();
         },
@@ -144,13 +169,16 @@ export default class VideoRecorderGrid extends Vue {
           $(".Grid-selector").hide();
         },
         run: function(e) {
+       
           const hoverCell = new Pt(
-            Math.floor((e.pageX - Grid.offset.x) / Grid.cellSize),
-            Math.floor((e.pageY - Grid.offset.y) / Grid.cellSize)
+            Math.floor((Grid.pxTOvw(e.pageX) -12) / Grid.cellSize),
+            Math.floor((Grid.pxTOvw(e.pageY) -12) / Grid.cellSize)
           );
+          console.log(hoverCell.x + ' y: '+ hoverCell.y + ' Grid.cellSize '+Grid.cellSize + '  => ' + hoverCell.x);
+          //alert('left'+ hoverCell.x * Grid.cellSize + Grid.offset.x+ 'hoverCell.x '+  hoverCell.x + ' Grid.cellSize' +Grid.cellSize+ '  Grid.offset.x ' + Grid.offset.x  )
           $(".Grid-selector").css({
-            left: hoverCell.x * Grid.cellSize + Grid.offset.x,
-            top: hoverCell.y * Grid.cellSize + Grid.offset.y,
+            "left": (hoverCell.x * Grid.cellSize)  + "vh",
+          "top":  (hoverCell.y * Grid.cellSize) + "vh"
           });
         },
       },
@@ -169,8 +197,8 @@ export default class VideoRecorderGrid extends Vue {
         },
         start: function(e) {
           const hoverCell = new Pt(
-            Math.floor((e.pageX - Grid.offset.x) / Grid.cellSize),
-            Math.floor((e.pageY - Grid.offset.y) / Grid.cellSize)
+            Math.floor((Grid.pxTOvw(e.pageX) - Grid.offset.x) / Grid.cellSize),
+            Math.floor((Grid.pxTOvw(e.pageY) - Grid.offset.y) / Grid.cellSize)
           );
           Grid.curCell = hoverCell;
           if (e.which == 1) {
@@ -530,18 +558,17 @@ export default class VideoRecorderGrid extends Vue {
 
 <style lang="less" scoped>
 
-@cellSize: 50px;
 @lineColour:white;
-@gridColour: darken(#269, 0%);
+@gridColour: darken(#FF914C, 0%);
 @tileColour: darken(@gridColour, 20%);
-.grid( @lineColour; @cellSize; @cellCount ) {
+.grid( @lineColour; 12vh; @cellCount ) {
   background-image: linear-gradient(fade(@lineColour, 50%) 3px, transparent 0),
     linear-gradient(90deg, fade(@lineColour, 50%) 3px, transparent 0),
     linear-gradient(fade(@lineColour, 30%) 1px, transparent 0),
     linear-gradient(90deg, fade(@lineColour, 30%) 1px, transparent 0);
-  background-size: @cellSize* @cellCount @cellSize* @cellCount,
-    @cellSize* @cellCount @cellSize* @cellCount, @cellSize @cellSize,
-    @cellSize @cellSize;
+  background-size: 12vh* @cellCount 12vh* @cellCount,
+    12vh* @cellCount 12vh* @cellCount, 12vh 12vh,
+    12vh 12vh;
 }
 
 *,
@@ -606,26 +633,26 @@ body {
   margin-left:32vw ;
   margin-top:10vh ;
   width: 36vw;
-  height: 33vw;
+  height: 36vw;
   flex: 1;
   position: relative;
   overflow: hidden;
   user-select: none;
   background-color: @gridColour;
-  .grid(white; @cellSize; 5);
+  .grid(white; 12vh; 2);
   z-index: 0;
-  /*&:after {
+  &:after {
     content: "";
     position: absolute;
     width: 100%;
     height: 100%;
-    .grid( white; @cellSize; 5 );
-  }*/
+    .grid( white; 12vh; 2 );
+  }
 }
 .Grid-selector {
   position: absolute;
-  width: @cellSize;
-  height: @cellSize;
+  width: 12vh;
+  height: 12vh;
   border-radius: 2px;
   animation: pulse 2s infinite ease-in-out;
   z-index: 100;
@@ -658,8 +685,8 @@ body {
 
 .Tiles-floor {
   position: absolute;
-  width: @cellSize;
-  height: @cellSize;
+  width: 12vh;
+  height: 12vh;
   background: @tileColour;
   animation: block-in 0.3s 0 ease-out;
   z-index: 1;
@@ -668,13 +695,13 @@ body {
   0% {
     width: 0;
     height: 0;
-    margin: @cellSize / 2 @cellSize / 2;
+    margin: 12vh / 2 12vh / 2;
     border-radius: 50%;
     background: transparent;
   }
   100% {
-    width: @cellSize;
-    height: @cellSize;
+    width: 12vh;
+    height: 12vh;
     margin: 0 0;
     border-radius: 0;
     background: @tileColour;

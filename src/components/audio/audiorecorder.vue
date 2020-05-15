@@ -6,7 +6,14 @@
     <h1>Vocals</h1>
     <p>
       Offset
-      <input type="range" min="-500" max="0" value="-150" id="offset" step="25" />
+      <input
+        type="range"
+        min="-500"
+        max="0"
+        value="-150"
+        id="offset"
+        step="25"
+      />
       <span id="offsetTotal">-150</span>ms
     </p>
     <p>
@@ -39,202 +46,239 @@
 </template>
 
 <script>
-import Recorder from '../../../public/Recorder'
+import Recorder from "../../../public/Recorder";
 export default {
-data(){
-    return{
-    me : null,
-    offset : -150,
-  backing : null,
-  backingInstance : null,
-  backingOriginal : null,
-  vocals : null,
-  vocalsBuffers : null,
-  vocalsInstance : null,
-  vocalsOffset : null,
-  vocalsRecording : null}
-},
-  methods:{
-     init() {
-    this.me = this;
+  data() {
+    return {
+      me: null,
+      offset: -150,
+      backing: null,
+      backingInstance: null,
+      backingOriginal: null,
+      vocals: null,
+      vocalsBuffers: null,
+      vocalsInstance: null,
+      vocalsOffset: null,
+      vocalsRecording: null,
+    };
+  },
+  methods: {
+    init() {
+      this.me = this;
 
       try {
-        window.AudioContext = window.AudioContext || window.webkitAudioContext || window.mozAudioContext || window.msAudioContext;
-        navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia;
-        window.URL = window.URL || window.webkitURL || window.mozURL || window.msURL;
-       this.me.context = new window.AudioContext();
-       this.me.context.createGain =this.me.context.createGain ||this.me.context.createGainNode;
+        window.AudioContext =
+          window.AudioContext ||
+          window.webkitAudioContext ||
+          window.mozAudioContext ||
+          window.msAudioContext;
+        navigator.getUserMedia =
+          navigator.getUserMedia ||
+          navigator.webkitGetUserMedia ||
+          navigator.mozGetUserMedia ||
+          navigator.msGetUserMedia;
+        window.URL =
+          window.URL || window.webkitURL || window.mozURL || window.msURL;
+        this.me.context = new window.AudioContext();
+        this.me.context.createGain =
+          this.me.context.createGain || this.me.context.createGainNode;
       } catch (e) {
-        window.alert('Your browser does not support WebAudio, try Google Chrome');
+        window.alert(
+          "Your browser does not support WebAudio, try Google Chrome"
+        );
       }
 
       if (navigator.getUserMedia) {
-        navigator.getUserMedia({
-          audio: true,
-          video:true
-        }, function(stream) {
-          const input =this.me.context.createMediaStreamSource(stream);
-         this.me.recorder = new Recorder(input);
-        }, function(e) {
-          window.alert('Please enable your microphone to begin recording');
-        });
+        navigator.getUserMedia(
+          {
+            audio: true,
+            video: true,
+          },
+          function(stream) {
+            const input = this.me.context.createMediaStreamSource(stream);
+            this.me.recorder = new Recorder(input);
+          },
+          function(e) {
+            window.alert("Please enable your microphone to begin recording");
+          }
+        );
       } else {
-        window.alert('Your browser does not support recording, try Google Chrome');
+        window.alert(
+          "Your browser does not support recording, try Google Chrome"
+        );
       }
     },
 
-
-  /**
-   * @method cue
-   */
-  cue(url, callback) {
-    console.log('player.cue', url);
-    this.me = this;
-    if (this.request) {
-      this.request.abort();
-    } else {
-      this.request = new XMLHttpRequest();
-    }
-    this.request.open('GET', url, true);
-    this.request.responseType = 'arraybuffer';
-    this.request.onload = function() {
-      console.log('player.cue.complete');
-     this.me.context.decodeAudioData(this.me.request.response, function(buffer) {
-        callback(buffer);
+    /**
+     * @method cue
+     */
+    cue(url, callback) {
+      console.log("player.cue", url);
+      this.me = this;
+      if (this.request) {
+        this.request.abort();
+      } else {
+        this.request = new XMLHttpRequest();
+      }
+      this.request.open("GET", url, true);
+      this.request.responseType = "arraybuffer";
+      this.request.onload = function() {
+        console.log("player.cue.complete");
+        this.me.context.decodeAudioData(this.me.request.response, function(
+          buffer
+        ) {
+          callback(buffer);
+        });
+      };
+      this.request.send();
+    },
+    /**
+     * @method play
+     */
+    play: function(data, callback) {
+      console.log("player.play", this.context.currentTime, data);
+      this.me = this;
+      const source = this.context.createBufferSource();
+      const gainNode = this.context.createGain();
+      if (!source.start) {
+        source.start = source.noteOn;
+      }
+      if (!source.stop) {
+        source.stop = source.noteOff;
+      }
+      source.connect(gainNode);
+      gainNode.connect(this.context.destination);
+      source.buffer = data;
+      source.loop = true;
+      source.startTime = this.context.currentTime;
+      source.start(0);
+      return source;
+    },
+    /**
+     * @method stop
+     */
+    stop: function(source) {
+      console.log("player.stop", this.context.currentTime, source);
+      if (source) {
+        source.stop(0);
+      }
+    },
+    /**
+     * @method record
+     */
+    record: function() {
+      console.log("player.record", this.context.currentTime);
+      this.recorder.clear();
+      this.recorder.startTime = this.context.currentTime;
+      this.recorder.record();
+    },
+    /**
+     * @method recordStop
+     */
+    recordStop: function(callback) {
+      this.me = this;
+      console.log("player.recordStop", this.context.currentTime);
+      this.recorder.stop();
+      this.recorder.getBuffer(function(buffers) {
+        callback(buffers);
       });
-    };
-    this.request.send();
-  },
-  /**
-   * @method play
-   */
-  play: function(data, callback) {
-    console.log('player.play', this.context.currentTime, data);
-    this.me = this;
-     const source = this.context.createBufferSource();
-     const gainNode = this.context.createGain();
-    if (!source.start) {
-      source.start = source.noteOn;
-    }
-    if (!source.stop) {
-      source.stop = source.noteOff;
-    }
-    source.connect(gainNode);
-    gainNode.connect(this.context.destination);
-    source.buffer = data;
-    source.loop = true;
-    source.startTime = this.context.currentTime;
-    source.start(0);
-    return source;
-  },
-  /**
-   * @method stop
-   */
-  stop: function(source) {
-    console.log('player.stop', this.context.currentTime, source);
-    if (source) {
-      source.stop(0);
-    }
-  },
-  /**
-   * @method record
-   */
-  record: function() {
-    console.log('player.record', this.context.currentTime);
-    this.recorder.clear();
-    this.recorder.startTime = this.context.currentTime;
-    this.recorder.record();
-  },
-  /**
-   * @method recordStop
-   */
-  recordStop: function(callback) {
-    this.me = this;
-    console.log('player.recordStop', this.context.currentTime);
-    this.recorder.stop();
-    this.recorder.getBuffer(function(buffers) {
-      callback(buffers);
-    });
-  },
-  /**
-   * @method sync
-   */
-  sync: function(action, target, param, callback) {
-    this.me = this,
-      this.offset = (this.context.currentTime - target.startTime) % target.buffer.duration;
+    },
+    /**
+     * @method sync
+     */
+    sync: function(action, target, param, callback) {
+      (this.me = this),
+        (this.offset =
+          (this.context.currentTime - target.startTime) %
+          target.buffer.duration);
       const time = target.buffer.duration - this.offset;
-    console.log('player.sync', this.context.currentTime + this.time, action);
-    if (this.syncTimer) {
-      window.clearTimeout(this.syncTimer);
-    }
-    this.syncTimer = window.setTimeout(function() {
-      const returned = this.me[action](param);
-      if (callback) {
-        callback(returned);
+      console.log("player.sync", this.context.currentTime + this.time, action);
+      if (this.syncTimer) {
+        window.clearTimeout(this.syncTimer);
       }
-    }, time * 1000);
-  },
-  /**
-   * @method createBuffer
-   */
-  createBuffer: function(buffers, channelTotal) {
-    let channel = 0;
-     const buffer = this.context.createBuffer(channelTotal, buffers[0].length, this.context.sampleRate);
-    for (channel = 0; channel < channelTotal; channel += 1) {
-      buffer.getChannelData(channel).set(buffers[channel]);
-    }
-    return buffer;
-  },
-  /**
-   * @method getOffset
-   */
-  getOffset: function(vocalsRecording, backingInstance, offset) {
-    const diff = (this.recorder.startTime + (offset / 1000)) - backingInstance.startTime;
-    console.log('player.getOffset', diff);
-    return {
-      before: Math.round((diff % backingInstance.buffer.duration) * this.context.sampleRate),
-      after: Math.round((backingInstance.buffer.duration - ((diff + vocalsRecording.duration) % backingInstance.buffer.duration)) * this.context.sampleRate)
-    };
-  },
-  /**
-   * @method offsetBuffer
-   */
-  offsetBuffer: function(vocalsBuffers, before, after) {
-    console.log('player.offsetBuffer', vocalsBuffers, before, after);
-    let i = 0;
-    let channel = 0;
-    const channelTotal = 2;
-    let num = 0;
-    const  audioBuffer = this.context.createBuffer(channelTotal, before + vocalsBuffers[0].length + after, this.context.sampleRate);
-    let  buffer = null;
-    for (channel = 0; channel < channelTotal; channel += 1) {
-      buffer = audioBuffer.getChannelData(channel);
-      for (i = 0; i < before; i += 1) {
-        buffer[num] = 0;
-        num += 1;
+      this.syncTimer = window.setTimeout(function() {
+        const returned = this.me[action](param);
+        if (callback) {
+          callback(returned);
+        }
+      }, time * 1000);
+    },
+    /**
+     * @method createBuffer
+     */
+    createBuffer: function(buffers, channelTotal) {
+      let channel = 0;
+      const buffer = this.context.createBuffer(
+        channelTotal,
+        buffers[0].length,
+        this.context.sampleRate
+      );
+      for (channel = 0; channel < channelTotal; channel += 1) {
+        buffer.getChannelData(channel).set(buffers[channel]);
       }
-      for (i = 0; i < vocalsBuffers[channel].length; i += 1) {
-        buffer[num] = vocalsBuffers[channel][i];
-        num += 1;
+      return buffer;
+    },
+    /**
+     * @method getOffset
+     */
+    getOffset: function(vocalsRecording, backingInstance, offset) {
+      const diff =
+        this.recorder.startTime + offset / 1000 - backingInstance.startTime;
+      console.log("player.getOffset", diff);
+      return {
+        before: Math.round(
+          (diff % backingInstance.buffer.duration) * this.context.sampleRate
+        ),
+        after: Math.round(
+          (backingInstance.buffer.duration -
+            ((diff + vocalsRecording.duration) %
+              backingInstance.buffer.duration)) *
+            this.context.sampleRate
+        ),
+      };
+    },
+    /**
+     * @method offsetBuffer
+     */
+    offsetBuffer: function(vocalsBuffers, before, after) {
+      console.log("player.offsetBuffer", vocalsBuffers, before, after);
+      let i = 0;
+      let channel = 0;
+      const channelTotal = 2;
+      let num = 0;
+      const audioBuffer = this.context.createBuffer(
+        channelTotal,
+        before + vocalsBuffers[0].length + after,
+        this.context.sampleRate
+      );
+      let buffer = null;
+      for (channel = 0; channel < channelTotal; channel += 1) {
+        buffer = audioBuffer.getChannelData(channel);
+        for (i = 0; i < before; i += 1) {
+          buffer[num] = 0;
+          num += 1;
+        }
+        for (i = 0; i < vocalsBuffers[channel].length; i += 1) {
+          buffer[num] = vocalsBuffers[channel][i];
+          num += 1;
+        }
+        for (i = 0; i < after; i += 1) {
+          buffer[num] = 0;
+          num += 1;
+        }
       }
-      for (i = 0; i < after; i += 1) {
-        buffer[num] = 0;
-        num += 1;
-      }
-    }
-    return audioBuffer;
+      return audioBuffer;
+    },
+    recordClick() {
+      alert("record");
+      this.vocals = null;
+      this.record();
+    },
   },
-recordClick() {
-    alert('record')
-  this.vocals = null;
-  this.record();
-}
-}
-,
-  mounted(){
-    this.init()
-  }
-}
+  mounted() {
+    this.init();
+  },
+};
 
 /* example additional code */
 
@@ -361,4 +405,4 @@ recordClick() {
 // });
 </script>
 
-<style></style>
+<style scoped></style>

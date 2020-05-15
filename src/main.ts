@@ -10,7 +10,7 @@ Vue.config.productionTip = false
 Vue.filter('kb', val => {
   return Math.floor(val / 1024);
 });
-
+Vue.config.devtools = true
 let app
 fb.auth.onAuthStateChanged(user => {
   if (!app) {
