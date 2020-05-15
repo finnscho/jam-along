@@ -1,17 +1,94 @@
 <template>
-  <!-- <v-container style="padding-top='5%'" fluid>
+  <v-container fluid>
+    
+
+        <v-navigation-drawer
+       style="margin-top:20vh; height:40vh"
+          v-model="drawer"
+        color="#272727"
+            
+        width="4vw"
+          absolute
+   
+        >
+        <v-icon style="padding-left:35%;width:50%; color:#FF914C">mdi-magnify-plus-cursor</v-icon>
+        <v-slider
+          style="color:#FF914C"
+          @change="getZoom"
+          vertical
+
+        ></v-slider>
+
+        </v-navigation-drawer>
+
+
+
+    <!-- <v-container style="padding-top='5%'" fluid>
     <v-row>
       <v-col cols="4"> </v-col>
       <v-col cols="4"> -->
-  <!-- <v-overlay :opacity="1" :value="overlay" :z-index="99">
+    <v-overlay :opacity="1" :value="overlay" :z-index="99">
       <v-img src="../../assets/logo_transparent_background.png" />
       <v-progress-linear indeterminate color="#FF914C"></v-progress-linear>
-    </v-overlay> -->
-    
-  <div class="Grid" >
-    <div class="Grid-selector addMode"></div>
-    <div class="Tiles"></div>
-  </div>
+    </v-overlay>
+    <v-app-bar fixed dense style="vertical-align: bottom;">
+      <!-- <v-file-input accept="image/*" style="color:"#FF914C"" width="5%" @change="onFileChange" label="Projekt öffnen"></v-file-input> -->
+
+      <v-btn
+        v-on:click="addPlayer"
+        v-on:mouseover="mouseoverAddBtn"
+        v-on:mouseleave="mouseleaveAddBtn"
+      >
+        <v-icon color="#FF914C">mdi-camera-plus</v-icon>
+      </v-btn>
+      <input
+        type="file"
+        ref="file"
+        style="display: none"
+        v-on:change="handleFileUpload()"
+      />
+
+      <v-btn @click="$refs.file.click()">
+        <v-icon color="#FF914C">mdi-movie-open</v-icon>
+      </v-btn>
+
+      <v-btn v-on:click="record">
+        <v-icon v-bind:color="recording ? 'red' : '#FF914C'">mdi-record</v-icon>
+      </v-btn>
+      <v-btn v-on:click="click">
+        <v-icon color="#FF914C">mdi-play</v-icon>
+      </v-btn>
+      <v-btn v-on:click="pause">
+        <v-icon color="#FF914C">mdi-pause</v-icon>
+      </v-btn>
+      <v-btn
+        v-on:click="save"
+        :style="!isMobileDevice ? 'margin-left:10vw' : ''"
+      >
+        <v-icon color="#FF914C" v-if="downloading == false"
+          >mdi-download</v-icon
+        >
+        <v-progress-circular
+          v-if="downloading == true"
+          :width="3"
+          color="#FF914C"
+          indeterminate
+        ></v-progress-circular>
+      </v-btn>
+
+      <v-btn v-on:click="saveProject" style="margin-left:50px">
+        <v-icon color="#FF914C">mdi-zip-disk</v-icon>
+      </v-btn>
+
+      <v-btn v-on:click="removePlayer">
+        <v-icon color="#FF914C">mdi-delete</v-icon>
+      </v-btn>
+    </v-app-bar>
+    <div id="Grid" class="Grid">
+      <div class="Grid-selector addMode"></div>
+      <div class="Tiles"></div>
+    </div>
+  </v-container>
   <!-- </v-col>
       <v-col cols="4"> </v-col>
     </v-row>
@@ -46,6 +123,7 @@ export default class VideoRecorderGrid extends Vue {
   downloading = false;
   file: any = "";
   merger: any;
+  factor = 1;
   valueDeterminate = 0;
   recording = false;
   overlay = false;
@@ -112,43 +190,65 @@ export default class VideoRecorderGrid extends Vue {
   mounted() {
     // this.overlay = true;
     // this.init();
-     this.blub();
-//     window.addEventListener(‘resize’, function() {
-// this.getWindowWidth()
-// });
+    this.blub();
+    //     window.addEventListener(‘resize’, function() {
+    // this.getWindowWidth()
+    // });
   }
- 
- vwTOpx(value) {
-  const w = window,
-    d = document,
-    e = d.documentElement,
-    g = d.getElementsByTagName('body')[0],
-    x = w.innerWidth || e.clientWidth || g.clientWidth,
-    y = w.innerHeight|| e.clientHeight|| g.clientHeight;
 
-  return (x*value)/100; // affichage du résultat (facultatif)
-  
-}
+  setZoom(zoom, el) {
+    const transformOrigin = [0, 0];
+    //@ts-ignore
+       const p = ["webkit", "moz", "ms", "o"],
+      s = "scale(" + zoom + ")",
+      oString =
+        transformOrigin[0] * 100 + "% " + transformOrigin[1] * 100 + "%";
+
+    for (let i = 0; i < p.length; i++) {
+      el.style[p[i] + "Transform"] = s;
+      el.style[p[i] + "TransformOrigin"] = oString;
+    }
+
+    el.style["transform"] = s;
+    el.style["transformOrigin"] = oString;
+  }
+
+  getZoom(value) {
+    
+ 
+    const zoomScale = Number(value) / 100;
+    this.setZoom(zoomScale, document.getElementsByClassName("Grid")[0]);
+  }
+  vwTOpx(value) {
+    const w = window,
+      d = document,
+      e = d.documentElement,
+      g = d.getElementsByTagName("body")[0],
+      x = w.innerWidth || e.clientWidth || g.clientWidth,
+      y = w.innerHeight || e.clientHeight || g.clientHeight;
+
+    return (x * value) / 100; // affichage du résultat (facultatif)
+  }
   blub() {
     "use strict";
 
     console.log("START");
-const size  = this.vwTOpx(22);
+    const size = this.vwTOpx(22);
     const Grid = {
       // DEPENDANCIES: Pt.js
 
- pxTOvw(value) {
-  const w = window,
-    d = document,
-    e = d.documentElement,
-    g = d.getElementsByTagName('body')[0],
-    x = w.innerWidth || e.clientWidth || g.clientWidth,
-    y = w.innerHeight|| e.clientHeight|| g.clientHeight;
+      pxTOvw(value) {
+        const w = window,
+          d = document,
+          e = d.documentElement,
+          g = d.getElementsByTagName("body")[0],
+          x = w.innerWidth || e.clientWidth || g.clientWidth,
+          y = w.innerHeight || e.clientHeight || g.clientHeight;
 
-  const result = (100*value)/x;  // affichage du résultat (facultatif)
-  return result;
-},
-      cellSize: 12,
+        const result = (100 * value) / x; // affichage du résultat (facultatif)
+        return result;
+      },
+      cellSize: 100,
       curCell: new Pt(0, 0),
       offset: new Pt(32, 10),
       curTileType: "Tiles-floor",
@@ -157,10 +257,11 @@ const size  = this.vwTOpx(22);
         enable: function() {
           $("body").on("mousemove", ".Grid", Grid.cursor.run);
           $(".Grid").css("cursor", "default");
+          alert('enable')
           $(".Grid-selector")
             .css({
-              left: Grid.curCell.x * Grid.cellSize + Grid.offset.x + 'vh',
-              top: Grid.curCell.y * Grid.cellSize + Grid.offset.y+ 'vh',
+              left: Grid.curCell.x * Grid.cellSize + Grid.offset.x + "vh",
+              top: Grid.curCell.y * Grid.cellSize + Grid.offset.y + "vh",
             })
             .show();
         },
@@ -169,16 +270,34 @@ const size  = this.vwTOpx(22);
           $(".Grid-selector").hide();
         },
         run: function(e) {
-       
+//@ts-ignore
+const bounds =document.getElementById('Grid').getBoundingClientRect()
+    const x = e.clientX - bounds.left;
+    const y = e.clientY - bounds.top;
+    console.log('x: ' + x + ' y: '+ y );
+    console.log('e.pageX: ' + e.pageX + ' e.pageY: '+ e.pageY );
+
+
+
           const hoverCell = new Pt(
-            Math.floor((Grid.pxTOvw(e.pageX) -12) / Grid.cellSize),
-            Math.floor((Grid.pxTOvw(e.pageY) -12) / Grid.cellSize)
+            Math.floor(x / Grid.cellSize),
+            Math.floor(y / Grid.cellSize)
           );
-          console.log(hoverCell.x + ' y: '+ hoverCell.y + ' Grid.cellSize '+Grid.cellSize + '  => ' + hoverCell.x);
+          console.log('x '+hoverCell.x)
+          console.log('y '+ hoverCell.y)
+          // console.log(
+          //   hoverCell.x +
+          //     " y: " +
+          //     hoverCell.y +
+          //     " Grid.cellSize " +
+          //     Grid.cellSize +
+          //     "  => " +
+          //     hoverCell.x
+          // );
           //alert('left'+ hoverCell.x * Grid.cellSize + Grid.offset.x+ 'hoverCell.x '+  hoverCell.x + ' Grid.cellSize' +Grid.cellSize+ '  Grid.offset.x ' + Grid.offset.x  )
           $(".Grid-selector").css({
-            "left": (hoverCell.x * Grid.cellSize)  + "vh",
-          "top":  (hoverCell.y * Grid.cellSize) + "vh"
+            left: hoverCell.x * Grid.cellSize ,
+            top: hoverCell.y * Grid.cellSize ,
           });
         },
       },
@@ -218,9 +337,11 @@ const size  = this.vwTOpx(22);
             Math.floor((e.pageX - Grid.offset.x) / Grid.cellSize),
             Math.floor((e.pageY - Grid.offset.y) / Grid.cellSize)
           );
-          if (!Grid.curCell.equalTo(hoverCell)) {
+          if (Grid.curCell.x !==hoverCell.x || Grid.curCell.y !==hoverCell.y ) {
+            
             Grid.curCell = hoverCell;
             if (e.which == 1) {
+              alert('jo')
               Grid.addTile(Grid.curTileType, Grid.curCell.x, Grid.curCell.y);
             } else if (e.which == 3) {
               Grid.deleteTile(Grid.curTileType, Grid.curCell.x, Grid.curCell.y);
@@ -266,6 +387,7 @@ const size  = this.vwTOpx(22);
           $(".Grid").on("mousemove", Grid.pan.run);
         },
         run: function(e) {
+          alert('run2')
           Grid.offset.x += e.pageX - Grid.pan.lastPt.x;
           Grid.offset.y += e.pageY - Grid.pan.lastPt.y;
           $(".Tiles").css({
@@ -328,7 +450,7 @@ const size  = this.vwTOpx(22);
 
   get videoWidth() {
     if (this.isMobileDevice) {
-      return "150px";
+      return "100px";
     }
     switch (store.state.children.length) {
       case 1:
@@ -557,18 +679,16 @@ const size  = this.vwTOpx(22);
 </script>
 
 <style lang="less" scoped>
-
-@lineColour:white;
-@gridColour: darken(#FF914C, 0%);
+@lineColour: #ff914c;
+@gridColour: darken(#363636, 0%);
 @tileColour: darken(@gridColour, 20%);
-.grid( @lineColour; 12vh; @cellCount ) {
+.grid( @lineColour; 100px; @cellCount ) {
   background-image: linear-gradient(fade(@lineColour, 50%) 3px, transparent 0),
     linear-gradient(90deg, fade(@lineColour, 50%) 3px, transparent 0),
     linear-gradient(fade(@lineColour, 30%) 1px, transparent 0),
     linear-gradient(90deg, fade(@lineColour, 30%) 1px, transparent 0);
-  background-size: 12vh* @cellCount 12vh* @cellCount,
-    12vh* @cellCount 12vh* @cellCount, 12vh 12vh,
-    12vh 12vh;
+  background-size: 100px * @cellCount 100px * @cellCount,
+    100px * @cellCount 100px * @cellCount, 100px 100px, 100px 100px;
 }
 
 *,
@@ -588,7 +708,7 @@ body {
   position: fixed;
   margin: 1em;
   padding: 0.5em 1em;
-  color: white;
+  color: #ff914c;
   text-shadow: 1px 1px 0 0 black;
   background: hsl(0, 0, 10%);
   border-radius: 0.5em;
@@ -612,7 +732,7 @@ body {
     }
   }
   .btn-default.active {
-    color: white;
+    color: #ff914c;
     text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.3);
     box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.2);
   }
@@ -630,8 +750,8 @@ body {
 }
 
 .Grid {
-  margin-left:32vw ;
-  margin-top:10vh ;
+  margin-left: 32vw;
+  margin-top: 7vh;
   width: 36vw;
   height: 36vw;
   flex: 1;
@@ -639,20 +759,20 @@ body {
   overflow: hidden;
   user-select: none;
   background-color: @gridColour;
-  .grid(white; 12vh; 2);
+  .grid(#FF914C; 100px; 2);
   z-index: 0;
   &:after {
     content: "";
     position: absolute;
     width: 100%;
     height: 100%;
-    .grid( white; 12vh; 2 );
+    .grid(#FF914C; 100px; 2);
   }
 }
 .Grid-selector {
   position: absolute;
-  width: 12vh;
-  height: 12vh;
+  width: 100px;
+  height: 100px;
   border-radius: 2px;
   animation: pulse 2s infinite ease-in-out;
   z-index: 100;
@@ -685,8 +805,8 @@ body {
 
 .Tiles-floor {
   position: absolute;
-  width: 12vh;
-  height: 12vh;
+  width: 100px;
+  height: 100px;
   background: @tileColour;
   animation: block-in 0.3s 0 ease-out;
   z-index: 1;
@@ -695,13 +815,13 @@ body {
   0% {
     width: 0;
     height: 0;
-    margin: 12vh / 2 12vh / 2;
+    margin: 100px / 2 100px / 2;
     border-radius: 50%;
     background: transparent;
   }
   100% {
-    width: 12vh;
-    height: 12vh;
+    width: 100px;
+    height: 100px;
     margin: 0 0;
     border-radius: 0;
     background: @tileColour;
