@@ -11,7 +11,7 @@
                   <v-card
                     :elevation="hover ? 12 : 2"
                     :class="{ 'on-hover': hover }"
-                    style="background:#FF914C"
+                    style="background:#e03f3c"
                   >
                     <v-text-field
                       :disabled="true"

@@ -6,7 +6,7 @@
       </v-card>
     </div>
       <footer>
-    <cookie-law theme="royal"></cookie-law>
+    <cookie-law theme="blood-orange"></cookie-law>
   </footer>
   </v-app>
   

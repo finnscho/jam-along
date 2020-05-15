@@ -18,10 +18,7 @@ export default class JALStateService {
     });
 
 
-    firebase.database().ref('users/' + userId + '/projects').push(
-      projectid,
-      err => console.log(err ? 'error while pushing' : 'successful push')
-    )
+
     // const ref = firebase.database().ref('users/' + userId + '/projects');
     // ref.on('value', function (snapshot) {
     //   list = snapshot.val() as Array<string>;
@@ -34,6 +31,14 @@ export default class JALStateService {
     //   projects: { list }
     // });
   }
+
+  createProject(userId, projectid) {
+    firebase.database().ref('users/' + userId + '/projects').push(
+      projectid,
+      err => console.log(err ? 'error while pushing' : 'successful push')
+    )
+  }
+
   createUser(userId, email, name, lastname) {
     firebase.database().ref('users/' + userId).set({
       userId: userId,
@@ -52,21 +57,32 @@ export default class JALStateService {
         contentType: 'video/webm',
       };
       //@ts-ignore  
-      const storageRef = firebase.storage().ref(`${element.id}`).put(element.player.recordedData, metadata);
-      storageRef.on(`state_changed`, snapshot => null, error => { console.log(error.message) },
-        () => {
+      if (element.player.src != null) {
+        //@ts-ignore
+        videos.push(new JALVideo(element.player.src, element.slider, element.id))
 
-          storageRef.snapshot.ref.getDownloadURL().then((url) => {
-            //@ts-ignore
-            videos.push(new JALVideo(url, element.slider, element.id))
+        this.writeUserData(firebase.auth().currentUser?.uid, videos, projectid, projetName)
+        alert('project successfully stored')
+      }
+      else {
+        //@ts-ignore  
+        const storageRef = firebase.storage().ref(`${element.id}`).put(element.player.recordedData, metadata);
+        storageRef.on(`state_changed`, snapshot => null, error => { console.log(error.message) },
+          () => {
 
-            this.writeUserData(firebase.auth().currentUser?.uid, videos, projectid, projetName)
-            alert('project successfully stored')
-          });
-        }
-      );
+            storageRef.snapshot.ref.getDownloadURL().then((url) => {
+              //@ts-ignore
+              videos.push(new JALVideo(url, element.slider, element.id))
 
-    })
+              this.writeUserData(firebase.auth().currentUser?.uid, videos, projectid, projetName)
+              alert('project successfully stored')
+            });
+          }
+        );
+      }
+
+      })
+
    
 
   }
