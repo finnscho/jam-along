@@ -1,5 +1,5 @@
 <template>
-  <v-container fluid>
+  <v-container fluid >
     
 
         <v-navigation-drawer
@@ -84,7 +84,7 @@
         <v-icon color="#FF914C">mdi-delete</v-icon>
       </v-btn>
     </v-app-bar>
-    <div id="Grid" class="Grid">
+    <div id="Grid" class="Grid" scrollable>
       <div class="Grid-selector addMode"></div>
       <div class="Tiles"></div>
     </div>
@@ -454,7 +454,7 @@ const bounds =document.getElementById('Grid').getBoundingClientRect()
             x +
             "' data-y='" +
             y +
-            "' style='width:100px;height:100px;background:#ff914c'></div>";
+            "' style='width:15vh;height:15vh;background:#ff914c'></div>";
           $(".Tiles").append(html);
           $("." + tileType + "[data-x='" + x + "'][data-y='" + y + "']").css({
             left: x * Grid.cellSize,
@@ -715,13 +715,13 @@ const bounds =document.getElementById('Grid').getBoundingClientRect()
 @lineColour: #ff914c;
 @gridColour: darken(#363636, 0%);
 @tileColour: darken(red, 20%);
-.grid( @lineColour; 100px; @cellCount ) {
+.grid( @lineColour; @size; @cellCount ) {
   background-image: linear-gradient(fade(@lineColour, 50%) 3px, transparent 0),
     linear-gradient(90deg, fade(@lineColour, 50%) 3px, transparent 0),
     linear-gradient(fade(@lineColour, 30%) 1px, transparent 0),
     linear-gradient(90deg, fade(@lineColour, 30%) 1px, transparent 0);
-  background-size: 100px * @cellCount 100px * @cellCount,
-    100px * @cellCount 100px * @cellCount, 100px 100px, 100px 100px;
+  background-size: @size * @cellCount @size * @cellCount,
+    @size * @cellCount @size * @cellCount, @size @size, @size @size;
 }
 
 *,
@@ -785,27 +785,27 @@ body {
 .Grid {
   margin-left: 32vw;
   margin-top: 7vh;
-  width: 36vw;
-  height: 36vw;
+  width: 60vh;
+  height: 60vh;
   flex: 1;
   position: relative;
   overflow: hidden;
   user-select: none;
   background-color: @gridColour;
-  .grid(#FF914C; 100px; 2);
+  .grid(#FF914C; 15vh; 2);
   z-index: 0;
   &:after {
     content: "";
     position: absolute;
     width: 100%;
     height: 100%;
-    .grid(#FF914C; 100px; 2);
+    .grid(#FF914C; 15vh; 2);
   }
 }
 .Grid-selector {
   position: absolute;
-  width: 100px;
-  height: 100px;
+  width: 15vh;
+  height: 15vh;
   border-radius: 2px;
   animation: pulse 2s infinite ease-in-out;
   z-index: 100;
@@ -838,8 +838,8 @@ body {
 
 .Tiles-floor {
   position: absolute;
-  width: 100px;
-  height: 100px;
+  width: 15vh;
+  height: 15vh;
   background: green;
   animation: block-in 0.3s 0 ease-out;
   z-index: 1;
@@ -848,13 +848,13 @@ body {
   0% {
     width: 0;
     height: 0;
-    margin: 100px / 2 100px / 2;
+    margin: 15vh / 2 15vh / 2;
     border-radius: 50%;
     background: transparent;
   }
   100% {
-    width: 100px;
-    height: 100px;
+    width: 15vh;
+    height: 15vh;
     margin: 0 0;
     border-radius: 0;
     background: green;
