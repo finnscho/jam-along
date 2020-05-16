@@ -94,25 +94,10 @@
     <div id="Grid" class="Grid" scrollable>
       <div class="Grid-selector addMode"></div>
       <div class="Tiles" >
-            "<video-js-recorder class='" +
-            tileType +
-            "' data-x='" +
-            x +
-            "' data-y='" +
-            y +
-            "id='JALvideojs" + Date.now() + "' " +
-            "style='position:absolute;width:15vh;height:15vh; left: " +
-            x * Grid.cellSize +
-            "vh; top: " +
-            y * Grid.cellSize +
-            "vh'></video-js-recorder>";
-
-
-
-
-
-
-
+            <video-js-recorder v-for="n in this.$store.state.videoGrid"  :style="getStyle(n)" :key="n.id" :id="n.id" :class="'Tiles-floor data-x=' +n.x +' data-y=' + n.y "            
+            
+   
+            ></video-js-recorder>
       </div>
     </div>
   </v-container>
@@ -176,15 +161,15 @@ export default class VideoRecorderGrid extends Vue {
 
   //  }
   getStyle(n: GridVideo) {
-    const y = n.y * 15 + 10;
-    const x = +(n.x * 15) + 47;
-    return (
-      "position:absolute;width:15vh;height:15vh;background:#ff914c; left:" +
-      n.x * 15 +
-      "vh; top: " +
-      y * 15 +
-      "vh"
-    );
+    console.log("left:" +(n.x * 15 )+"vh ; top:"+ (n.y * 15)+"vh")
+    return "left:" +(n.x * 15 )+"vh ; top:"+ (n.y * 15)+"vh"
+    // const y = (n.y * 15) + 10;
+    // const x = (n.x * 15) + 47;
+    // return (
+ 
+    //   "position:absolute;width:15vh;height:15vh;background:#ff914c; left:" +
+    //   (n.x * 15 )+ "vh; top: "+ (n.y * 15) +"vh"
+    // );
   }
 
   constructor(params) {
@@ -499,10 +484,12 @@ export default class VideoRecorderGrid extends Vue {
       },
 
       addVideoTile: function(tileType, x, y) {
-        
-        console.log("addVideoTile at x/y" + x + "  " + y);
+          
+        console.log("addVideoTile at x/y" + x + "  y " + y);
         if (!Grid.isTileAt(tileType, x, y)) {
           const id = "JALvideojs" + Date.now();
+          console.log('adding video at x: '+ x +" y: " +y)
+        
           store.commit("addVideoToGrid", new GridVideo(id, x, y));
 
         //   //        $("." + tileType + "[data-x='" + x + "'][data-y='" + y + "']").css({
@@ -977,6 +964,9 @@ body {
   // background: green;
   animation: block-in 0.3s 0 ease-out;
   z-index: 1;
+}
+.container {
+  padding: 0;
 }
 @keyframes block-in {
   0% {

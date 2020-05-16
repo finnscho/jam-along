@@ -22,7 +22,7 @@ export class GridVideo {
   id: string;
   constructor(id, x, y) {
     this.id = id;
-    this.x = y;
+    this.x = x;
     this.y = y;
   }
 }
