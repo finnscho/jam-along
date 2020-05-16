@@ -1,27 +1,17 @@
 <template>
-  <v-container fluid >
-    
-
-        <v-navigation-drawer
-       style="margin-top:20vh; height:40vh"
-          v-model="drawer"
-        color="#272727"
-            
-        width="4vw"
-          absolute
-   
-        >
-        <v-icon style="padding-left:35%;width:50%; color:#FF914C">mdi-magnify-plus-cursor</v-icon>
-        <v-slider
-          style="color:#FF914C"
-          @change="getZoom"
-          vertical
-
-        ></v-slider>
-
-        </v-navigation-drawer>
-
-
+  <v-container fluid>
+    <v-navigation-drawer
+      style="margin-top:20vh; height:40vh"
+      v-model="drawer"
+      color="#272727"
+      width="4vw"
+      absolute
+    >
+      <v-icon style="padding-left:35%;width:50%; color:#FF914C"
+        >mdi-magnify-plus-cursor</v-icon
+      >
+      <v-slider style="color:#FF914C" @change="getZoom" vertical></v-slider>
+    </v-navigation-drawer>
 
     <!-- <v-container style="padding-top='5%'" fluid>
     <v-row>
@@ -199,7 +189,7 @@ export default class VideoRecorderGrid extends Vue {
   setZoom(zoom, el) {
     const transformOrigin = [0, 0];
     //@ts-ignore
-       const p = ["webkit", "moz", "ms", "o"],
+    const p = ["webkit", "moz", "ms", "o"],
       s = "scale(" + zoom + ")",
       oString =
         transformOrigin[0] * 100 + "% " + transformOrigin[1] * 100 + "%";
@@ -214,8 +204,6 @@ export default class VideoRecorderGrid extends Vue {
   }
 
   getZoom(value) {
-    
- 
     const zoomScale = Number(value) / 100;
     this.setZoom(zoomScale, document.getElementsByClassName("Grid")[0]);
   }
@@ -236,17 +224,17 @@ export default class VideoRecorderGrid extends Vue {
     const size = this.vwTOpx(22);
     const Grid = {
       // DEPENDANCIES: Pt.js
-       vhTOpx(value) {
-const w = window,
-    d = document,
-    e = d.documentElement,
-    g = d.getElementsByTagName('body')[0],
-    x = w.innerWidth || e.clientWidth || g.clientWidth,
-    y = w.innerHeight|| e.clientHeight|| g.clientHeight;
+      vhTOpx(value) {
+        const w = window,
+          d = document,
+          e = d.documentElement,
+          g = d.getElementsByTagName("body")[0],
+          x = w.innerWidth || e.clientWidth || g.clientWidth,
+          y = w.innerHeight || e.clientHeight || g.clientHeight;
 
-  const result = (y*value)/100; // affichage du résultat (facultatif)
-  return result;
-},
+        const result = (y * value) / 100; // affichage du résultat (facultatif)
+        return result;
+      },
 
       pxTOvw(value) {
         const w = window,
@@ -268,11 +256,11 @@ const w = window,
         enable: function() {
           $("body").on("mousemove", ".Grid", Grid.cursor.run);
           $(".Grid").css("cursor", "default");
-          
+
           $(".Grid-selector")
             .css({
-              left: Grid.curCell.x * Grid.vhTOpx(Grid.cellSize) + Grid.offset.x ,
-              top: Grid.curCell.y * Grid.vhTOpx(Grid.cellSize) + Grid.offset.y ,
+              left: Grid.curCell.x * Grid.vhTOpx(Grid.cellSize) + Grid.offset.x,
+              top: Grid.curCell.y * Grid.vhTOpx(Grid.cellSize) + Grid.offset.y,
             })
             .show();
         },
@@ -281,21 +269,21 @@ const w = window,
           $(".Grid-selector").hide();
         },
         run: function(e) {
-//@ts-ignore
-const bounds =document.getElementById('Grid').getBoundingClientRect()
-    const x = e.clientX - bounds.left;
-    const y = e.clientY - bounds.top;
-    // console.log('x: ' + x + ' y: '+ y );
-    // console.log('e.pageX: ' + e.pageX + ' e.pageY: '+ e.pageY );
-
-
+          //@ts-ignore
+          const bounds = document
+            .getElementById("Grid")
+            .getBoundingClientRect();
+          const x = e.clientX - bounds.left;
+          const y = e.clientY - bounds.top;
+          // console.log('x: ' + x + ' y: '+ y );
+          // console.log('e.pageX: ' + e.pageX + ' e.pageY: '+ e.pageY );
 
           const hoverCell = new Pt(
             Math.floor(x / Grid.vhTOpx(Grid.cellSize)),
             Math.floor(y / Grid.vhTOpx(Grid.cellSize))
           );
-          console.log('x '+hoverCell.x)
-          console.log('y '+ hoverCell.y)
+          console.log("x " + hoverCell.x);
+          console.log("y " + hoverCell.y);
           // console.log(
           //   hoverCell.x +
           //     " y: " +
@@ -307,8 +295,8 @@ const bounds =document.getElementById('Grid').getBoundingClientRect()
           // );
           //alert('left'+ hoverCell.x * Grid.cellSize + Grid.offset.x+ 'hoverCell.x '+  hoverCell.x + ' Grid.cellSize' +Grid.vhTOpx(Grid.cellSize)+ '  Grid.offset.x ' + Grid.offset.x  )
           $(".Grid-selector").css({
-            left: hoverCell.x * Grid.vhTOpx(Grid.cellSize) ,
-            top: hoverCell.y * Grid.vhTOpx(Grid.cellSize) ,
+            left: hoverCell.x * Grid.vhTOpx(Grid.cellSize),
+            top: hoverCell.y * Grid.vhTOpx(Grid.cellSize),
           });
         },
       },
@@ -327,11 +315,11 @@ const bounds =document.getElementById('Grid').getBoundingClientRect()
         },
         start: function(e) {
           //@ts-ignore
-const bounds =document.getElementById('Grid').getBoundingClientRect()
-    const x = e.clientX - bounds.left;
-    const y = e.clientY - bounds.top;
-
-
+          const bounds = document
+            .getElementById("Grid")
+            .getBoundingClientRect();
+          const x = e.clientX - bounds.left;
+          const y = e.clientY - bounds.top;
 
           const hoverCell = new Pt(
             Math.floor(x / Grid.vhTOpx(Grid.cellSize)),
@@ -351,24 +339,25 @@ const bounds =document.getElementById('Grid').getBoundingClientRect()
           $(".Grid").on("mousemove", Grid.modify.run);
         },
         run: function(e) {
-//@ts-ignore
-const bounds =document.getElementById('Grid').getBoundingClientRect()
-    const x = e.clientX - bounds.left;
-    const y = e.clientY - bounds.top;
-
-
-
+          //@ts-ignore
+          const bounds = document
+            .getElementById("Grid")
+            .getBoundingClientRect();
+          const x = e.clientX - bounds.left;
+          const y = e.clientY - bounds.top;
 
           const hoverCell = new Pt(
             Math.floor(x / Grid.vhTOpx(Grid.cellSize)),
             Math.floor(y / Grid.vhTOpx(Grid.cellSize))
           );
 
-          if (Grid.curCell.x !==hoverCell.x || Grid.curCell.y !==hoverCell.y ) {
-            
+          if (
+            Grid.curCell.x !== hoverCell.x ||
+            Grid.curCell.y !== hoverCell.y
+          ) {
             Grid.curCell = hoverCell;
             if (e.which == 1) {
-              alert('jo')
+             
               Grid.addTile(Grid.curTileType, Grid.curCell.x, Grid.curCell.y);
             } else if (e.which == 3) {
               Grid.deleteTile(Grid.curTileType, Grid.curCell.x, Grid.curCell.y);
@@ -410,26 +399,25 @@ const bounds =document.getElementById('Grid').getBoundingClientRect()
           }
         },
         begin: function(e) {
-
-//@ts-ignore
-const bounds =document.getElementById('Grid').getBoundingClientRect()
-    const x = e.clientX - bounds.left;
-    const y = e.clientY - bounds.top;
-
-
-
+          //@ts-ignore
+          const bounds = document
+            .getElementById("Grid")
+            .getBoundingClientRect();
+          const x = e.clientX - bounds.left;
+          const y = e.clientY - bounds.top;
 
           Grid.pan.lastPt = new Pt(x, y);
           $(".Grid").on("mousemove", Grid.pan.run);
         },
         run: function(e) {
           //@ts-ignore
-const bounds =document.getElementById('Grid').getBoundingClientRect()
-    const x = e.clientX - bounds.left;
-    const y = e.clientY - bounds.top;
+          const bounds = document
+            .getElementById("Grid")
+            .getBoundingClientRect();
+          const x = e.clientX - bounds.left;
+          const y = e.clientY - bounds.top;
 
-
-          alert('run2')
+          alert("run2");
           Grid.offset.x += x - Grid.pan.lastPt.x;
           Grid.offset.y += y - Grid.pan.lastPt.y;
           $(".Tiles").css({
@@ -455,9 +443,8 @@ const bounds =document.getElementById('Grid').getBoundingClientRect()
       },
 
       addTile: function(tileType, x, y) {
-        console.log('addtile at x/y' + x + '  ' +y )
-     if( !Grid.isTileAt(tileType,x,y) ) {
-
+        console.log("addtile at x/y" + x + "  " + y);
+        if (!Grid.isTileAt(tileType, x, y)) {
           const html =
             "<div class='" +
             tileType +
@@ -465,13 +452,17 @@ const bounds =document.getElementById('Grid').getBoundingClientRect()
             x +
             "' data-y='" +
             y +
-            "' style='width:15vh;height:15vh;background:#ff914c'></div>";
+            "' style='position:absolute;width:15vh;height:15vh;background:#ff914c; left: " +
+            x * Grid.cellSize +
+            "vh; top: " +
+            y * Grid.cellSize +
+            "vh'></div>";
           $(".Tiles").append(html);
-          $("." + tileType + "[data-x='" + x + "'][data-y='" + y + "']").css({
-            left: x * Grid.vhTOpx(Grid.cellSize),
-            top: y * Grid.vhTOpx(Grid.cellSize),
-          });
-     }
+          // $("." + tileType + "[data-x='" + x + "'][data-y='" + y + "']").css({
+          //   left: x * Grid.vhTOpx(Grid.cellSize),
+          //   top: y * Grid.vhTOpx(Grid.cellSize),
+          // });
+        }
       },
 
       deleteTile: function(tileType, x, y) {
