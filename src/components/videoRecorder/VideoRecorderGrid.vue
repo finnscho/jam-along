@@ -250,14 +250,14 @@ export default class VideoRecorderGrid extends Vue {
       },
       cellSize: 100,
       curCell: new Pt(0, 0),
-      offset: new Pt(32, 10),
+      offset: new Pt(0, 0),
       curTileType: "Tiles-floor",
 
       cursor: {
         enable: function() {
           $("body").on("mousemove", ".Grid", Grid.cursor.run);
           $(".Grid").css("cursor", "default");
-          alert('enable')
+          
           $(".Grid-selector")
             .css({
               left: Grid.curCell.x * Grid.cellSize + Grid.offset.x + "vh",
@@ -274,8 +274,8 @@ export default class VideoRecorderGrid extends Vue {
 const bounds =document.getElementById('Grid').getBoundingClientRect()
     const x = e.clientX - bounds.left;
     const y = e.clientY - bounds.top;
-    console.log('x: ' + x + ' y: '+ y );
-    console.log('e.pageX: ' + e.pageX + ' e.pageY: '+ e.pageY );
+    // console.log('x: ' + x + ' y: '+ y );
+    // console.log('e.pageX: ' + e.pageX + ' e.pageY: '+ e.pageY );
 
 
 
@@ -315,9 +315,16 @@ const bounds =document.getElementById('Grid').getBoundingClientRect()
           $(".Grid").off("mousemove", Grid.modify.run);
         },
         start: function(e) {
+          //@ts-ignore
+const bounds =document.getElementById('Grid').getBoundingClientRect()
+    const x = e.clientX - bounds.left;
+    const y = e.clientY - bounds.top;
+
+
+
           const hoverCell = new Pt(
-            Math.floor((Grid.pxTOvw(e.pageX) - Grid.offset.x) / Grid.cellSize),
-            Math.floor((Grid.pxTOvw(e.pageY) - Grid.offset.y) / Grid.cellSize)
+            Math.floor(x / Grid.cellSize),
+            Math.floor(y / Grid.cellSize)
           );
           Grid.curCell = hoverCell;
           if (e.which == 1) {
@@ -333,10 +340,19 @@ const bounds =document.getElementById('Grid').getBoundingClientRect()
           $(".Grid").on("mousemove", Grid.modify.run);
         },
         run: function(e) {
+//@ts-ignore
+const bounds =document.getElementById('Grid').getBoundingClientRect()
+    const x = e.clientX - bounds.left;
+    const y = e.clientY - bounds.top;
+
+
+
+
           const hoverCell = new Pt(
-            Math.floor((e.pageX - Grid.offset.x) / Grid.cellSize),
-            Math.floor((e.pageY - Grid.offset.y) / Grid.cellSize)
+            Math.floor(x / Grid.cellSize),
+            Math.floor(y / Grid.cellSize)
           );
+
           if (Grid.curCell.x !==hoverCell.x || Grid.curCell.y !==hoverCell.y ) {
             
             Grid.curCell = hoverCell;
@@ -383,13 +399,28 @@ const bounds =document.getElementById('Grid').getBoundingClientRect()
           }
         },
         begin: function(e) {
-          Grid.pan.lastPt = new Pt(e.pageX, e.pageY);
+
+//@ts-ignore
+const bounds =document.getElementById('Grid').getBoundingClientRect()
+    const x = e.clientX - bounds.left;
+    const y = e.clientY - bounds.top;
+
+
+
+
+          Grid.pan.lastPt = new Pt(x, y);
           $(".Grid").on("mousemove", Grid.pan.run);
         },
         run: function(e) {
+          //@ts-ignore
+const bounds =document.getElementById('Grid').getBoundingClientRect()
+    const x = e.clientX - bounds.left;
+    const y = e.clientY - bounds.top;
+
+
           alert('run2')
-          Grid.offset.x += e.pageX - Grid.pan.lastPt.x;
-          Grid.offset.y += e.pageY - Grid.pan.lastPt.y;
+          Grid.offset.x += x - Grid.pan.lastPt.x;
+          Grid.offset.y += y - Grid.pan.lastPt.y;
           $(".Tiles").css({
             left: Grid.offset.x,
             top: Grid.offset.y,
@@ -398,7 +429,7 @@ const bounds =document.getElementById('Grid').getBoundingClientRect()
             "background-position",
             Grid.offset.x + "px " + Grid.offset.y + "px"
           );
-          Grid.pan.lastPt = new Pt(e.pageX, e.pageY);
+          Grid.pan.lastPt = new Pt(x, y);
         },
         stop: function(e) {
           $(".Grid").off("mousemove", Grid.pan.run);
@@ -413,7 +444,9 @@ const bounds =document.getElementById('Grid').getBoundingClientRect()
       },
 
       addTile: function(tileType, x, y) {
-        if (!Grid.isTileAt(tileType, x, y)) {
+        console.log('addtile at x/y' + x + '  ' +y )
+     if( !Grid.isTileAt(tileType,x,y) ) {
+
           const html =
             "<div class='" +
             tileType +
@@ -421,13 +454,13 @@ const bounds =document.getElementById('Grid').getBoundingClientRect()
             x +
             "' data-y='" +
             y +
-            "'></div>";
+            "' style='width:100px;height:100px;background:#ff914c'></div>";
           $(".Tiles").append(html);
           $("." + tileType + "[data-x='" + x + "'][data-y='" + y + "']").css({
             left: x * Grid.cellSize,
             top: y * Grid.cellSize,
           });
-        }
+     }
       },
 
       deleteTile: function(tileType, x, y) {
@@ -681,7 +714,7 @@ const bounds =document.getElementById('Grid').getBoundingClientRect()
 <style lang="less" scoped>
 @lineColour: #ff914c;
 @gridColour: darken(#363636, 0%);
-@tileColour: darken(@gridColour, 20%);
+@tileColour: darken(red, 20%);
 .grid( @lineColour; 100px; @cellCount ) {
   background-image: linear-gradient(fade(@lineColour, 50%) 3px, transparent 0),
     linear-gradient(90deg, fade(@lineColour, 50%) 3px, transparent 0),
@@ -807,7 +840,7 @@ body {
   position: absolute;
   width: 100px;
   height: 100px;
-  background: @tileColour;
+  background: green;
   animation: block-in 0.3s 0 ease-out;
   z-index: 1;
 }
@@ -824,7 +857,7 @@ body {
     height: 100px;
     margin: 0 0;
     border-radius: 0;
-    background: @tileColour;
+    background: green;
   }
 }
 </style>
