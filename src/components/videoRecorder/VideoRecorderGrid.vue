@@ -74,7 +74,7 @@
         <v-icon color="#FF914C">mdi-delete</v-icon>
       </v-btn>
     </v-app-bar>
-<div v-for="n in this.$store.state.videoGrid"  :key="n.id">
+    <!-- <div v-for="n in this.$store.state.videoGrid"  :key="n.id">
     <div
               id="addFile"
               centered
@@ -89,13 +89,31 @@
             >
               <video-js-recorder style="width:15vh;height:15vh;padding:0!important" :id="n.id" />
             </div>
-</div>
-
-
+</div> -->
 
     <div id="Grid" class="Grid" scrollable>
       <div class="Grid-selector addMode"></div>
-      <div class="Tiles"></div>
+      <div class="Tiles" >
+            "<video-js-recorder class='" +
+            tileType +
+            "' data-x='" +
+            x +
+            "' data-y='" +
+            y +
+            "id='JALvideojs" + Date.now() + "' " +
+            "style='position:absolute;width:15vh;height:15vh; left: " +
+            x * Grid.cellSize +
+            "vh; top: " +
+            y * Grid.cellSize +
+            "vh'></video-js-recorder>";
+
+
+
+
+
+
+
+      </div>
     </div>
   </v-container>
   <!-- </v-col>
@@ -128,7 +146,7 @@ export default class VideoRecorderGrid extends Vue {
   // children: any;
   files: any;
   data: any;
-  viId=0;
+  viId = 0;
   hover = false;
   downloading = false;
   file: any = "";
@@ -153,14 +171,20 @@ export default class VideoRecorderGrid extends Vue {
     reader.readAsDataURL(file);
     this.files.push(file);
   }
-//  get id(){
-//    return;
-   
-//  }
-  getStyle(n: GridVideo){
-    const y = (n.y * 15) + 10 ;
-    const x = +(n.x * 15)+47;
-    return "width:15vh;height:15vh;z-index:99;  left:"+x+"vh ; top: "+y  +"vh ; "
+  //  get id(){
+  //    return;
+
+  //  }
+  getStyle(n: GridVideo) {
+    const y = n.y * 15 + 10;
+    const x = +(n.x * 15) + 47;
+    return (
+      "position:absolute;width:15vh;height:15vh;background:#ff914c; left:" +
+      n.x * 15 +
+      "vh; top: " +
+      y * 15 +
+      "vh"
+    );
   }
 
   constructor(params) {
@@ -312,8 +336,7 @@ export default class VideoRecorderGrid extends Vue {
             Math.floor(x / Grid.vhTOpx(Grid.cellSize)),
             Math.floor(y / Grid.vhTOpx(Grid.cellSize))
           );
-          console.log("x " + hoverCell.x);
-          console.log("y " + hoverCell.y);
+
           // console.log(
           //   hoverCell.x +
           //     " y: " +
@@ -357,7 +380,7 @@ export default class VideoRecorderGrid extends Vue {
           );
           Grid.curCell = hoverCell;
           if (e.which == 1) {
-            Grid.addTile(Grid.curTileType, Grid.curCell.x, Grid.curCell.y);
+            Grid.addVideoTile(Grid.curTileType, Grid.curCell.x, Grid.curCell.y);
           } else if (e.which == 3) {
             $(".Grid-selector")
               .removeClass("addMode")
@@ -387,8 +410,11 @@ export default class VideoRecorderGrid extends Vue {
           ) {
             Grid.curCell = hoverCell;
             if (e.which == 1) {
-             
-              Grid.addTile(Grid.curTileType, Grid.curCell.x, Grid.curCell.y);
+              Grid.addVideoTile(
+                Grid.curTileType,
+                Grid.curCell.x,
+                Grid.curCell.y
+              );
             } else if (e.which == 3) {
               Grid.deleteTile(Grid.curTileType, Grid.curCell.x, Grid.curCell.y);
             }
@@ -473,17 +499,42 @@ export default class VideoRecorderGrid extends Vue {
       },
 
       addVideoTile: function(tileType, x, y) {
+        
         console.log("addVideoTile at x/y" + x + "  " + y);
         if (!Grid.isTileAt(tileType, x, y)) {
-            const id = "JALvideojs" + Date.now();
-         store.commit("addVideoToGrid",new GridVideo( id,x,y));
+          const id = "JALvideojs" + Date.now();
+          store.commit("addVideoToGrid", new GridVideo(id, x, y));
 
-                   $("." + tileType + "[data-x='" + x + "'][data-y='" + y + "']").css({
-            left: x * Grid.vhTOpx(Grid.cellSize),
-            top: y * Grid.vhTOpx(Grid.cellSize),})
-    }},
+        //   //        $("." + tileType + "[data-x='" + x + "'][data-y='" + y + "']").css({
+        //   // left: x * Grid.vhTOpx(Grid.cellSize),
+        //   // top: y * Grid.vhTOpx(Grid.cellSize),})
+        // }
 
-   addTile: function(tileType, x, y) {
+
+  // if (!Grid.isTileAt(tileType, x, y)) {
+             
+          // const html =
+          //   "<video-js-recorder class='" +
+          //   tileType +
+          //   "' data-x='" +
+          //   x +
+          //   "' data-y='" +
+          //   y +
+          //   "id='JALvideojs" + Date.now() + "' " +
+          //   "style='position:absolute;width:15vh;height:15vh; left: " +
+          //   x * Grid.cellSize +
+          //   "vh; top: " +
+          //   y * Grid.cellSize +
+          //   "vh'></video-js-recorder>";
+          // $(".Tiles").append(html);
+          // $("." + tileType + "[data-x='" + x + "'][data-y='" + y + "']").css({
+          //   left: x * Grid.vhTOpx(Grid.cellSize),
+          //   top: y * Grid.vhTOpx(Grid.cellSize),
+          // });
+        }
+      }, 
+
+      addTile: function(tileType, x, y) {
         console.log("addtile at x/y" + x + "  " + y);
         if (!Grid.isTileAt(tileType, x, y)) {
           const html =
@@ -506,14 +557,9 @@ export default class VideoRecorderGrid extends Vue {
         }
       },
 
-
-
-
-
-
-    //   addTile: function(tileType, x, y) {
-    //     console.log('addtile at x/y' + x + '  ' +y )
-    //  if( !Grid.isTileAt(tileType,x,y) ) {
+      //   addTile: function(tileType, x, y) {
+      //     console.log('addtile at x/y' + x + '  ' +y )
+      //  if( !Grid.isTileAt(tileType,x,y) ) {
 
       //     const html =
       //       "<div class='" +
@@ -528,27 +574,27 @@ export default class VideoRecorderGrid extends Vue {
       //       left: x * Grid.vhTOpx(Grid.cellSize),
       //       top: y * Grid.vhTOpx(Grid.cellSize),
       //     });
-     
+
       // }
 
-//           const html =
-//            "<div id='addFile' centered  style='position:absolute;width:15vh;height:15vh;' v-cloak @drop.prevent='addFile' @dragover.prevent"+
-//  "left: " +
-//             x * Grid.cellSize +
-//             "vh; top: " +
-//             y * Grid.cellSize +
-//             "vh'>"
-//             "<video-js-recorder  left: " +
-//             x * Grid.cellSize +
-//             "vh; top: " +
-//             y * Grid.cellSize +
-//             "vh'/> </div>"
-//           $(".Tiles").append(html);
-          // $("." + tileType + "[data-x='" + x + "'][data-y='" + y + "']").css({
-          //   left: x * Grid.vhTOpx(Grid.cellSize),
-          //   top: y * Grid.vhTOpx(Grid.cellSize),
-          // });
-        // }
+      //           const html =
+      //            "<div id='addFile' centered  style='position:absolute;width:15vh;height:15vh;' v-cloak @drop.prevent='addFile' @dragover.prevent"+
+      //  "left: " +
+      //             x * Grid.cellSize +
+      //             "vh; top: " +
+      //             y * Grid.cellSize +
+      //             "vh'>"
+      //             "<video-js-recorder  left: " +
+      //             x * Grid.cellSize +
+      //             "vh; top: " +
+      //             y * Grid.cellSize +
+      //             "vh'/> </div>"
+      //           $(".Tiles").append(html);
+      // $("." + tileType + "[data-x='" + x + "'][data-y='" + y + "']").css({
+      //   left: x * Grid.vhTOpx(Grid.cellSize),
+      //   top: y * Grid.vhTOpx(Grid.cellSize),
+      // });
+      // }
       // },
 
       deleteTile: function(tileType, x, y) {
