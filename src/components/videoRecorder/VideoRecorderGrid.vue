@@ -236,6 +236,17 @@ export default class VideoRecorderGrid extends Vue {
     const size = this.vwTOpx(22);
     const Grid = {
       // DEPENDANCIES: Pt.js
+       vhTOpx(value) {
+const w = window,
+    d = document,
+    e = d.documentElement,
+    g = d.getElementsByTagName('body')[0],
+    x = w.innerWidth || e.clientWidth || g.clientWidth,
+    y = w.innerHeight|| e.clientHeight|| g.clientHeight;
+
+  const result = (y*value)/100; // affichage du résultat (facultatif)
+  return result;
+},
 
       pxTOvw(value) {
         const w = window,
@@ -248,7 +259,7 @@ export default class VideoRecorderGrid extends Vue {
         const result = (100 * value) / x; // affichage du résultat (facultatif)
         return result;
       },
-      cellSize: 100,
+      cellSize: 15,
       curCell: new Pt(0, 0),
       offset: new Pt(0, 0),
       curTileType: "Tiles-floor",
@@ -260,8 +271,8 @@ export default class VideoRecorderGrid extends Vue {
           
           $(".Grid-selector")
             .css({
-              left: Grid.curCell.x * Grid.cellSize + Grid.offset.x + "vh",
-              top: Grid.curCell.y * Grid.cellSize + Grid.offset.y + "vh",
+              left: Grid.curCell.x * Grid.vhTOpx(Grid.cellSize) + Grid.offset.x ,
+              top: Grid.curCell.y * Grid.vhTOpx(Grid.cellSize) + Grid.offset.y ,
             })
             .show();
         },
@@ -280,8 +291,8 @@ const bounds =document.getElementById('Grid').getBoundingClientRect()
 
 
           const hoverCell = new Pt(
-            Math.floor(x / Grid.cellSize),
-            Math.floor(y / Grid.cellSize)
+            Math.floor(x / Grid.vhTOpx(Grid.cellSize)),
+            Math.floor(y / Grid.vhTOpx(Grid.cellSize))
           );
           console.log('x '+hoverCell.x)
           console.log('y '+ hoverCell.y)
@@ -289,15 +300,15 @@ const bounds =document.getElementById('Grid').getBoundingClientRect()
           //   hoverCell.x +
           //     " y: " +
           //     hoverCell.y +
-          //     " Grid.cellSize " +
+          //     " Grid.vhTOpx(Grid.cellSize) " +
           //     Grid.cellSize +
           //     "  => " +
           //     hoverCell.x
           // );
-          //alert('left'+ hoverCell.x * Grid.cellSize + Grid.offset.x+ 'hoverCell.x '+  hoverCell.x + ' Grid.cellSize' +Grid.cellSize+ '  Grid.offset.x ' + Grid.offset.x  )
+          //alert('left'+ hoverCell.x * Grid.cellSize + Grid.offset.x+ 'hoverCell.x '+  hoverCell.x + ' Grid.cellSize' +Grid.vhTOpx(Grid.cellSize)+ '  Grid.offset.x ' + Grid.offset.x  )
           $(".Grid-selector").css({
-            left: hoverCell.x * Grid.cellSize ,
-            top: hoverCell.y * Grid.cellSize ,
+            left: hoverCell.x * Grid.vhTOpx(Grid.cellSize) ,
+            top: hoverCell.y * Grid.vhTOpx(Grid.cellSize) ,
           });
         },
       },
@@ -323,8 +334,8 @@ const bounds =document.getElementById('Grid').getBoundingClientRect()
 
 
           const hoverCell = new Pt(
-            Math.floor(x / Grid.cellSize),
-            Math.floor(y / Grid.cellSize)
+            Math.floor(x / Grid.vhTOpx(Grid.cellSize)),
+            Math.floor(y / Grid.vhTOpx(Grid.cellSize))
           );
           Grid.curCell = hoverCell;
           if (e.which == 1) {
@@ -349,8 +360,8 @@ const bounds =document.getElementById('Grid').getBoundingClientRect()
 
 
           const hoverCell = new Pt(
-            Math.floor(x / Grid.cellSize),
-            Math.floor(y / Grid.cellSize)
+            Math.floor(x / Grid.vhTOpx(Grid.cellSize)),
+            Math.floor(y / Grid.vhTOpx(Grid.cellSize))
           );
 
           if (Grid.curCell.x !==hoverCell.x || Grid.curCell.y !==hoverCell.y ) {
@@ -457,8 +468,8 @@ const bounds =document.getElementById('Grid').getBoundingClientRect()
             "' style='width:15vh;height:15vh;background:#ff914c'></div>";
           $(".Tiles").append(html);
           $("." + tileType + "[data-x='" + x + "'][data-y='" + y + "']").css({
-            left: x * Grid.cellSize,
-            top: y * Grid.cellSize,
+            left: x * Grid.vhTOpx(Grid.cellSize),
+            top: y * Grid.vhTOpx(Grid.cellSize),
           });
      }
       },
