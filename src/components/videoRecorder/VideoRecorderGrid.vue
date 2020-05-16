@@ -78,10 +78,14 @@
     <div
               id="addFile"
               centered
-              :style="getStyle(n)"
+            
               v-cloak
               @drop.prevent="addFile"
               @dragover.prevent
+
+
+                :class="'Tiles-floor data-x=' +n.x +' data-y=' + y "
+                 style='width:15vh;height:15vh;background:#ff914c'
             >
               <video-js-recorder style="width:15vh;height:15vh;padding:0!important" :id="n.id" />
             </div>
@@ -156,7 +160,7 @@ export default class VideoRecorderGrid extends Vue {
   getStyle(n: GridVideo){
     const y = (n.y * 15) + 10 ;
     const x = +(n.x * 15)+47;
-    return "width:15vh;height:15vh;z-index:99;  left:"+x+"vh ; top: "+y  +"vh ; position:absolute"
+    return "width:15vh;height:15vh;z-index:99;  left:"+x+"vh ; top: "+y  +"vh ; "
   }
 
   constructor(params) {
@@ -353,7 +357,7 @@ export default class VideoRecorderGrid extends Vue {
           );
           Grid.curCell = hoverCell;
           if (e.which == 1) {
-            Grid.addVideoTile(Grid.curTileType, Grid.curCell.x, Grid.curCell.y);
+            Grid.addTile(Grid.curTileType, Grid.curCell.x, Grid.curCell.y);
           } else if (e.which == 3) {
             $(".Grid-selector")
               .removeClass("addMode")
@@ -384,7 +388,7 @@ export default class VideoRecorderGrid extends Vue {
             Grid.curCell = hoverCell;
             if (e.which == 1) {
              
-              Grid.addVideoTile(Grid.curTileType, Grid.curCell.x, Grid.curCell.y);
+              Grid.addTile(Grid.curTileType, Grid.curCell.x, Grid.curCell.y);
             } else if (e.which == 3) {
               Grid.deleteTile(Grid.curTileType, Grid.curCell.x, Grid.curCell.y);
             }
@@ -473,7 +477,59 @@ export default class VideoRecorderGrid extends Vue {
         if (!Grid.isTileAt(tileType, x, y)) {
             const id = "JALvideojs" + Date.now();
          store.commit("addVideoToGrid",new GridVideo( id,x,y));
-    }
+
+                   $("." + tileType + "[data-x='" + x + "'][data-y='" + y + "']").css({
+            left: x * Grid.vhTOpx(Grid.cellSize),
+            top: y * Grid.vhTOpx(Grid.cellSize),})
+    }},
+
+   addTile: function(tileType, x, y) {
+        console.log("addtile at x/y" + x + "  " + y);
+        if (!Grid.isTileAt(tileType, x, y)) {
+          const html =
+            "<div class='" +
+            tileType +
+            "' data-x='" +
+            x +
+            "' data-y='" +
+            y +
+            "' style='position:absolute;width:15vh;height:15vh;background:#ff914c; left: " +
+            x * Grid.cellSize +
+            "vh; top: " +
+            y * Grid.cellSize +
+            "vh'></div>";
+          $(".Tiles").append(html);
+          // $("." + tileType + "[data-x='" + x + "'][data-y='" + y + "']").css({
+          //   left: x * Grid.vhTOpx(Grid.cellSize),
+          //   top: y * Grid.vhTOpx(Grid.cellSize),
+          // });
+        }
+      },
+
+
+
+
+
+
+    //   addTile: function(tileType, x, y) {
+    //     console.log('addtile at x/y' + x + '  ' +y )
+    //  if( !Grid.isTileAt(tileType,x,y) ) {
+
+      //     const html =
+      //       "<div class='" +
+      //       tileType +
+      //       "' data-x='" +
+      //       x +
+      //       "' data-y='" +
+      //       y +
+      //       "' style='width:15vh;height:15vh;background:#ff914c'></div>";
+      //     $(".Tiles").append(html);
+      //     $("." + tileType + "[data-x='" + x + "'][data-y='" + y + "']").css({
+      //       left: x * Grid.vhTOpx(Grid.cellSize),
+      //       top: y * Grid.vhTOpx(Grid.cellSize),
+      //     });
+     
+      // }
 
 //           const html =
 //            "<div id='addFile' centered  style='position:absolute;width:15vh;height:15vh;' v-cloak @drop.prevent='addFile' @dragover.prevent"+
@@ -493,7 +549,7 @@ export default class VideoRecorderGrid extends Vue {
           //   top: y * Grid.vhTOpx(Grid.cellSize),
           // });
         // }
-      },
+      // },
 
       deleteTile: function(tileType, x, y) {
         $("." + tileType + "[data-x='" + x + "'][data-y='" + y + "']").remove();
@@ -872,7 +928,7 @@ body {
   position: absolute;
   width: 15vh;
   height: 15vh;
-  background: green;
+  // background: green;
   animation: block-in 0.3s 0 ease-out;
   z-index: 1;
 }
