@@ -74,6 +74,21 @@
         <v-icon color="#FF914C">mdi-delete</v-icon>
       </v-btn>
     </v-app-bar>
+<div v-for="n in this.$store.state.videoGrid"  :key="n.id">
+    <div
+              id="addFile"
+              centered
+              :style="getStyle(n)"
+              v-cloak
+              @drop.prevent="addFile"
+              @dragover.prevent
+            >
+              <video-js-recorder style="width:15vh;height:15vh;padding:0!important" :id="n.id" />
+            </div>
+</div>
+
+
+
     <div id="Grid" class="Grid" scrollable>
       <div class="Grid-selector addMode"></div>
       <div class="Tiles"></div>
@@ -88,7 +103,7 @@
 import Vue from "vue";
 import { Component, Prop } from "vue-property-decorator";
 import VideoJSRecord from "./VideoJSRecord.vue";
-import store, { Child } from "../../store";
+import store, { Child, GridVideo } from "../../store";
 import { VideoStreamMerger } from "video-stream-merger";
 import "videojs-offset";
 import JalffmpegService from "../services/ffmpegService";
@@ -109,6 +124,7 @@ export default class VideoRecorderGrid extends Vue {
   // children: any;
   files: any;
   data: any;
+  viId=0;
   hover = false;
   downloading = false;
   file: any = "";
@@ -133,6 +149,16 @@ export default class VideoRecorderGrid extends Vue {
     reader.readAsDataURL(file);
     this.files.push(file);
   }
+//  get id(){
+//    return;
+   
+//  }
+  getStyle(n: GridVideo){
+    const y = (n.y * 15) + 10 ;
+    const x = +(n.x * 15)+47;
+    return "width:15vh;height:15vh;z-index:99;  left:"+x+"vh ; top: "+y  +"vh ; position:absolute"
+  }
+
   constructor(params) {
     super(params);
     this.isMobileDevice = /Mobi/i.test(window.navigator.userAgent);
@@ -327,7 +353,7 @@ export default class VideoRecorderGrid extends Vue {
           );
           Grid.curCell = hoverCell;
           if (e.which == 1) {
-            Grid.addTile(Grid.curTileType, Grid.curCell.x, Grid.curCell.y);
+            Grid.addVideoTile(Grid.curTileType, Grid.curCell.x, Grid.curCell.y);
           } else if (e.which == 3) {
             $(".Grid-selector")
               .removeClass("addMode")
@@ -358,7 +384,7 @@ export default class VideoRecorderGrid extends Vue {
             Grid.curCell = hoverCell;
             if (e.which == 1) {
              
-              Grid.addTile(Grid.curTileType, Grid.curCell.x, Grid.curCell.y);
+              Grid.addVideoTile(Grid.curTileType, Grid.curCell.x, Grid.curCell.y);
             } else if (e.which == 3) {
               Grid.deleteTile(Grid.curTileType, Grid.curCell.x, Grid.curCell.y);
             }
@@ -442,27 +468,31 @@ export default class VideoRecorderGrid extends Vue {
         );
       },
 
-      addTile: function(tileType, x, y) {
-        console.log("addtile at x/y" + x + "  " + y);
+      addVideoTile: function(tileType, x, y) {
+        console.log("addVideoTile at x/y" + x + "  " + y);
         if (!Grid.isTileAt(tileType, x, y)) {
-          const html =
-            "<div class='" +
-            tileType +
-            "' data-x='" +
-            x +
-            "' data-y='" +
-            y +
-            "' style='position:absolute;width:15vh;height:15vh;background:#ff914c; left: " +
-            x * Grid.cellSize +
-            "vh; top: " +
-            y * Grid.cellSize +
-            "vh'></div>";
-          $(".Tiles").append(html);
+            const id = "JALvideojs" + Date.now();
+         store.commit("addVideoToGrid",new GridVideo( id,x,y));
+    }
+
+//           const html =
+//            "<div id='addFile' centered  style='position:absolute;width:15vh;height:15vh;' v-cloak @drop.prevent='addFile' @dragover.prevent"+
+//  "left: " +
+//             x * Grid.cellSize +
+//             "vh; top: " +
+//             y * Grid.cellSize +
+//             "vh'>"
+//             "<video-js-recorder  left: " +
+//             x * Grid.cellSize +
+//             "vh; top: " +
+//             y * Grid.cellSize +
+//             "vh'/> </div>"
+//           $(".Tiles").append(html);
           // $("." + tileType + "[data-x='" + x + "'][data-y='" + y + "']").css({
           //   left: x * Grid.vhTOpx(Grid.cellSize),
           //   top: y * Grid.vhTOpx(Grid.cellSize),
           // });
-        }
+        // }
       },
 
       deleteTile: function(tileType, x, y) {

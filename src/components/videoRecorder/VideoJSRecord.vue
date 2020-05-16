@@ -8,6 +8,8 @@
         playsinline
         controls
         preload="auto"
+        width="15vh"
+        height="15vh"
       >
         <source v-if="src != null" :src="src" type="video/mp4" />
       </video>
@@ -55,8 +57,6 @@ export default class VideoJSRecord extends Vue {
     this.$root.$refs.A = this;
   }
   mounted() {
-    console.log(store.state.children.length);
-
     const options = {
       controls: false,
       autoplay: false,
@@ -107,8 +107,8 @@ export default class VideoJSRecord extends Vue {
       videojs.log(msg);
     });
 
-    this.player.width = 1920;
-    this.player.height = 1080;
+    this.player.width = 1000;
+    this.player.height = 1000;
 
     const isMobileDevice = /Mobi/i.test(window.navigator.userAgent);
     // if (!isMobileDevice && this.src != null)
@@ -274,8 +274,7 @@ VideoJSRecord.player = undefined;
 .vjs-record .vjs-device-button.vjs-control {
   display: none !important;
 }
-.video-js .vjs-tech {
-  /* height:1000px;
-  width: 1000px; */
+.video-js{
+  height:15vh!important
 }
 </style>

@@ -15,6 +15,17 @@ export class Child {
     this.src = src;
   }
 }
+
+export class GridVideo {
+  x: number;
+  y: number;
+  id: string;
+  constructor(id, x, y) {
+    this.id = id;
+    this.x = y;
+    this.y = y;
+  }
+}
 export default new Vuex.Store({
 
   state: {
@@ -26,12 +37,16 @@ export default new Vuex.Store({
     userProfile: {} as JALUser,
     activeProject: '',
     activeProjectName: '',
-    projects: Array <any>()
+    projects: Array<any>(),
+    videoGrid: Array<GridVideo>()
   },
 
   mutations: {
     setUser(state, val: JALUser) {
       state.userProfile = val
+    },
+    addVideoToGrid(state, video) {
+      state.videoGrid.push(video)
     },
     setProject(state, val) {
       state.activeProject = val
