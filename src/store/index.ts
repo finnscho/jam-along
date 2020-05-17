@@ -21,6 +21,8 @@ export class GridVideo {
   y: number;
   id: string;
   sizeX: number;
+  lastX: number;
+  lastY: number
   sizeY: number;
   constructor(id, x, y,sizeX,sizeY) {
     this.id = id;
@@ -28,6 +30,8 @@ export class GridVideo {
     this.y = y;
     this.sizeX = sizeX;
     this.sizeY = sizeY;
+    this.lastX = x,
+      this.lastY= y
 
   }
 }

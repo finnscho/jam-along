@@ -507,32 +507,42 @@ export default class VideoRecorderGrid extends Vue {
       mergeVideoTile: function(tileType, x, y) {
         const size = true;
         const gridVideo: GridVideo = Grid.lastVideoTile;
-        if (Grid.lastVideoTile.x > x) {
+        console.log('last video tileX:' + Grid.lastVideoTile.lastX);
+        console.log('last video tileY:' + Grid.lastVideoTile.lastY);
+        
+        if (Grid.lastVideoTile.lastX > x ) {
           console.log("Nach LINKS");
                     if (size) {
-            gridVideo.sizeX = gridVideo.sizeX/2;// / 2<10?gridVideo.sizeX / 2: gridVideo.sizeX;
+
+            gridVideo.sizeX = gridVideo.sizeX - 10//<60?gridVideo.sizeX * 2: gridVideo.sizeX;
+            console.log("XXX" + gridVideo.sizeX)
+            Grid.lastVideoTile.lastX = Grid.lastVideoTile.lastX-1;
             console.log("SIZED X: " + gridVideo.sizeX);
           }
-        }
+        }else
         if (Grid.lastVideoTile.x < x) {
           console.log("Nach RECHTS");
           if (size) {
-            gridVideo.sizeX = gridVideo.sizeX * 2<60?gridVideo.sizeX * 2: gridVideo.sizeX;
+            gridVideo.sizeX = gridVideo.sizeX + 10//* 2<60?gridVideo.sizeX * 2: gridVideo.sizeX;
+           // const p = 2//Grid.lastVideoTile.x+1
+            Grid.lastVideoTile.lastX = Grid.lastVideoTile.lastX +1;
             console.log("SIZED X: " + gridVideo.sizeX);
           }
-        }
-        if (Grid.lastVideoTile.y < y) {
+        }else
+        if (Grid.lastVideoTile.lastY < y) {
                     if (size) {
-            gridVideo.sizeX = gridVideo.sizeX * 2<60?gridVideo.sizeX * 2: gridVideo.sizeX;
+            gridVideo.sizeX = gridVideo.sizeX -10//<60?gridVideo.sizeX / 2: gridVideo.sizeX;
             console.log("SIZED X: " + gridVideo.sizeX);
+            Grid.lastVideoTile.lastY= Grid.lastVideoTile.lastY-1;
           }
           console.log("Nach UNTEN");
-        }
+        }else
         if (Grid.lastVideoTile.y > y) {
           console.log("Nach OBEN");
                             if (size) {
-            gridVideo.sizeX = gridVideo.sizeX / 2<10?gridVideo.sizeX / 2: gridVideo.sizeX;
+            gridVideo.sizeX = gridVideo.sizeX +10//<10?gridVideo.sizeX / 2: gridVideo.sizeX;
             console.log("SIZED X: " + gridVideo.sizeX);
+            Grid.lastVideoTile.y = Grid.lastVideoTile.y+1;
           }
         }
         store.commit("updateGridVideo", gridVideo);
@@ -543,7 +553,7 @@ export default class VideoRecorderGrid extends Vue {
           const id = "JALvideojs" + Date.now();
           //  console.log("adding video at x: " + x + " y: " + y);
           const gridVideo = new GridVideo(id, x, y, 10, 10);
-          Grid.lastVideoTile = gridVideo;
+          Grid.lastVideoTile = {id: id,sizeX:10,sizeY: 10, x: x, y: y,lastX: x,lastY:y };
           store.commit("addVideoToGrid", gridVideo);
 
           //   //        $("." + tileType + "[data-x='" + x + "'][data-y='" + y + "']").css({

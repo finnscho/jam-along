@@ -3,7 +3,7 @@
     <div id="videoJs" v-cloak @drop.prevent="addFile" @dragover.prevent>
       <video
         :id="id"
-        class="video-js vjs-layout-large"
+        class="video-js vjs-layout-large "
         v-bind:style="isActive() ? 'border: dashed;' : ''"
         playsinline
         controls
