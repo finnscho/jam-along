@@ -111,7 +111,7 @@ export default class DetailPanel extends Vue {
     this.slider = value;
     console.log("offset: " + value / 1000);
     //@ts-ignore
-    store.state.activePlayer.slider = value / 1000;
+   // store.state.activePlayer.slider = value / 1000;
     store.state.activePlayer.player.offset({
       start: value / 1000,
       //Should the video go to the beginning when it ends

@@ -103,6 +103,12 @@ export default new Vuex.Store({
   
       state.activePlayer = n;
     },
+
+    setAtivePlayerSrc(state, src) {
+      //@ts-ignore
+      state.activePlayer.src = src;
+
+    },
     setActivePlayById(state, id: string) {
       state.players.forEach((element) => {
         //@ts-ignore

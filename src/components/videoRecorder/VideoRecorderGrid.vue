@@ -2,7 +2,7 @@
   <v-container fluid>
     <v-navigation-drawer
       style="margin-top:20vh; height:40vh"
-      v-model="drawer"
+
       color="#272727"
       width="4vw"
       absolute
@@ -546,16 +546,14 @@ export default class VideoRecorderGrid extends Vue {
       mergeVideoTile: function(tileType, x, y) {
         const size = true;
         const gridVideo: GridVideo = Grid.lastVideoTile;
-        console.log("last video tileX:" + Grid.lastVideoTile.lastX);
-        console.log("last video tileY:" + Grid.lastVideoTile.lastY);
 
         if (Grid.lastVideoTile.lastX > x) {
-          console.log("Nach LINKS");
+
           if (size) {
             gridVideo.sizeX = gridVideo.sizeX - 10; //<60?gridVideo.sizeX * 2: gridVideo.sizeX;
-            console.log("XXX" + gridVideo.sizeX);
+
             Grid.lastVideoTile.lastX = Grid.lastVideoTile.lastX - 1;
-            console.log("SIZED X: " + gridVideo.sizeX);
+
           }
         } else if (Grid.lastVideoTile.x < x) {
           console.log("Nach RECHTS");
@@ -745,9 +743,10 @@ export default class VideoRecorderGrid extends Vue {
       // finished reading file data.
 
       this.data.push(e2.target.result);
-
-      const name = "JALvideojs" + Date.now();
-      store.commit("addChildren", new Child(name, e2.target.result));
+      
+      //const name = "JALvideojs" + Date.now();
+      
+      store.commit("setAtivePlayerSrc",  e2.target.result);
     }
   }
   removeFile(file) {

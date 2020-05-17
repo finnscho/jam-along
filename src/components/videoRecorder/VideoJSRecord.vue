@@ -2,12 +2,11 @@
   <v-container v-on:click="activate" z-index="999" v-on:touchstart="activate">
     <div id="videoJs" v-cloak @drop.prevent="addFile" @dragover.prevent>
       <video
-       v-on:click="activate"
+        v-on:click="activate"
         :id="id"
         class="video-js vjs-layout-large "
         v-bind:style="isActive() ? 'border: solid;' : ''"
         playsinline
-        
         controls
         preload="auto"
         width="10vh"
@@ -27,7 +26,7 @@ import waveSurfer from "../../../node_modules/wavesurfer.js/dist/wavesurfer.min.
 import "video.js/dist/video-js.css";
 import "videojs-record/dist/css/videojs.record.css";
 import Vue from "vue";
-import { Component, Prop } from "vue-property-decorator";
+import { Component, Prop, Watch } from "vue-property-decorator";
 import "webrtc-adapter";
 import RecordRTC from "recordrtc";
 
@@ -43,6 +42,12 @@ export default class VideoJSRecord extends Vue {
   @Prop() id;
   @Prop() active;
   @Prop() src;
+
+  @Watch("src")
+  onSrcChanged(val, oldVal) {
+    this.initializePlayer();
+  }
+
   data() {
     return {
       min: 0,
@@ -59,14 +64,17 @@ export default class VideoJSRecord extends Vue {
     this.$root.$refs.A = this;
   }
   mounted() {
+    this.initializePlayer();
+  }
+  initializePlayer() {
     const options = {
       controls: false,
       autoplay: false,
       fluid: true,
       responsive: true,
       loop: false,
-       width: 400 ,
-                height: 400 ,
+      width: 400,
+      height: 400,
       controlBar: {
         volumePanel: true,
         seeking: true,
@@ -82,13 +90,13 @@ export default class VideoJSRecord extends Vue {
                 // video: true,
                 frameWidth: 400,
                 frameHeight: 400,
-                width: 400 ,
-                height: 400 ,
-                video: {
-                // video media constraints: set resolution of camera
                 width: 400,
-                height: 400
-            },
+                height: 400,
+                video: {
+                  // video media constraints: set resolution of camera
+                  width: 400,
+                  height: 400,
+                },
               }
             : {},
         // wavesurfer: {
@@ -104,6 +112,9 @@ export default class VideoJSRecord extends Vue {
     };
     //  this.myid = '234'// + (Math.floor(Math.random() * Math.floor(100)))
     /* eslint-disable no-console */
+    // if(this.player!= ""){
+    //   this.player.dispose();
+    // }
     this.player = videojs("#" + this.id, options, () => {
       // print version information at startup
       const msg =
@@ -125,10 +136,8 @@ export default class VideoJSRecord extends Vue {
 
     store.commit("addPlayer", this);
     if (this.src !== null && this.src !== undefined) {
-     
       this.player.src = this.src;
     } else {
-      
       try {
         this.player.record().getDevice();
       } catch {
@@ -277,23 +286,25 @@ export default class VideoJSRecord extends Vue {
 VideoJSRecord.player = undefined;
 </script>
 
-<style >
+<style>
 button.vjs-record.vjs-device-button.vjs-control.vjs-icon-av-perm {
-   display:none!important
- }
+  display: none !important;
+}
 .video-js .vjs-control-bar {
   display: none !important;
 }
-video{
-  width:10vh
+video {
+  width: 10vh;
 }
 .vjs-record .vjs-device-button.vjs-control {
   display: none !important;
 }
-#videoJs{
-    height: 100%;
+#videoJs {
+  height: 100%;
 }
-.video-js.vjs-fluid, .video-js.vjs-16-9, .video-js.vjs-4-3{
+.video-js.vjs-fluid,
+.video-js.vjs-16-9,
+.video-js.vjs-4-3 {
   height: 100%;
 }
 /* .video-js{
