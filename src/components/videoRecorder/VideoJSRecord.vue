@@ -1,11 +1,13 @@
 <template>
-  <v-container v-on:click="activate" v-on:touchstart="activate">
+  <v-container v-on:click="activate" z-index="999" v-on:touchstart="activate">
     <div id="videoJs" v-cloak @drop.prevent="addFile" @dragover.prevent>
       <video
+       v-on:click="activate"
         :id="id"
         class="video-js vjs-layout-large "
         v-bind:style="isActive() ? 'border: dashed;' : ''"
         playsinline
+        
         controls
         preload="auto"
         width="10vh"
@@ -239,6 +241,7 @@ export default class VideoJSRecord extends Vue {
     return store.state.activePlayer == this ? "border: dashed;" : "";
   }
   activate() {
+    alert('Activate')
     store.commit("activePlayer", this);
   }
 

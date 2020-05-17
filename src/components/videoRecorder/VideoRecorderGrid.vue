@@ -520,17 +520,17 @@ export default class VideoRecorderGrid extends Vue {
       },
 
       isTileAt: function(tileType, x, y) {
-        let res =false
-        store.state.videoGrid.forEach(element => {
-          const exMax= element.x + (element.sizeX/10)-1
-          const eyMax= element.y + (element.sizeX/10)-1
-          if(element.x <= x && x <= exMax && element.y <= y && y <= eyMax){
-            res =true;
+        let res = false;
+        store.state.videoGrid.forEach((element) => {
+          const exMax = element.x + element.sizeX / 10 - 1;
+          const eyMax = element.y + element.sizeX / 10 - 1;
+          if (element.x <= x && x <= exMax && element.y <= y && y <= eyMax) {
+            res = true;
 
+            store.commit("setActivePlayById", element.id);
           }
-
         });
-        return res
+        return res;
         // return (
         //   $("." + tileType + "[data-x='" + x + "'][data-y='" + y + "']")
         //     .length > 0
@@ -579,7 +579,6 @@ export default class VideoRecorderGrid extends Vue {
       addVideoTile: function(tileType, x, y) {
         // console.log("addVideoTile at x/y" + x + "  y " + y);
         if (!Grid.isTileAt(tileType, x, y)) {
-      
           const id = "JALvideojs" + Date.now();
           //  console.log("adding video at x: " + x + " y: " + y);
           const gridVideo = new GridVideo(id, x, y, 10, 10);

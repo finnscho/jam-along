@@ -99,9 +99,19 @@ export default new Vuex.Store({
       state.players = Array<VideoJSRecord>();
       state.children = new Array<Child>();
     },
-    activePlayer(state, n: any) {
-
+  activePlayer(state, n: any) {
+      alert('bis hier her')
       state.activePlayer = n;
+    },
+    setActivePlayById(state, id: string) {
+      state.players.forEach((element) => {
+        //@ts-ignore
+        if (element.id == id)
+        {
+          //@ts-ignore
+          state.activePlayer = element;
+          }
+      });
     },
     addChildren(state, n: any) {
 
