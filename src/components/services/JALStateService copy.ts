@@ -1,4 +1,3 @@
-
 import { GridVideo } from './../../store/index';
 import store, { Child } from "../../store";
 import { saveAs } from 'file-saver';
@@ -14,41 +13,35 @@ export default class JALStateService {
   writeUserData(userId, videos: Array<JALVideo>, projectid: string, name) {
 
 
-  //   // const updates = {};
-  //   // updates['project/' + projectid] = {
-  //   //   projectid: projectid,
-  //   //   name: name,
-  //   //   userid: userId,
-  //   //   videos: videos
-  //   // }
+    const updates = {};
+    updates['project/' + projectid] = {
+      projectid: projectid,
+      name: name,
+      userid: userId,
+      videos: videos
+    }
 
-  //   // return firebase.database().ref().update(updates);
-  //   firebase.database().ref('project/' + projectid).set({
-  //     projectid: projectid,
-  //     name: name,
-  //     userid: userId,
-  //     videos: videos
-  //   });
+    return firebase.database().ref().update(updates);
+    // firebase.database().ref('project/' + projectid).set({
+    //   projectid: projectid,
+    //   name: name,
+    //   userid: userId,
+    //   videos: videos
+    // });
 
 
-    
+
     // const ref = firebase.database().ref('users/' + userId + '/projects');
     // ref.on('value', function (snapshot) {
-    //   let list: Array<string>;
-    //   list = new Array<string>();
-    //   list.push(snapshot.val().projects)
-   
+    //   list = snapshot.val() as Array<string>;
     //   snapshot.val().projects != undefined ? list.push(projectid) : list = [projectid]
-    const list = store.state.userProfile.projects;
-    const proj = {
-      name: name,
-      projectid: projectid} as JALProject 
-    list.push(proj)
-      const updates = {};
-      updates['users/' + userId + '/projects'] = list;
+    //   ref.set(list);
 
-      return firebase.database().ref().update(updates);
-
+    // })
+    // ref.update({
+    //   userId: userId,
+    //   projects: { list }
+    // });
   }
 
   createProject(userId, projectid) {
@@ -85,7 +78,7 @@ export default class JALStateService {
       //@ts-ignore  
       if (element.player.src != null && typeof element.player.src == 'string') {
         //@ts-ignore
-        Myvideos.push(new JALVideo(element.player.src, element.slider, element.id, gridVideo.x, gridVideo.y, gridVideo.sizeX, gridVideo.sizeY))
+        Myvideos.push(new JALVideo(element.player.src, element.slider, element.id,gridVideo.x,gridVideo.y,gridVideo.sizeX,gridVideo.sizeY))
         this.writeUserData(firebase.auth().currentUser?.uid, Myvideos, projectid, projetName)
 
       }

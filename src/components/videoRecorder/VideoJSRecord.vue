@@ -91,15 +91,15 @@ export default class VideoJSRecord extends Vue {
             },
               }
             : {},
-        // wavesurfer: {
-        //   barHeight: 100,
-        //   debug: true,
-        //   waveColor: "#FF914C",
-        //   progressColor: "orangered",
-        //   cursorColor: "yellow",
-        //   container: ".waveform",
-        //   hideScrollbar: true,
-        // },
+        wavesurfer: {
+          barHeight: 100,
+          debug: true,
+          waveColor: "#FF914C",
+          progressColor: "orangered",
+          cursorColor: "yellow",
+          container: ".waveform",
+          hideScrollbar: true,
+        },
       },
     };
     //  this.myid = '234'// + (Math.floor(Math.random() * Math.floor(100)))

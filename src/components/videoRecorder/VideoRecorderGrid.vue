@@ -2,7 +2,6 @@
   <v-container fluid>
     <v-navigation-drawer
       style="margin-top:20vh; height:40vh"
-
       color="#272727"
       width="4vw"
       absolute
@@ -125,7 +124,7 @@ import jquery from "jquery";
 import $ from "jquery";
 import { Pt, Line } from "pts";
 
-import streamToBlob from "stream-to-blob"
+import streamToBlob from "stream-to-blob";
 
 @Component({
   components: {
@@ -319,8 +318,8 @@ export default class VideoRecorderGrid extends Vue {
       offset: new Pt(0, 0),
       curTileType: "Tiles-floor",
       lastVideoTile: new GridVideo(null, null, null, null, null),
-      touchmove(){
-        console.log('touchmove')
+      touchmove() {
+        console.log("touchmove");
       },
       cursor: {
         enable: function() {
@@ -549,12 +548,10 @@ export default class VideoRecorderGrid extends Vue {
         const gridVideo: GridVideo = Grid.lastVideoTile;
 
         if (Grid.lastVideoTile.lastX > x) {
-
           if (size) {
             gridVideo.sizeX = gridVideo.sizeX - 10; //<60?gridVideo.sizeX * 2: gridVideo.sizeX;
 
             Grid.lastVideoTile.lastX = Grid.lastVideoTile.lastX - 1;
-
           }
         } else if (Grid.lastVideoTile.x < x) {
           console.log("Nach RECHTS");
@@ -592,7 +589,7 @@ export default class VideoRecorderGrid extends Vue {
             y: y,
             lastX: x,
             lastY: y,
-            src:undefined
+            src: undefined,
           };
           store.commit("addVideoToGrid", gridVideo);
 
@@ -745,12 +742,12 @@ export default class VideoRecorderGrid extends Vue {
       // finished reading file data.
 
       this.data.push(e2.target.result);
-      
+
       //const name = "JALvideojs" + Date.now();
-      
-      store.commit("setAtivePlayerSrc",  e2.target.result);
-          //@ts-ignore
-    store.commit("removeChildren", store.state.activePlayer.id);
+
+      store.commit("setAtivePlayerSrc", e2.target.result);
+      //@ts-ignore
+      store.commit("removeChildren", store.state.activePlayer.id);
     }
   }
   removeFile(file) {
@@ -765,7 +762,7 @@ export default class VideoRecorderGrid extends Vue {
   mouseleaveAddBtn() {
     this.hover = false;
   }
-refreshMergedStream() {
+  refreshMergedStream() {
     console.log("Try to refresh merged Stream:");
 
     let i = 1;
@@ -795,7 +792,7 @@ refreshMergedStream() {
       //  oldPlayer.muted = true;
       // videojs(oldPlayer).dispose();
     });
-  // async refreshMergedStream() {
+    // async refreshMergedStream() {
     // console.log("Try to refresh merged Stream:");
 
     // let i = 1;
@@ -813,7 +810,6 @@ refreshMergedStream() {
 
     // // this.merger = this.service.mergeVideos(data);
     // const stream = this.service.mergeVideos(data).result.Readable();
-
 
     // //const stream = new stream.Readable() // any Node.js readable stream
 
@@ -1129,4 +1125,15 @@ body {
     background: green;
   }
 }
+
+
+@media only screen and (max-device-width: 1000px) and (orientation: portrait) {
+  .Grid {
+  margin-left: 2vw;}
+} /* styles for smartphones and tablets in portrait mode */
+@media only screen and (max-device-width: 1000px) and (orientation: landscape) {
+  .Grid {
+  margin-left: 10;
+  }
+} /* styles for smartphones and tablets in landscape mode */
 </style>
