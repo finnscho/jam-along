@@ -85,19 +85,22 @@
 
 
                 :class="'Tiles-floor data-x=' +n.x +' data-y=' + y "
-                 style='width:15vh;height:15vh;background:#ff914c'
+                 style='width:10vh;height:10vh;background:#ff914c'
             >
-              <video-js-recorder style="width:15vh;height:15vh;padding:0!important" :id="n.id" />
+              <video-js-recorder style="width:10vh;height:10vh;padding:0!important" :id="n.id" />
             </div>
 </div> -->
 
     <div id="Grid" class="Grid" scrollable>
       <div class="Grid-selector addMode"></div>
-      <div class="Tiles" >
-            <video-js-recorder v-for="n in this.$store.state.videoGrid"  :style="getStyle(n)" :key="n.id" :id="n.id" :class="'Tiles-floor data-x=' +n.x +' data-y=' + n.y "            
-            
-   
-            ></video-js-recorder>
+      <div class="Tiles">
+        <video-js-recorder
+          v-for="n in this.$store.state.videoGrid"
+          :style="getStyle(n)"
+          :key="n.id"
+          :id="n.id"
+          :class="'Tiles-floor data-x=' + n.x + ' data-y=' + n.y"
+        ></video-js-recorder>
       </div>
     </div>
   </v-container>
@@ -161,14 +164,26 @@ export default class VideoRecorderGrid extends Vue {
 
   //  }
   getStyle(n: GridVideo) {
-    console.log("left:" +(n.x * 15 )+"vh ; top:"+ (n.y * 15)+"vh")
-    return "left:" +(n.x * 15 )+"vh ; top:"+ (n.y * 15)+"vh"
+    // alert('VideoX: ' + n.sizeX)
+    // store.state.videoGrid.forEach(element => {
+    //   if(element.id == n.id){
+    //     console.log("JOOOOleft:" + element.x * 10 + "vh ; top:" + element.y * 10 + "vh; width:"+element.sizeY+"vh height"+element.sizeY + "vh ");
+    //     return "left:" + element.x * 10 + "vh ; top:" + element.y * 10 + "vh; width:"+element.sizeY+"vh height"+element.sizeY + "vh ";
+
+    //   }
+    // });
+
+    console.log("X: " + n.sizeX);
+    return "left:" + n.x * 10 + "vh ; top:" + n.y * 10 + "vh ; width:" +n.sizeX+ "vh ;  height:" +n.sizeX+ "vh" ;   
     // const y = (n.y * 15) + 10;
     // const x = (n.x * 15) + 47;
+
+    // const y = (n.y * 10) + 10;
+    // const x = (n.x * 10) + 47;
     // return (
- 
-    //   "position:absolute;width:15vh;height:15vh;background:#ff914c; left:" +
-    //   (n.x * 15 )+ "vh; top: "+ (n.y * 15) +"vh"
+
+    //   "position:absolute;width:10vh;height:10vh;background:#ff914c; left:" +
+    //   (n.x * 10 )+ "vh; top: "+ (n.y * 10) +"vh"
     // );
   }
 
@@ -286,11 +301,11 @@ export default class VideoRecorderGrid extends Vue {
         const result = (100 * value) / x; // affichage du résultat (facultatif)
         return result;
       },
-      cellSize: 15,
+      cellSize: 10,
       curCell: new Pt(0, 0),
       offset: new Pt(0, 0),
       curTileType: "Tiles-floor",
-
+      lastVideoTile: new GridVideo(null, null, null, null, null),
       cursor: {
         enable: function() {
           $("body").on("mousemove", ".Grid", Grid.cursor.run);
@@ -352,6 +367,7 @@ export default class VideoRecorderGrid extends Vue {
           $(".Grid").off("mousemove", Grid.modify.run);
         },
         start: function(e) {
+          console.log("MOD START");
           //@ts-ignore
           const bounds = document
             .getElementById("Grid")
@@ -377,6 +393,7 @@ export default class VideoRecorderGrid extends Vue {
           $(".Grid").on("mousemove", Grid.modify.run);
         },
         run: function(e) {
+          alert;
           //@ts-ignore
           const bounds = document
             .getElementById("Grid")
@@ -395,7 +412,8 @@ export default class VideoRecorderGrid extends Vue {
           ) {
             Grid.curCell = hoverCell;
             if (e.which == 1) {
-              Grid.addVideoTile(
+              console.log("DA");
+              Grid.mergeVideoTile(
                 Grid.curTileType,
                 Grid.curCell.x,
                 Grid.curCell.y
@@ -430,6 +448,7 @@ export default class VideoRecorderGrid extends Vue {
           }
         },
         start: function(e) {
+          console.log("MOUSESTART");
           if (e.which == 32) {
             e.preventDefault();
             Grid.cursor.disable();
@@ -451,6 +470,7 @@ export default class VideoRecorderGrid extends Vue {
           $(".Grid").on("mousemove", Grid.pan.run);
         },
         run: function(e) {
+          console.log("MOUSERUN");
           //@ts-ignore
           const bounds = document
             .getElementById("Grid")
@@ -472,6 +492,7 @@ export default class VideoRecorderGrid extends Vue {
           Grid.pan.lastPt = new Pt(x, y);
         },
         stop: function(e) {
+          console.log("MOUSESTOP");
           $(".Grid").off("mousemove", Grid.pan.run);
         },
       },
@@ -483,23 +504,43 @@ export default class VideoRecorderGrid extends Vue {
         );
       },
 
+      mergeVideoTile: function(tileType, x, y) {
+        const size = true;
+        const gridVideo: GridVideo = Grid.lastVideoTile;
+        if (Grid.lastVideoTile.x > x) {
+          console.log("Nach LINKS");
+        }
+        if (Grid.lastVideoTile.x < x) {
+          console.log("Nach RECHTS");
+          if (size) {
+            gridVideo.sizeX = gridVideo.sizeX * 2;
+            console.log("SIZED X: " + gridVideo.sizeX);
+          }
+        }
+        if (Grid.lastVideoTile.y < y) {
+          console.log("Nach UNTEN");
+        }
+        if (Grid.lastVideoTile.y > y) {
+          console.log("Nach OBEN");
+        }
+        store.commit("updateGridVideo", gridVideo);
+      },
       addVideoTile: function(tileType, x, y) {
-          
-        console.log("addVideoTile at x/y" + x + "  y " + y);
+        // console.log("addVideoTile at x/y" + x + "  y " + y);
         if (!Grid.isTileAt(tileType, x, y)) {
           const id = "JALvideojs" + Date.now();
-          console.log('adding video at x: '+ x +" y: " +y)
-        
-          store.commit("addVideoToGrid", new GridVideo(id, x, y));
+          //  console.log("adding video at x: " + x + " y: " + y);
+          const gridVideo = new GridVideo(id, x, y, 10, 10);
+          Grid.lastVideoTile = gridVideo;
+          store.commit("addVideoToGrid", gridVideo);
 
-        //   //        $("." + tileType + "[data-x='" + x + "'][data-y='" + y + "']").css({
-        //   // left: x * Grid.vhTOpx(Grid.cellSize),
-        //   // top: y * Grid.vhTOpx(Grid.cellSize),})
-        // }
+          //   //        $("." + tileType + "[data-x='" + x + "'][data-y='" + y + "']").css({
+          //   // left: x * Grid.vhTOpx(Grid.cellSize),
+          //   // top: y * Grid.vhTOpx(Grid.cellSize),})
+          // }
 
+          // if (!Grid.isTileAt(tileType, x, y)) {
 
-  // if (!Grid.isTileAt(tileType, x, y)) {
-             
           // const html =
           //   "<video-js-recorder class='" +
           //   tileType +
@@ -508,7 +549,7 @@ export default class VideoRecorderGrid extends Vue {
           //   "' data-y='" +
           //   y +
           //   "id='JALvideojs" + Date.now() + "' " +
-          //   "style='position:absolute;width:15vh;height:15vh; left: " +
+          //   "style='position:absolute;width:10vh;height:10vh; left: " +
           //   x * Grid.cellSize +
           //   "vh; top: " +
           //   y * Grid.cellSize +
@@ -519,10 +560,10 @@ export default class VideoRecorderGrid extends Vue {
           //   top: y * Grid.vhTOpx(Grid.cellSize),
           // });
         }
-      }, 
+      },
 
       addTile: function(tileType, x, y) {
-        console.log("addtile at x/y" + x + "  " + y);
+        // console.log("addtile at x/y" + x + "  " + y);
         if (!Grid.isTileAt(tileType, x, y)) {
           const html =
             "<div class='" +
@@ -531,7 +572,7 @@ export default class VideoRecorderGrid extends Vue {
             x +
             "' data-y='" +
             y +
-            "' style='position:absolute;width:15vh;height:15vh;background:#ff914c; left: " +
+            "' style='position:absolute;width:10vh;height:10vh;background:#ff914c; left: " +
             x * Grid.cellSize +
             "vh; top: " +
             y * Grid.cellSize +
@@ -555,7 +596,7 @@ export default class VideoRecorderGrid extends Vue {
       //       x +
       //       "' data-y='" +
       //       y +
-      //       "' style='width:15vh;height:15vh;background:#ff914c'></div>";
+      //       "' style='width:10vh;height:10vh;background:#ff914c'></div>";
       //     $(".Tiles").append(html);
       //     $("." + tileType + "[data-x='" + x + "'][data-y='" + y + "']").css({
       //       left: x * Grid.vhTOpx(Grid.cellSize),
@@ -565,7 +606,7 @@ export default class VideoRecorderGrid extends Vue {
       // }
 
       //           const html =
-      //            "<div id='addFile' centered  style='position:absolute;width:15vh;height:15vh;' v-cloak @drop.prevent='addFile' @dragover.prevent"+
+      //            "<div id='addFile' centered  style='position:absolute;width:10vh;height:10vh;' v-cloak @drop.prevent='addFile' @dragover.prevent"+
       //  "left: " +
       //             x * Grid.cellSize +
       //             "vh; top: " +
@@ -617,7 +658,7 @@ export default class VideoRecorderGrid extends Vue {
       case 6:
         return "32vw";
       default:
-        return "15vw";
+        return "10vw";
     }
   }
   get getColMd() {
@@ -906,27 +947,27 @@ body {
 .Grid {
   margin-left: 32vw;
   margin-top: 7vh;
-  width: 60vh;
-  height: 60vh;
+  width: 60.5vh;
+  height: 60.5vh;
   flex: 1;
   position: relative;
   overflow: hidden;
   user-select: none;
   background-color: @gridColour;
-  .grid(#FF914C; 15vh; 2);
+  .grid(#FF914C; 10vh; 3);
   z-index: 0;
   &:after {
     content: "";
     position: absolute;
     width: 100%;
     height: 100%;
-    .grid(#FF914C; 15vh; 2);
+    .grid(#FF914C; 10vh; 3);
   }
 }
 .Grid-selector {
   position: absolute;
-  width: 15vh;
-  height: 15vh;
+  width: 10vh;
+  height: 10vh;
   border-radius: 2px;
   animation: pulse 2s infinite ease-in-out;
   z-index: 100;
@@ -959,8 +1000,8 @@ body {
 
 .Tiles-floor {
   position: absolute;
-  width: 15vh;
-  height: 15vh;
+  width: 10vh;
+  height: 10vh;
   // background: green;
   animation: block-in 0.3s 0 ease-out;
   z-index: 1;
@@ -972,13 +1013,13 @@ body {
   0% {
     width: 0;
     height: 0;
-    margin: 15vh / 2 15vh / 2;
+    margin: 10vh / 2 10vh / 2;
     border-radius: 50%;
     background: transparent;
   }
   100% {
-    width: 15vh;
-    height: 15vh;
+    width: 10vh;
+    height: 10vh;
     margin: 0 0;
     border-radius: 0;
     background: green;

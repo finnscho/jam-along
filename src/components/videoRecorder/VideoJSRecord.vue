@@ -8,8 +8,8 @@
         playsinline
         controls
         preload="auto"
-        width="15vh"
-        height="15vh"
+        width="10vh"
+        height="10vh"
       >
         <source v-if="src != null" :src="src" type="video/mp4" />
       </video>
@@ -268,17 +268,20 @@ export default class VideoJSRecord extends Vue {
 VideoJSRecord.player = undefined;
 </script>
 
-<style scoped>
+<style >
+button.vjs-record.vjs-device-button.vjs-control.vjs-icon-av-perm {
+   display:none!important
+ }
 .video-js .vjs-control-bar {
   display: none !important;
 }
 video{
-  width:15vh
+  width:10vh
 }
 .vjs-record .vjs-device-button.vjs-control {
   display: none !important;
 }
-.video-js{
-  height:15vh!important
-}
+/* .video-js{
+  height:10vh!important
+} */
 </style>

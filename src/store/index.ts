@@ -20,10 +20,15 @@ export class GridVideo {
   x: number;
   y: number;
   id: string;
-  constructor(id, x, y) {
+  sizeX: number;
+  sizeY: number;
+  constructor(id, x, y,sizeX,sizeY) {
     this.id = id;
     this.x = x;
     this.y = y;
+    this.sizeX = sizeX;
+    this.sizeY = sizeY;
+
   }
 }
 export default new Vuex.Store({
@@ -45,6 +50,27 @@ export default new Vuex.Store({
     setUser(state, val: JALUser) {
       state.userProfile = val
     },
+
+    updateGridVideo(state, video) {
+
+      
+      for (let i = 0; i < state.videoGrid.length; i++) {
+        if (state.videoGrid[i].id === video.id) {
+          state.videoGrid.splice(i, 1);
+        }
+      }
+      // state.videoGrid.forEach(element => {
+      //   if (element.id == video.id) {
+      //     element.x = video.x;
+      //     element.y = video.y;
+      //     element.sizeX = video.sizeX;
+      //     element.sizeY = video.sizeY;
+      //   }})
+      
+      state.videoGrid.push(video)
+        
+      },
+    
     addVideoToGrid(state, video) {
       state.videoGrid.push(video)
     },
