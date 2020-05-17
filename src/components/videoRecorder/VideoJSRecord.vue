@@ -5,7 +5,7 @@
        v-on:click="activate"
         :id="id"
         class="video-js vjs-layout-large "
-        v-bind:style="isActive() ? 'border: dashed;' : ''"
+        v-bind:style="isActive() ? 'border: solid;' : ''"
         playsinline
         
         controls
@@ -65,8 +65,8 @@ export default class VideoJSRecord extends Vue {
       fluid: true,
       responsive: true,
       loop: false,
-      // width: 320,
-      // height: 240,
+       width: 400 ,
+                height: 400 ,
       controlBar: {
         volumePanel: true,
         seeking: true,
@@ -79,20 +79,27 @@ export default class VideoJSRecord extends Vue {
                 audio: true,
                 maxLength: 500,
                 debug: true,
-                video: true,
-                frameWidth: 320,
-                frameHeight: 240,
+                // video: true,
+                frameWidth: 400,
+                frameHeight: 400,
+                width: 400 ,
+                height: 400 ,
+                video: {
+                // video media constraints: set resolution of camera
+                width: 400,
+                height: 400
+            },
               }
             : {},
-        wavesurfer: {
-          barHeight: 100,
-          debug: true,
-          waveColor: "#FF914C",
-          progressColor: "orangered",
-          cursorColor: "yellow",
-          container: ".waveform",
-          hideScrollbar: true,
-        },
+        // wavesurfer: {
+        //   barHeight: 100,
+        //   debug: true,
+        //   waveColor: "#FF914C",
+        //   progressColor: "orangered",
+        //   cursorColor: "yellow",
+        //   container: ".waveform",
+        //   hideScrollbar: true,
+        // },
       },
     };
     //  this.myid = '234'// + (Math.floor(Math.random() * Math.floor(100)))

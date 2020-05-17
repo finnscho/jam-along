@@ -318,14 +318,10 @@ export default class VideoRecorderGrid extends Vue {
       offset: new Pt(0, 0),
       curTileType: "Tiles-floor",
       lastVideoTile: new GridVideo(null, null, null, null, null),
-      touchmove(){
-        console.log('touchmove')
-      },
       cursor: {
         enable: function() {
           $("body").on("mousemove", ".Grid", Grid.cursor.run);
           $("body").on("touchmove", ".Grid", Grid.cursor.run);
-          $("body").on("touchmove", ".Grid", Grid.touchmove);
           $(".Grid").css("cursor", "default");
 
           $(".Grid-selector")
@@ -762,7 +758,8 @@ export default class VideoRecorderGrid extends Vue {
   mouseleaveAddBtn() {
     this.hover = false;
   }
-refreshMergedStream() {
+
+  async refreshMergedStream() {
     console.log("Try to refresh merged Stream:");
 
     let i = 1;
@@ -778,47 +775,17 @@ refreshMergedStream() {
       }
     });
 
-    this.merger = this.service.mergeVideos(data);
-    const stream = this.merger.result;
-    console.log(stream);
+    // this.merger = this.service.mergeVideos(data);
+    const stream = this.service.mergeVideos(data).result.Readable();
 
-    const recordedChunks = [];
-    const options = { mimeType: "video/webm; codecs=vp9" };
-    //@ts-ignore
-    this.mediaRecorder = new MediaRecorder(stream, options);
-    store.state.players.forEach((element) => {
-      const oldPlayer = document.getElementById(element.id);
-      //Todo dispose
-      //  oldPlayer.muted = true;
-      // videojs(oldPlayer).dispose();
+
+    //const stream = new stream.Readable() // any Node.js readable stream
+
+    const promise = streamToBlob(stream);
+
+    promise.then(() => {
+      alert();
     });
-  // async refreshMergedStream() {
-    // console.log("Try to refresh merged Stream:");
-
-    // let i = 1;
-    // const data: any[] = [];
-
-    // store.state.players.forEach((element) => {
-    //   data.push(element);
-
-    //   if (element.player.record() !== undefined) {
-    //     console.log("save");
-    //     //element.record().saveAs({ video: "video" + i + ".webm" });
-    //     i++;
-    //   }
-    // });
-
-    // // this.merger = this.service.mergeVideos(data);
-    // const stream = this.service.mergeVideos(data).result.Readable();
-
-
-    // //const stream = new stream.Readable() // any Node.js readable stream
-
-    // const promise = streamToBlob(stream);
-
-    // promise.then(() => {
-    //   alert();
-    // });
 
     // console.log(stream);
 

@@ -38,15 +38,13 @@
                   <v-row>
                     <v-col cols="1"></v-col>
                     <v-col cols="10">
-                      <v-btn v-on:click="setOffset" margin="auto">
-                        <v-icon color="#FF914C">mdi-check</v-icon>
-                      </v-btn>
+                
                       <v-card-text>
                         <label>Offset</label>
                         <v-row>
                           <v-col cols="12">
                             <v-slider
-                              v-model="slider"
+                              v-model="offset"
                               class="align-center"
                               style="margin-bottom:2%;"
                               max="3000"
@@ -99,23 +97,33 @@ import JALStateService from "../services/JALStateService";
   },
 })
 export default class DetailPanel extends Vue {
-  get slider() {
-    return 15;
-    // return store.state.activePlayer.player.slider;
+  slider = 0;
+  get offset() {
+    //  return 15;
+    if (
+      store.state.activePlayer != undefined &&
+      store.state.activePlayer.player != undefined
+    )
+      return store.state.activePlayer.player.slider;
+    else return 0;
+  }
+  set offset(value) {
+    this.slider = value;
+    console.log("offset: " + value / 1000);
+    //@ts-ignore
+    store.state.activePlayer.slider = value / 1000;
+    store.state.activePlayer.player.offset({
+      start: value / 1000,
+      //Should the video go to the beginning when it ends
+    });
   }
 
   constructor(params) {
     super(params);
   }
-  setOffset() {
-    console.log("offset: " + this.slider / 1000);
-    //@ts-ignore
-    store.state.activePlayer.slider = this.slider / 1000;
-    store.state.activePlayer.player.offset({
-      start: this.slider / 1000,
-      //Should the video go to the beginning when it ends
-    });
-  }
+  // setOffset() {
+
+  // }
 }
 </script>
 

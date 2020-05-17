@@ -48,8 +48,6 @@ export default class JalffmpegService {
           width = Math.floor((gridVideo.sizeX ) / 10) * 200;
           height = width;
 
-          alert('x: '+ x + '  y: '+ y + ' width: '+width)
-
         }
       });
       merger.addMediaElement('webm', media, {
