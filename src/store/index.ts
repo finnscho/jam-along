@@ -119,9 +119,9 @@ export default new Vuex.Store({
     },
     removeChildren(state, n: any) {
 
-      for (let i = 0; i < state.children.length; i++) {
-        if (state.children[i].id === n) {
-          state.children.splice(i, 1);
+      for (let i = 0; i < state.videoGrid.length; i++) {
+        if (state.videoGrid[i].id === n) {
+          state.videoGrid.splice(i, 1);
         }
       }
 
