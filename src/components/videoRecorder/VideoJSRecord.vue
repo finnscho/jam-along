@@ -281,6 +281,12 @@ video{
 .vjs-record .vjs-device-button.vjs-control {
   display: none !important;
 }
+#videoJs{
+    height: 100%;
+}
+.video-js.vjs-fluid, .video-js.vjs-16-9, .video-js.vjs-4-3{
+  height: 100%;
+}
 /* .video-js{
   height:10vh!important
 } */
