@@ -23,10 +23,12 @@ export default class JalffmpegService {
   mergeVideos(videos: any[]) {
 
     const merger = new VideoStreamMerger()
-    merger.setOutputSize(1280, 960)
+    merger.setOutputSize(1200, 1200)
     let x = 0;
+    let width = 0;
+    let height = 0;
     let y = videos.length > 2 ? 0 : merger.height / 4;
-    let i = 0;
+    
     videos.forEach(element => {
       //  const media = { ...element.record().mediaElement };
       let media: HTMLMediaElement;
@@ -39,34 +41,27 @@ export default class JalffmpegService {
         //DeepCopy 
         media = element.player.record().mediaElement as HTMLMediaElement;
       }
+      store.state.videoGrid.forEach(gridVideo => {
+        if (gridVideo.id == element.id) {
+          x = (gridVideo.x) * 200;
+          y = (gridVideo.y) * 200;
+          width = Math.floor((gridVideo.sizeX ) / 10) * 200;
+          height = width;
 
+          alert('x: '+ x + '  y: '+ y + ' width: '+width)
+
+        }
+      });
       merger.addMediaElement('webm', media, {
         //merger.addStream(videos[i].record().stream, {
         x: x, // position of the topleft corner
         y: y,
-        width: merger.width / 2,
-        height: merger.height / 2,
+        width: width,
+        height: height,
 
         // we don't want sound from the screen (if there is any)
       })
-      i++;
-      switch (i) {
-        case 1:
-          x = merger.width / 2;
-          // y = y;
-          break;
-        case 2:
-          x = 0;
-          y = merger.height / 2;
-          break;
-        case 3:
-          x = merger.width / 2;
-          y = merger.height / 2;
-          break;
-
-        default:
-          break;
-      }
+     
 
     });
 
