@@ -99,6 +99,7 @@
           :style="getStyle(n)"
           :key="n.id"
           :id="n.id"
+          :src="n.src"
           :class="'Tiles-floor data-x=' + n.x + ' data-y=' + n.y"
         ></video-js-recorder>
       </div>
@@ -591,6 +592,7 @@ export default class VideoRecorderGrid extends Vue {
             y: y,
             lastX: x,
             lastY: y,
+            src:undefined
           };
           store.commit("addVideoToGrid", gridVideo);
 
@@ -747,6 +749,8 @@ export default class VideoRecorderGrid extends Vue {
       //const name = "JALvideojs" + Date.now();
       
       store.commit("setAtivePlayerSrc",  e2.target.result);
+          //@ts-ignore
+    store.commit("removeChildren", store.state.activePlayer.id);
     }
   }
   removeFile(file) {

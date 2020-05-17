@@ -24,14 +24,16 @@ export class GridVideo {
   lastX: number;
   lastY: number
   sizeY: number;
-  constructor(id, x, y,sizeX,sizeY) {
+  src: any;
+  constructor(id, x, y,sizeX,sizeY,src=undefined) {
     this.id = id;
     this.x = x;
     this.y = y;
     this.sizeX = sizeX;
     this.sizeY = sizeY;
     this.lastX = x,
-      this.lastY= y
+      this.lastY = y,
+      this.src = src;
 
   }
 }
@@ -105,6 +107,15 @@ export default new Vuex.Store({
     },
 
     setAtivePlayerSrc(state, src) {
+      state.videoGrid.forEach(element => {
+        //@ts-ignore
+        if (element.id == state.activePlayer.id) {
+         
+          const video = new GridVideo("JALvideojs" + Date.now(),element.x,element.y,element.sizeX,element.sizeY,src)
+         
+          state.videoGrid.push(video)
+        }
+      });
       //@ts-ignore
       state.activePlayer.src = src;
 

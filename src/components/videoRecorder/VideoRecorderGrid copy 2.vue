@@ -589,6 +589,7 @@ export default class VideoRecorderGrid extends Vue {
             y: y,
             lastX: x,
             lastY: y,
+            src:undefined
           };
           store.commit("addVideoToGrid", gridVideo);
 
