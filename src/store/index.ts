@@ -100,7 +100,7 @@ export default new Vuex.Store({
       state.children = new Array<Child>();
     },
   activePlayer(state, n: any) {
-      alert('bis hier her')
+  
       state.activePlayer = n;
     },
     setActivePlayById(state, id: string) {

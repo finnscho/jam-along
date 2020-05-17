@@ -241,7 +241,6 @@ export default class VideoJSRecord extends Vue {
     return store.state.activePlayer == this ? "border: dashed;" : "";
   }
   activate() {
-    alert('Activate')
     store.commit("activePlayer", this);
   }
 
