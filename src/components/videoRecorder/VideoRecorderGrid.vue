@@ -562,15 +562,13 @@ export default class VideoRecorderGrid extends Vue {
         } else if (Grid.lastVideoTile.y < y) {
           if (size) {
             gridVideo.sizeX= gridVideo.sizeX + 10; //<60?gridVideo.sizeX / 2: gridVideo.sizeX;
-            Grid.lastVideoTile.lastY = Grid.lastVideoTile.lastY - 1;
+            Grid.lastVideoTile.lastY = Grid.lastVideoTile.lastY + 1;
           }
           console.log("Nach UNTEN");
-        } else if (Grid.lastVideoTile.y > y) {
-          console.log("Nach OBEN");
+        } else if (Grid.lastVideoTile.y >= y) {
           if (size) {
-            gridVideo.sizeX = gridVideo.sizeX - 10; //<10?gridVideo.sizeX / 2: gridVideo.sizeX;
-            console.log("SIZED X: " + gridVideo.sizeX);
-            Grid.lastVideoTile.y = Grid.lastVideoTile.y + 1;
+            gridVideo.sizeX= gridVideo.sizeX - 10; //<60?gridVideo.sizeX / 2: gridVideo.sizeX;
+            Grid.lastVideoTile.lastY = Grid.lastVideoTile.lastY - 1;
           }
         }
         store.commit("updateGridVideo", gridVideo);
