@@ -23,13 +23,6 @@
     <v-app-bar fixed dense style="vertical-align: bottom;">
       <!-- <v-file-input accept="image/*" style="color:"#FF914C"" width="5%" @change="onFileChange" label="Projekt öffnen"></v-file-input> -->
 
-      <v-btn
-        v-on:click="addPlayer"
-        v-on:mouseover="mouseoverAddBtn"
-        v-on:mouseleave="mouseleaveAddBtn"
-      >
-        <v-icon color="#FF914C">mdi-camera-plus</v-icon>
-      </v-btn>
       <input
         type="file"
         ref="file"
@@ -318,14 +311,11 @@ export default class VideoRecorderGrid extends Vue {
       offset: new Pt(0, 0),
       curTileType: "Tiles-floor",
       lastVideoTile: new GridVideo(null, null, null, null, null),
-      touchmove() {
-        console.log("touchmove");
-      },
+
       cursor: {
         enable: function() {
           $("body").on("mousemove", ".Grid", Grid.cursor.run);
-          $("body").on("touchmove", ".Grid", Grid.cursor.run);
-          $("body").on("touchmove", ".Grid", Grid.touchmove);
+          $("body").on("touchmove", ".Grid", Grid.cursor.runTouch);
           $(".Grid").css("cursor", "default");
 
           $(".Grid-selector")
@@ -337,7 +327,7 @@ export default class VideoRecorderGrid extends Vue {
         },
         disable: function() {
           $("body").off("mousemove", ".Grid", Grid.cursor.run);
-          $("body").off("touchmove", ".Grid", Grid.cursor.run);
+          $("body").off("touchmove", ".Grid", Grid.cursor.runTouch);
           $(".Grid-selector").hide();
         },
         run: function(e) {
@@ -370,23 +360,55 @@ export default class VideoRecorderGrid extends Vue {
             top: hoverCell.y * Grid.vhTOpx(Grid.cellSize),
           });
         },
-      },
+           runTouch: function(e) {
+           
+          console.log("HIIIIIEEER 2 ");
+           
+          //@ts-ignore
+          const bounds = document
+            .getElementById("Grid")
+            .getBoundingClientRect();
+          const x = e.touches[0].clientX - bounds.left;
+          const y = e.touches[0].clientY - bounds.top;
+
+          const hoverCell = new Pt(
+            Math.floor(x / Grid.vhTOpx(Grid.cellSize)),
+            Math.floor(y / Grid.vhTOpx(Grid.cellSize))
+          );
+
+          if (
+            Grid.curCell.x !== hoverCell.x ||
+            Grid.curCell.y !== hoverCell.y
+          ) {
+            Grid.curCell = hoverCell;
+            if (e.which == 0) {
+              console.log("DA");
+              Grid.mergeVideoTile(
+                Grid.curTileType,
+                Grid.curCell.x,
+                Grid.curCell.y
+              );
+            } else if (e.which == 3) {
+              Grid.deleteTile(Grid.curTileType, Grid.curCell.x, Grid.curCell.y);
+            }
+          }
+        },},
 
       modify: {
         enable: function() {
           $(".Grid").on("mousedown", Grid.modify.start);
-          $(".Grid").on("touchstart", Grid.modify.start);
+          $(".Grid").on("touchstart", Grid.modify.startTouch);
           $(".Grid").on("mouseup", Grid.modify.end);
-          $(".Grid").on("touchend", Grid.modify.end);
+          $(".Grid").on("touchend", Grid.modify.endTouch);
           $(".Grid").on("contextmenu", function() {
             return false;
           });
         },
         disable: function() {
           $(".Grid").off("mousedown", Grid.modify.start);
-          $(".Grid").off("touchstart", Grid.modify.start);
+          $(".Grid").off("touchstart", Grid.modify.startTouch);
           $(".Grid").off("mousemove", Grid.modify.run);
-          $(".Grid").off("touchmove", Grid.modify.run);
+          $(".Grid").off("touchmove", Grid.modify.runTouch);
         },
         start: function(e) {
           console.log("MOD START");
@@ -413,10 +435,74 @@ export default class VideoRecorderGrid extends Vue {
             Grid.deleteTile(Grid.curTileType, Grid.curCell.x, Grid.curCell.y);
           }
           $(".Grid").on("mousemove", Grid.modify.run);
+          $(".Grid").on("touchmove", Grid.modify.runTouch);
+        },
+        startTouch: function(e) {
+          console.log("TOUCH START");
+          //@ts-ignore
+          const bounds = document
+            .getElementById("Grid")
+            .getBoundingClientRect();
+          const x = e.touches[0].clientX - bounds.left;
+          const y = e.touches[0].clientY - bounds.top;
+
+          const hoverCell = new Pt(
+            Math.floor(x / Grid.vhTOpx(Grid.cellSize)),
+            Math.floor(y / Grid.vhTOpx(Grid.cellSize))
+          );
+          Grid.curCell = hoverCell;
+        
+          if (e.which == 0) {
+            Grid.addVideoTile(Grid.curTileType, Grid.curCell.x, Grid.curCell.y);
+          } else if (e.which == 3) {
+            $(".Grid-selector")
+              .removeClass("addMode")
+              .addClass("deleteMode")
+              .hide()
+              .show(1);
+            Grid.deleteTile(Grid.curTileType, Grid.curCell.x, Grid.curCell.y);
+          }
+
           $(".Grid").on("touchmove", Grid.modify.run);
         },
+
+         runTouch: function(e) {
+           
+          console.log("HIIIIIEEER 2 ");
+           
+          //@ts-ignore
+          const bounds = document
+            .getElementById("Grid")
+            .getBoundingClientRect();
+          const x = e.touches[0].clientX - bounds.left;
+          const y = e.touches[0].clientY - bounds.top;
+
+          const hoverCell = new Pt(
+            Math.floor(x / Grid.vhTOpx(Grid.cellSize)),
+            Math.floor(y / Grid.vhTOpx(Grid.cellSize))
+          );
+
+          if (
+            Grid.curCell.x !== hoverCell.x ||
+            Grid.curCell.y !== hoverCell.y
+          ) {
+            Grid.curCell = hoverCell;
+            if (e.which == 0) {
+              console.log("DA");
+              Grid.mergeVideoTile(
+                Grid.curTileType,
+                Grid.curCell.x,
+                Grid.curCell.y
+              );
+            } else if (e.which == 3) {
+              Grid.deleteTile(Grid.curTileType, Grid.curCell.x, Grid.curCell.y);
+            }
+          }
+        },
+           
+  
         run: function(e) {
-          alert;
+       
           //@ts-ignore
           const bounds = document
             .getElementById("Grid")
@@ -446,7 +532,10 @@ export default class VideoRecorderGrid extends Vue {
             }
           }
         },
+         endTouch: function(e) {console.log('end touch');
+         },
         end: function(e) {
+            console.log("MOD END");
           $(".Grid-selector")
             .removeClass("deleteMode")
             .addClass("addMode")
@@ -494,7 +583,7 @@ export default class VideoRecorderGrid extends Vue {
 
           Grid.pan.lastPt = new Pt(x, y);
           $(".Grid").on("mousemove", Grid.pan.run);
-          $(".Grid").on("touchmove", Grid.pan.run);
+          $(".Grid").on("touchmove", Grid.pan.runTouch);
         },
         run: function(e) {
           console.log("MOUSERUN");
@@ -521,8 +610,33 @@ export default class VideoRecorderGrid extends Vue {
         stop: function(e) {
           console.log("MOUSESTOP");
           $(".Grid").off("mousemove", Grid.pan.run);
-          $(".Grid").off("touchmove", Grid.pan.run);
+          $(".Grid").off("touchmove", Grid.pan.runTouch);
         },
+ 
+      runTouch: function(e) {
+          
+          console.log("HIIIIIEEER 3 ");
+          //@ts-ignore
+          const bounds = document
+            .getElementById("Grid")
+            .getBoundingClientRect();
+          const x = e.touches[0].clientX - bounds.left;
+          const y = e.touches[0].clientY - bounds.top;
+
+          alert("run2");
+          Grid.offset.x += x - Grid.pan.lastPt.x;
+          Grid.offset.y += y - Grid.pan.lastPt.y;
+          $(".Tiles").css({
+            left: Grid.offset.x,
+            top: Grid.offset.y,
+          });
+          $(".Grid").css(
+            "background-position",
+            Grid.offset.x + "px " + Grid.offset.y + "px"
+          );
+          Grid.pan.lastPt = new Pt(x, y);
+        },
+
       },
 
       isTileAt: function(tileType, x, y) {
@@ -1129,10 +1243,13 @@ body {
 
 @media only screen and (max-device-width: 1000px) and (orientation: portrait) {
   .Grid {
-  margin-left: 2vw;}
+    transform: scale(0.7); 
+    left:0;
+  margin-left: 0;}
 } /* styles for smartphones and tablets in portrait mode */
 @media only screen and (max-device-width: 1000px) and (orientation: landscape) {
   .Grid {
+  
   margin-left: 10;
   }
 } /* styles for smartphones and tablets in landscape mode */
