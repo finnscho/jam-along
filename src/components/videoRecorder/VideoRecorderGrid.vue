@@ -91,7 +91,7 @@
           :style="getStyle(n)"
           :key="n.id"
           :id="n.id"
-          :src="n.src"
+          :src="n.videourl"
           :class="'Tiles-floor data-x=' + n.x + ' data-y=' + n.y"
         ></video-js-recorder>
       </div>
@@ -212,6 +212,7 @@ export default class VideoRecorderGrid extends Vue {
     await this.sleep(1200);
     console.log(2);
     store.commit("resetChildren");
+
     if (store.state.activeProject == "") {
       store.commit(
         "setProject",
@@ -219,10 +220,10 @@ export default class VideoRecorderGrid extends Vue {
           .toString(36)
           .substring(2) + Date.now().toString(36)
       );
-      JALStateService.prototype.createProject(
-        store.state.userProfile.userId,
-        store.state.activeProject
-      );
+      // JALStateService.prototype.createProject(
+      //   store.state.userProfile.userId,
+      //   store.state.activeProject
+      // );
     } else {
       JALStateService.prototype.loadProject();
     }
@@ -235,8 +236,8 @@ export default class VideoRecorderGrid extends Vue {
     });
   }
   mounted() {
-    // this.overlay = true;
-    // this.init();
+    this.overlay = true;
+    this.init();
     this.blub();
     //     window.addEventListener(‘resize’, function() {
     // this.getWindowWidth()
@@ -656,13 +657,14 @@ export default class VideoRecorderGrid extends Vue {
         const gridVideo: GridVideo = Grid.lastVideoTile;
 
         if (Grid.lastVideoTile.lastX > x) {
-          if (size) {//LINKS
-            gridVideo.sizeX = gridVideo.sizeX - 10 ; //<60?gridVideo.sizeX * 2: gridVideo.sizeX;
+          if (size) {
+            //LINKS
+            gridVideo.sizeX = gridVideo.sizeX - 10; //<60?gridVideo.sizeX * 2: gridVideo.sizeX;
 
             Grid.lastVideoTile.lastX = Grid.lastVideoTile.lastX - 1;
           }
         } else if (Grid.lastVideoTile.x < x) {
-         // console.log("Nach RECHTS");
+          // console.log("Nach RECHTS");
           if (size) {
             gridVideo.sizeX = gridVideo.sizeX + 10; //* 2<60?gridVideo.sizeX * 2: gridVideo.sizeX;
             // const p = 2//Grid.lastVideoTile.x+1
@@ -1035,6 +1037,7 @@ export default class VideoRecorderGrid extends Vue {
   }
   saveProject() {
     JalStateService.prototype.saveState(
+      //@ts-ignore
       store.state.activeProject,
       store.state.activeProjectName
     );

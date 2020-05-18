@@ -78,6 +78,7 @@ export default new Vuex.Store({
       },
     
     addVideoToGrid(state, video) {
+      alert()
       state.videoGrid.push(video)
     },
     setProject(state, val) {

@@ -44,7 +44,7 @@
               </v-col>
             </template>
             <template v-for="item in $store.state.userProfile.projects">
-              <Project :key="item.key" :item="item" />
+              <Project :key="item.projectid" :item="item" />
             </template>
           </v-row>
         </v-card>
@@ -109,9 +109,12 @@ import Project from "./Project.vue";
 export default class ProjectGrid extends Vue {
   constructor() {
     super();
+    // store.state.userProfile.projects.forEach(element => {
+    //   alert(element.projectid)
+    // });
   }
   mounted() {
-    store.commit("setProject", "");
+   store.commit("setProject", "");
   }
 }
 </script>

@@ -210,10 +210,10 @@ export default class VideoRecorderGrid extends Vue {
           .toString(36)
           .substring(2) + Date.now().toString(36)
       );
-      JALStateService.prototype.createProject(
-        store.state.userProfile.userId,
-        store.state.activeProject
-      );
+      // JALStateService.prototype.createProject(
+      //   store.state.userProfile.userId,
+      //   store.state.activeProject
+      // );
     } else {
       JALStateService.prototype.loadProject();
     }

@@ -12,42 +12,20 @@ export default class JALStateService {
 
 
   writeUserData(userId, videos: Array<JALVideo>, projectid: string, name) {
-
-
-  //   // const updates = {};
-  //   // updates['project/' + projectid] = {
-  //   //   projectid: projectid,
-  //   //   name: name,
-  //   //   userid: userId,
-  //   //   videos: videos
-  //   // }
-
-  //   // return firebase.database().ref().update(updates);
-  //   firebase.database().ref('project/' + projectid).set({
-  //     projectid: projectid,
-  //     name: name,
-  //     userid: userId,
-  //     videos: videos
-  //   });
-
-
-    
-    // const ref = firebase.database().ref('users/' + userId + '/projects');
-    // ref.on('value', function (snapshot) {
-    //   let list: Array<string>;
-    //   list = new Array<string>();
-    //   list.push(snapshot.val().projects)
-   
-    //   snapshot.val().projects != undefined ? list.push(projectid) : list = [projectid]
-    const list = store.state.userProfile.projects;
-    const proj = {
+    const updates = {};
+    updates['project/' + projectid] = {
       name: name,
-      projectid: projectid} as JALProject 
-    list.push(proj)
-      const updates = {};
-      updates['users/' + userId + '/projects'] = list;
+      userid: userId,
+      videos: videos
+    };
+    updates['users/' + userId + '/projects/' + projectid] = {
+      projectid: projectid, name: name
+    }
 
-      return firebase.database().ref().update(updates);
+
+    firebase.database().ref().update(updates);
+
+
 
   }
 
@@ -69,6 +47,7 @@ export default class JALStateService {
   }
 
   saveState(projectid: string, projetName: string) {
+    
     const Myvideos = new Array<JALVideo>();
 
     store.state.players.forEach((element: VideoJSRecord) => {
@@ -109,8 +88,6 @@ export default class JALStateService {
 
     })
 
-
-    // this.writeUserData(firebase.auth().currentUser?.uid, Myvideos, projectid, projetName)
     alert('project successfully stored')
 
 
@@ -142,17 +119,18 @@ export default class JALStateService {
     })
   }
   loadProject() {
-
-    const projectRef = firebase.database().ref('project/' + store.state.activeProject);
+    //@ts-ignore
+    const projectRef = firebase.database().ref('project/' + store.state.activeProject.projectid);
 
     projectRef.once('value').then(function (snapshot) {
 
       if (snapshot.val().videos !== undefined) {
-        snapshot.val().videos.forEach((element: JALVideo) => {
+        snapshot.val().videos.forEach((element) => {
 
           try {
+      
 
-            store.commit("addChildren", new Child(element.id, element.videourl));
+              store.commit("addVideoToGrid",element);
 
           }
           catch (error) {

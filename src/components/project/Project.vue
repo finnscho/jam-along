@@ -1,5 +1,5 @@
 <template>
-  <v-col :key="item" cols="12" md="4">
+  <v-col  cols="12" md="4">
     <v-hover v-slot:default="{ hover }">
       <v-card
         style="background:#FF914C"
@@ -10,7 +10,7 @@
           autocomplete="off"
           @change="updateProjectName"
           style="padding:30px"
-          :key="item"
+        
           label="Jam"
           color="white"
           :value="name"
@@ -62,12 +62,15 @@ export default class Project extends Vue {
   projectName = "Kein Name";
 
   mounted() {
-    const ref = firebase.database().ref("project/" + this.item);
+    
+    const ref = firebase.database().ref("project/" + this.item.projectid);
     ref.on("value", function(snapshot) {
       store.commit("addProject", snapshot.val());
     });
+
   }
   get name() {
+
     store.state.projects.forEach((element) => {
       if (element.projectid == this.item) {
         this.projectName = element.name;
