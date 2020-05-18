@@ -64,28 +64,29 @@ export default new Vuex.Store({
     },
     updateGridVideo(state, video) {
 
+      if (video.id != null) {
 
-      for (let i = 0; i < state.videoGrid.length; i++) {
-        if (state.videoGrid[i].id === video.id) {
-          state.videoGrid.splice(i, 1);
+
+        for (let i = 0; i < state.videoGrid.length; i++) {
+          if (state.videoGrid[i].id === video.id) {
+            state.videoGrid.splice(i, 1);
+          }
         }
+        // state.videoGrid.forEach(element => {
+        //   if (element.id == video.id) {
+        //     element.x = video.x;
+        //     element.y = video.y;
+        //     element.sizeX = video.sizeX;
+        //     element.sizeY = video.sizeY;
+        //   }})
+
+        state.videoGrid.push(video)
       }
-      // state.videoGrid.forEach(element => {
-      //   if (element.id == video.id) {
-      //     element.x = video.x;
-      //     element.y = video.y;
-      //     element.sizeX = video.sizeX;
-      //     element.sizeY = video.sizeY;
-      //   }})
-
-      state.videoGrid.push(video)
-
     },
 
     addVideoToGrid(state, video) {
 
-      if (video.id != undefined && video.id != null)
-        state.videoGrid.push(video)
+      state.videoGrid.push(video)
     },
     setProject(state, val) {
       state.activeProject = val
