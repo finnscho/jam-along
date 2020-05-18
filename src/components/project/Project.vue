@@ -80,7 +80,7 @@ export default class Project extends Vue {
   }
 
   click() {
-    store.commit("setProject", this.item);
+    store.commit("setProject", this.item.projectid);
     store.commit(
       "setProjectName",
       this.projectName

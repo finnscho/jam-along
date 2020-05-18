@@ -25,7 +25,7 @@ export default class JALStateService {
 
     firebase.database().ref().update(updates);
 
-
+    store.commit('setSaveOverlay', false)
 
   }
 
@@ -47,7 +47,7 @@ export default class JALStateService {
   }
 
   saveState(projectid: string, projetName: string) {
-    
+
     const Myvideos = new Array<JALVideo>();
 
     store.state.players.forEach((element: VideoJSRecord) => {
@@ -88,8 +88,8 @@ export default class JALStateService {
 
     })
 
-    alert('project successfully stored')
-
+    //alert('project successfully stored')
+    return;
 
 
   }
@@ -119,8 +119,9 @@ export default class JALStateService {
     })
   }
   loadProject() {
+  
     //@ts-ignore
-    const projectRef = firebase.database().ref('project/' + store.state.activeProject.projectid);
+    const projectRef = firebase.database().ref('project/' + store.state.activeProject);
 
     projectRef.once('value').then(function (snapshot) {
 
@@ -128,9 +129,9 @@ export default class JALStateService {
         snapshot.val().videos.forEach((element) => {
 
           try {
-      
 
-              store.commit("addVideoToGrid",element);
+
+            store.commit("addVideoToGrid", element);
 
           }
           catch (error) {

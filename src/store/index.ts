@@ -25,7 +25,7 @@ export class GridVideo {
   lastY: number
   sizeY: number;
   src: any;
-  constructor(id, x, y,sizeX,sizeY,src=undefined) {
+  constructor(id, x, y, sizeX, sizeY, src = undefined) {
     this.id = id;
     this.x = x;
     this.y = y;
@@ -49,17 +49,22 @@ export default new Vuex.Store({
     activeProject: '',
     activeProjectName: '',
     projects: Array<any>(),
-    videoGrid: Array<GridVideo>()
+    videoGrid: Array<GridVideo>(),
+    saveOverlay: false
   },
 
   mutations: {
     setUser(state, val: JALUser) {
       state.userProfile = val
     },
+    setSaveOverlay(state, value) {
 
+
+      state.saveOverlay = value;
+    },
     updateGridVideo(state, video) {
 
-      
+
       for (let i = 0; i < state.videoGrid.length; i++) {
         if (state.videoGrid[i].id === video.id) {
           state.videoGrid.splice(i, 1);
@@ -72,14 +77,15 @@ export default new Vuex.Store({
       //     element.sizeX = video.sizeX;
       //     element.sizeY = video.sizeY;
       //   }})
-      
+
       state.videoGrid.push(video)
-        
-      },
-    
+
+    },
+
     addVideoToGrid(state, video) {
-      alert()
-      state.videoGrid.push(video)
+
+      if (video.id != undefined && video.id != null)
+        state.videoGrid.push(video)
     },
     setProject(state, val) {
       state.activeProject = val
@@ -88,7 +94,7 @@ export default new Vuex.Store({
       state.activeProjectName = val
     },
     addProject(state, val: any) {
-      state.projects.push({ name: val.name, projectid: val.projectid, userid: val.userid});
+      state.projects.push({ name: val.name, projectid: val.projectid, userid: val.userid });
     },
     // addVideo (state, n: Blob) {
 
@@ -101,9 +107,10 @@ export default new Vuex.Store({
     resetChildren(state) {
       state.players = Array<VideoJSRecord>();
       state.children = new Array<Child>();
+      state.videoGrid = new Array<GridVideo>();
     },
-  activePlayer(state, n: any) {
-  
+    activePlayer(state, n: any) {
+
       state.activePlayer = n;
     },
 
@@ -111,9 +118,9 @@ export default new Vuex.Store({
       state.videoGrid.forEach(element => {
         //@ts-ignore
         if (element.id == state.activePlayer.id) {
-         
-          const video = new GridVideo("JALvideojs" + Date.now(),element.x,element.y,element.sizeX,element.sizeY,src)
-         
+
+          const video = new GridVideo("JALvideojs" + Date.now(), element.x, element.y, element.sizeX, element.sizeY, src)
+
           state.videoGrid.push(video)
         }
       });
@@ -123,12 +130,12 @@ export default new Vuex.Store({
     },
     setActivePlayById(state, id: string) {
       state.players.forEach((element) => {
+
         //@ts-ignore
-        if (element.id == id)
-        {
+        if (id != undefined && id != null && element.id == id) {
           //@ts-ignore
           state.activePlayer = element;
-          }
+        }
       });
     },
     addChildren(state, n: any) {

@@ -20,6 +20,13 @@
       <v-img src="../../assets/logo_transparent_background.png" />
       <v-progress-linear indeterminate color="#FF914C"></v-progress-linear>
     </v-overlay>
+
+    <v-overlay :opacity="0.8" :value="$store.state.saveOverlay" :z-index="99">
+      <v-img src="../../assets/logo_transparent_background.png" />
+      <h2 style="color:#FF914C">save project...</h2>
+      <v-progress-linear indeterminate color="#FF914C"></v-progress-linear>
+    </v-overlay>
+
     <v-app-bar fixed dense style="vertical-align: bottom;">
       <!-- <v-file-input accept="image/*" style="color:"#FF914C"" width="5%" @change="onFileChange" label="Projekt öffnen"></v-file-input> -->
 
@@ -57,7 +64,6 @@
           indeterminate
         ></v-progress-circular>
       </v-btn>
-
       <v-btn v-on:click="saveProject" style="margin-left:50px">
         <v-icon color="#FF914C">mdi-zip-disk</v-icon>
       </v-btn>
@@ -1036,6 +1042,8 @@ export default class VideoRecorderGrid extends Vue {
     });
   }
   saveProject() {
+    alert('dwwdw')
+    store.commit("setSaveOverlay", true);
     JalStateService.prototype.saveState(
       //@ts-ignore
       store.state.activeProject,
