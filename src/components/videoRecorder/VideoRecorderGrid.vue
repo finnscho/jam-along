@@ -117,8 +117,6 @@ import jquery from "jquery";
 import $ from "jquery";
 import { Pt, Line } from "pts";
 
-import streamToBlob from "stream-to-blob";
-
 @Component({
   components: {
     "video-js-recorder": VideoJSRecord,
