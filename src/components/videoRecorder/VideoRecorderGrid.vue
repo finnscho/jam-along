@@ -311,6 +311,7 @@ export default class VideoRecorderGrid extends Vue {
         const result = (100 * value) / x; // affichage du résultat (facultatif)
         return result;
       },
+
       cellSize: 10,
       curCell: new Pt(0, 0),
       offset: new Pt(0, 0),
@@ -417,6 +418,7 @@ export default class VideoRecorderGrid extends Vue {
           $(".Grid").off("touchmove", Grid.modify.runTouch);
         },
         start: function(e) {
+          if(!(/Mobi/i.test(window.navigator.userAgent))){
           console.log("MOD START");
           //@ts-ignore
           const bounds = document
@@ -424,6 +426,7 @@ export default class VideoRecorderGrid extends Vue {
             .getBoundingClientRect();
           const x = e.clientX - bounds.left;
           const y = e.clientY - bounds.top;
+        
           Grid.lastVideoTile.lastX = x;
           Grid.lastVideoTile.lastY = y;
 
@@ -444,6 +447,7 @@ export default class VideoRecorderGrid extends Vue {
           }
           $(".Grid").on("mousemove", Grid.modify.run);
           $(".Grid").on("touchmove", Grid.modify.runTouch);
+        }
         },
         startTouch: function(e) {
           console.log("TOUCH START");
@@ -453,10 +457,11 @@ export default class VideoRecorderGrid extends Vue {
             .getBoundingClientRect();
           const x = e.touches[0].clientX - bounds.left;
           const y = e.touches[0].clientY - bounds.top;
-
+          //0.7 is the transformation size in portrait mode
+          const factor = window.innerHeight > window.innerWidth?0.7:1
           const hoverCell = new Pt(
-            Math.floor(x / Grid.vhTOpx(Grid.cellSize)),
-            Math.floor(y / Grid.vhTOpx(Grid.cellSize))
+            Math.floor(x / Grid.vhTOpx(Grid.cellSize * factor)),
+            Math.floor(y / Grid.vhTOpx(Grid.cellSize * factor))
           );
 
           Grid.curCell = hoverCell;
