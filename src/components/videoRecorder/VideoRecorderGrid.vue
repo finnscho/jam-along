@@ -660,6 +660,16 @@ export default class VideoRecorderGrid extends Vue {
 
       mergeVideoTile: function(tileType, x, y) {
         const size = true;
+        
+        // if (Grid.lastVideoTile.id == null) {
+          store.state.videoGrid.forEach((video) => {
+            //@ts-ignore
+            if (video.id == store.state.activePlayer.id) {
+              Grid.lastVideoTile = video;
+            }
+          });
+        // } 
+        
         const gridVideo: GridVideo = Grid.lastVideoTile;
 
         if (Grid.lastVideoTile.lastX > x) {
@@ -692,11 +702,13 @@ export default class VideoRecorderGrid extends Vue {
         store.commit("updateGridVideo", gridVideo);
       },
       addVideoTile: function(tileType, x, y) {
+        alert;
         // console.log("addVideoTile at x/y" + x + "  y " + y);
         if (!Grid.isTileAt(tileType, x, y)) {
           const id = "JALvideojs" + Date.now();
           //  console.log("adding video at x: " + x + " y: " + y);
           const gridVideo = new GridVideo(id, x, y, 10, 10);
+
           Grid.lastVideoTile = {
             id: id,
             sizeX: 10,
