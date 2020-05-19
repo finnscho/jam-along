@@ -646,7 +646,7 @@ export default class VideoRecorderGrid extends Vue {
           const x = e.clientX - bounds.left;
           const y = e.clientY - bounds.top;
 
-          alert("run2");
+        
           Grid.offset.x += x - Grid.pan.lastPt.x;
           Grid.offset.y += y - Grid.pan.lastPt.y;
           $(".Tiles").css({
@@ -673,7 +673,7 @@ export default class VideoRecorderGrid extends Vue {
           const x = e.touches[0].clientX - bounds.left;
           const y = e.touches[0].clientY - bounds.top;
 
-          alert("run2");
+   
           Grid.offset.x += x - Grid.pan.lastPt.x;
           Grid.offset.y += y - Grid.pan.lastPt.y;
           $(".Tiles").css({
@@ -1118,7 +1118,6 @@ export default class VideoRecorderGrid extends Vue {
   }
   saveProject() {
     this.saveProjectDialog = false;
-    alert(this.projectName)
     JalStateService.prototype.saveState(
       //@ts-ignore
       store.state.activeProject,
