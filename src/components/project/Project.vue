@@ -59,7 +59,7 @@ import firebase from "firebase";
 @Component({})
 export default class Project extends Vue {
   @Prop() item: any;
-  projectName = "Kein Name";
+  projectName = "no name";
 
   mounted() {
     
@@ -70,12 +70,7 @@ export default class Project extends Vue {
 
   }
   get name() {
-
-    store.state.projects.forEach((element) => {
-      if (element.projectid == this.item) {
-        this.projectName = element.name;
-      }
-    });
+   this.projectName =this.item.name     
     return this.projectName;
   }
 

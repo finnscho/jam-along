@@ -10,7 +10,36 @@
       <h2 style="color:#FF914C">save project...</h2>
       <v-progress-linear indeterminate color="#FF914C"></v-progress-linear>
     </v-overlay>
+    <v-dialog
     
+      :value="saveProjectDialog"
+      persistent
+      max-width="600px"
+    >
+      <v-card>
+        <v-card-title>
+          <span class="headline">Project</span>
+        </v-card-title>
+        <v-card-text>
+          <v-container>
+            <v-row>
+              <v-col cols="12">
+                <v-text-field
+                  label="Project name*"
+                  v-model="projectName"
+                  required
+                ></v-text-field>
+              </v-col> </v-row></v-container
+        ></v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>          
+          <v-btn color="#FF914C" text @click="saveProjectDialog = false"
+            >Close</v-btn
+          >
+          <v-btn color="#FF914C" text @click="saveProject">Save</v-btn>
+        </v-card-actions>
+      </v-card></v-dialog
+    >
     <v-app-bar fixed dense style="vertical-align: bottom;">
       <!-- <v-file-input accept="image/*" style="color:"#FF914C"" width="5%" @change="onFileChange" label="Projekt öffnen"></v-file-input> -->
 
@@ -48,7 +77,7 @@
           indeterminate
         ></v-progress-circular>
       </v-btn>
-      <v-btn v-on:click="saveProject" style="margin-left:50px">
+      <v-btn v-on:click="saveProjectDialog = true" style="margin-left:50px">
         <v-icon color="#FF914C">mdi-zip-disk</v-icon>
       </v-btn>
 
@@ -56,9 +85,22 @@
         <v-icon color="#FF914C">mdi-delete</v-icon>
       </v-btn>
 
-      <v-btn @click="setTransformationMode('position')"><v-icon :color="$store.state.transformationMode=='position'?'white':'#FF914C'">mdi-arrow-all</v-icon></v-btn>
-      <v-btn @click="setTransformationMode('size')"><v-icon :color="$store.state.transformationMode=='size'?'white':'#FF914C'">mdi-arrow-top-right-bottom-left</v-icon></v-btn>
-
+      <v-btn @click="setTransformationMode('position')"
+        ><v-icon
+          :color="
+            $store.state.transformationMode == 'position' ? 'white' : '#FF914C'
+          "
+          >mdi-arrow-all</v-icon
+        ></v-btn
+      >
+      <v-btn @click="setTransformationMode('size')"
+        ><v-icon
+          :color="
+            $store.state.transformationMode == 'size' ? 'white' : '#FF914C'
+          "
+          >mdi-arrow-top-right-bottom-left</v-icon
+        ></v-btn
+      >
     </v-app-bar>
     <!-- <div v-for="n in this.$store.state.videoGrid"  :key="n.id">
     <div
@@ -127,10 +169,12 @@ export default class VideoRecorderGrid extends Vue {
   file: any = "";
   merger: any;
   factor = 1;
+  saveProjectDialog = false;
   valueDeterminate = 0;
   recording = false;
   overlay = false;
   projectid = "";
+  projectName = "";
   isMobileDevice: boolean;
   //@ts-ignore
   mediaRecorder: MediaRecorder = null;
@@ -151,8 +195,8 @@ export default class VideoRecorderGrid extends Vue {
 
   //  }
 
-  setTransformationMode(value){
-    store.commit('setTransformationMode',value)
+  setTransformationMode(value) {
+    store.commit("setTransformationMode", value);
   }
   getStyle(n: GridVideo) {
     // alert('VideoX: ' + n.sizeX)
@@ -195,7 +239,7 @@ export default class VideoRecorderGrid extends Vue {
       alert(
         "Jam-Along might not work with mobile devices. Please use Google Chrome on a Desktop PC"
       );
-      this.setTransformationMode('size')
+      this.setTransformationMode("size");
     }
 
     sessionStorage.clear();
@@ -204,6 +248,7 @@ export default class VideoRecorderGrid extends Vue {
     this.data = [];
 
     this.recordedChunks = [];
+    this.projectName = store.state.activeProjectName;
   }
 
   async init() {
@@ -674,12 +719,12 @@ export default class VideoRecorderGrid extends Vue {
         }
 
         const gridVideo: GridVideo = Grid.lastVideoTile;
-        
+
         if (Grid.lastVideoTile.lastX > x) {
           if (size) {
             //LINKS
             if (store.state.transformationMode == "position") {
-              gridVideo.x = gridVideo.x -1
+              gridVideo.x = gridVideo.x - 1;
             } else {
               gridVideo.sizeX = gridVideo.sizeX - 10; //<60?gridVideo.sizeX * 2: gridVideo.sizeX;
             }
@@ -687,27 +732,27 @@ export default class VideoRecorderGrid extends Vue {
         } else if (Grid.lastVideoTile.x < x) {
           // console.log("Nach RECHTS");
           if (size) {
-          if (store.state.transformationMode == "position") {
-              gridVideo.x = gridVideo.x +1
+            if (store.state.transformationMode == "position") {
+              gridVideo.x = gridVideo.x + 1;
             } else {
-            gridVideo.sizeX = gridVideo.sizeX + 10;
+              gridVideo.sizeX = gridVideo.sizeX + 10;
             }
           }
         } else if (Grid.lastVideoTile.y < y) {
           if (size) {
             if (store.state.transformationMode == "position") {
-              gridVideo.y = gridVideo.y +1
+              gridVideo.y = gridVideo.y + 1;
             } else {
-            gridVideo.sizeX = gridVideo.sizeX + 10;
+              gridVideo.sizeX = gridVideo.sizeX + 10;
             }
           }
           //console.log("Nach UNTEN");
         } else if (Grid.lastVideoTile.y >= y) {
           if (size) {
             if (store.state.transformationMode == "position") {
-              gridVideo.y = gridVideo.y -1
+              gridVideo.y = gridVideo.y - 1;
             } else {
-            gridVideo.sizeX = gridVideo.sizeX - 10;
+              gridVideo.sizeX = gridVideo.sizeX - 10;
             }
           }
         }
@@ -720,7 +765,7 @@ export default class VideoRecorderGrid extends Vue {
         }
       },
       addVideoTile: function(tileType, x, y) {
-       store.commit('setTransformationMode','size')
+       
         // console.log("addVideoTile at x/y" + x + "  y " + y);
         if (!Grid.isTileAt(tileType, x, y)) {
           const id = "JALvideojs" + Date.now();
@@ -738,7 +783,7 @@ export default class VideoRecorderGrid extends Vue {
             src: undefined,
           };
           store.commit("addVideoToGrid", gridVideo);
-
+           store.commit("setTransformationMode", "size");
           //   //        $("." + tileType + "[data-x='" + x + "'][data-y='" + y + "']").css({
           //   // left: x * Grid.vhTOpx(Grid.cellSize),
           //   // top: y * Grid.vhTOpx(Grid.cellSize),})
@@ -1072,11 +1117,12 @@ export default class VideoRecorderGrid extends Vue {
     });
   }
   saveProject() {
-    store.commit("setSaveOverlay", true);
+    this.saveProjectDialog = false;
+    alert(this.projectName)
     JalStateService.prototype.saveState(
       //@ts-ignore
       store.state.activeProject,
-      store.state.activeProjectName
+      this.projectName
     );
   }
 
