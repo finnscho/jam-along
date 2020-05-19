@@ -1042,7 +1042,6 @@ export default class VideoRecorderGrid extends Vue {
     });
   }
   saveProject() {
-    alert('dwwdw')
     store.commit("setSaveOverlay", true);
     JalStateService.prototype.saveState(
       //@ts-ignore

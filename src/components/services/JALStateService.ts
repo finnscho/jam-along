@@ -130,7 +130,8 @@ export default class JALStateService {
 
           try {
 
-
+            element.lastX = element.x;
+            element.lastY = element.y
             store.commit("addVideoToGrid", element);
 
           }
