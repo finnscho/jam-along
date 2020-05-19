@@ -50,10 +50,15 @@ export default new Vuex.Store({
     activeProjectName: '',
     projects: Array<any>(),
     videoGrid: Array<GridVideo>(),
-    saveOverlay: false
+    saveOverlay: false,
+    transformationMode: '',
   },
 
   mutations: {
+
+    setTransformationMode(state, value) {
+      state.transformationMode = value;
+    },
     setUser(state, val: JALUser) {
       state.userProfile = val
     },

@@ -1,21 +1,5 @@
 <template>
   <v-container fluid>
-    <v-navigation-drawer
-      style="margin-top:20vh; height:40vh"
-      color="#272727"
-      width="4vw"
-      absolute
-    >
-      <v-icon style="padding-left:35%;width:50%; color:#FF914C"
-        >mdi-magnify-plus-cursor</v-icon
-      >
-      <v-slider style="color:#FF914C" @change="getZoom" vertical></v-slider>
-    </v-navigation-drawer>
-
-    <!-- <v-container style="padding-top='5%'" fluid>
-    <v-row>
-      <v-col cols="4"> </v-col>
-      <v-col cols="4"> -->
     <v-overlay :opacity="1" :value="overlay" :z-index="99">
       <v-img src="../../assets/logo_transparent_background.png" />
       <v-progress-linear indeterminate color="#FF914C"></v-progress-linear>
@@ -26,7 +10,7 @@
       <h2 style="color:#FF914C">save project...</h2>
       <v-progress-linear indeterminate color="#FF914C"></v-progress-linear>
     </v-overlay>
-
+    
     <v-app-bar fixed dense style="vertical-align: bottom;">
       <!-- <v-file-input accept="image/*" style="color:"#FF914C"" width="5%" @change="onFileChange" label="Projekt öffnen"></v-file-input> -->
 
@@ -71,6 +55,10 @@
       <v-btn v-on:click="removePlayer">
         <v-icon color="#FF914C">mdi-delete</v-icon>
       </v-btn>
+
+      <v-btn @click="setTransformationMode('position')"><v-icon :color="$store.state.transformationMode=='position'?'white':'#FF914C'">mdi-arrow-all</v-icon></v-btn>
+      <v-btn @click="setTransformationMode('size')"><v-icon :color="$store.state.transformationMode=='size'?'white':'#FF914C'">mdi-arrow-top-right-bottom-left</v-icon></v-btn>
+
     </v-app-bar>
     <!-- <div v-for="n in this.$store.state.videoGrid"  :key="n.id">
     <div
@@ -162,6 +150,10 @@ export default class VideoRecorderGrid extends Vue {
   //    return;
 
   //  }
+
+  setTransformationMode(value){
+    store.commit('setTransformationMode',value)
+  }
   getStyle(n: GridVideo) {
     // alert('VideoX: ' + n.sizeX)
     // store.state.videoGrid.forEach(element => {
@@ -203,6 +195,7 @@ export default class VideoRecorderGrid extends Vue {
       alert(
         "Jam-Along might not work with mobile devices. Please use Google Chrome on a Desktop PC"
       );
+      this.setTransformationMode('size')
     }
 
     sessionStorage.clear();
@@ -418,37 +411,39 @@ export default class VideoRecorderGrid extends Vue {
           $(".Grid").off("touchmove", Grid.modify.runTouch);
         },
         start: function(e) {
-          if(!(/Mobi/i.test(window.navigator.userAgent))){
-          console.log("MOD START");
-          //@ts-ignore
-          const bounds = document
-            .getElementById("Grid")
-            .getBoundingClientRect();
-          const x = e.clientX - bounds.left;
-          const y = e.clientY - bounds.top;
-        
+          if (!/Mobi/i.test(window.navigator.userAgent)) {
+            console.log("MOD START");
+            //@ts-ignore
+            const bounds = document
+              .getElementById("Grid")
+              .getBoundingClientRect();
+            const x = e.clientX - bounds.left;
+            const y = e.clientY - bounds.top;
 
-
-          const hoverCell = new Pt(
-            Math.floor(x / Grid.vhTOpx(Grid.cellSize)),
-            Math.floor(y / Grid.vhTOpx(Grid.cellSize))
-          );
-          Grid.lastVideoTile.lastX = hoverCell.x;
-          Grid.lastVideoTile.lastY = hoverCell.y;
-          Grid.curCell = hoverCell;
-          if (e.which == 1) {
-            Grid.addVideoTile(Grid.curTileType, Grid.curCell.x, Grid.curCell.y);
-          } else if (e.which == 3) {
-            $(".Grid-selector")
-              .removeClass("addMode")
-              .addClass("deleteMode")
-              .hide()
-              .show(1);
-            Grid.deleteTile(Grid.curTileType, Grid.curCell.x, Grid.curCell.y);
+            const hoverCell = new Pt(
+              Math.floor(x / Grid.vhTOpx(Grid.cellSize)),
+              Math.floor(y / Grid.vhTOpx(Grid.cellSize))
+            );
+            Grid.lastVideoTile.lastX = hoverCell.x;
+            Grid.lastVideoTile.lastY = hoverCell.y;
+            Grid.curCell = hoverCell;
+            if (e.which == 1) {
+              Grid.addVideoTile(
+                Grid.curTileType,
+                Grid.curCell.x,
+                Grid.curCell.y
+              );
+            } else if (e.which == 3) {
+              $(".Grid-selector")
+                .removeClass("addMode")
+                .addClass("deleteMode")
+                .hide()
+                .show(1);
+              Grid.deleteTile(Grid.curTileType, Grid.curCell.x, Grid.curCell.y);
+            }
+            $(".Grid").on("mousemove", Grid.modify.run);
+            $(".Grid").on("touchmove", Grid.modify.runTouch);
           }
-          $(".Grid").on("mousemove", Grid.modify.run);
-          $(".Grid").on("touchmove", Grid.modify.runTouch);
-        }
         },
         startTouch: function(e) {
           console.log("TOUCH START");
@@ -459,7 +454,7 @@ export default class VideoRecorderGrid extends Vue {
           const x = e.touches[0].clientX - bounds.left;
           const y = e.touches[0].clientY - bounds.top;
           //0.7 is the transformation size in portrait mode
-          const factor = window.innerHeight > window.innerWidth?0.7:1
+          const factor = window.innerHeight > window.innerWidth ? 0.7 : 1;
           const hoverCell = new Pt(
             Math.floor(x / Grid.vhTOpx(Grid.cellSize * factor)),
             Math.floor(y / Grid.vhTOpx(Grid.cellSize * factor))
@@ -669,47 +664,63 @@ export default class VideoRecorderGrid extends Vue {
       mergeVideoTile: function(tileType, x, y) {
         const size = true;
 
-         if (Grid.lastVideoTile.id == null) {
-        store.state.videoGrid.forEach((video) => {
-          //@ts-ignore
-          if (video.id == store.state.activePlayer.id) {
-            Grid.lastVideoTile = video;
-          }
-        });
+        if (Grid.lastVideoTile.id == null) {
+          store.state.videoGrid.forEach((video) => {
+            //@ts-ignore
+            if (video.id == store.state.activePlayer.id) {
+              Grid.lastVideoTile = video;
+            }
+          });
         }
 
         const gridVideo: GridVideo = Grid.lastVideoTile;
-
+        
         if (Grid.lastVideoTile.lastX > x) {
           if (size) {
             //LINKS
-            gridVideo.sizeX = gridVideo.sizeX - 10; //<60?gridVideo.sizeX * 2: gridVideo.sizeX;
+            if (store.state.transformationMode == "position") {
+              gridVideo.x = gridVideo.x -1
+            } else {
+              gridVideo.sizeX = gridVideo.sizeX - 10; //<60?gridVideo.sizeX * 2: gridVideo.sizeX;
+            }
           }
         } else if (Grid.lastVideoTile.x < x) {
           // console.log("Nach RECHTS");
           if (size) {
+          if (store.state.transformationMode == "position") {
+              gridVideo.x = gridVideo.x +1
+            } else {
             gridVideo.sizeX = gridVideo.sizeX + 10;
+            }
           }
         } else if (Grid.lastVideoTile.y < y) {
           if (size) {
+            if (store.state.transformationMode == "position") {
+              gridVideo.y = gridVideo.y +1
+            } else {
             gridVideo.sizeX = gridVideo.sizeX + 10;
+            }
           }
           //console.log("Nach UNTEN");
         } else if (Grid.lastVideoTile.y >= y) {
           if (size) {
+            if (store.state.transformationMode == "position") {
+              gridVideo.y = gridVideo.y -1
+            } else {
             gridVideo.sizeX = gridVideo.sizeX - 10;
+            }
           }
         }
-        if(gridVideo.sizeX>=10){
-        Grid.lastVideoTile.lastX = x;
-        Grid.lastVideoTile.lastY = y;
-        store.commit("updateGridVideo", gridVideo);
-        }else {
-          gridVideo.sizeX = 10
+        if (gridVideo.sizeX >= 10) {
+          Grid.lastVideoTile.lastX = x;
+          Grid.lastVideoTile.lastY = y;
+          store.commit("updateGridVideo", gridVideo);
+        } else {
+          gridVideo.sizeX = 10;
         }
       },
       addVideoTile: function(tileType, x, y) {
-        alert;
+       store.commit('setTransformationMode','size')
         // console.log("addVideoTile at x/y" + x + "  y " + y);
         if (!Grid.isTileAt(tileType, x, y)) {
           const id = "JALvideojs" + Date.now();
