@@ -424,6 +424,8 @@ export default class VideoRecorderGrid extends Vue {
             .getBoundingClientRect();
           const x = e.clientX - bounds.left;
           const y = e.clientY - bounds.top;
+          Grid.lastVideoTile.lastX = x;
+          Grid.lastVideoTile.lastY = y;
 
           const hoverCell = new Pt(
             Math.floor(x / Grid.vhTOpx(Grid.cellSize)),
@@ -660,45 +662,40 @@ export default class VideoRecorderGrid extends Vue {
 
       mergeVideoTile: function(tileType, x, y) {
         const size = true;
-        
-        // if (Grid.lastVideoTile.id == null) {
-          store.state.videoGrid.forEach((video) => {
-            //@ts-ignore
-            if (video.id == store.state.activePlayer.id) {
-              Grid.lastVideoTile = video;
-            }
-          });
-        // } 
-        
+
+         if (Grid.lastVideoTile.id == null) {
+        store.state.videoGrid.forEach((video) => {
+          //@ts-ignore
+          if (video.id == store.state.activePlayer.id) {
+            Grid.lastVideoTile = video;
+          }
+        });
+        }
+
         const gridVideo: GridVideo = Grid.lastVideoTile;
 
         if (Grid.lastVideoTile.lastX > x) {
           if (size) {
             //LINKS
             gridVideo.sizeX = gridVideo.sizeX - 10; //<60?gridVideo.sizeX * 2: gridVideo.sizeX;
-
-            Grid.lastVideoTile.lastX = Grid.lastVideoTile.lastX - 1;
           }
         } else if (Grid.lastVideoTile.x < x) {
           // console.log("Nach RECHTS");
           if (size) {
-            gridVideo.sizeX = gridVideo.sizeX + 10; //* 2<60?gridVideo.sizeX * 2: gridVideo.sizeX;
-            // const p = 2//Grid.lastVideoTile.x+1
-            Grid.lastVideoTile.lastX = Grid.lastVideoTile.lastX + 1;
-            console.log("SIZED X: " + gridVideo.sizeX);
+            gridVideo.sizeX = gridVideo.sizeX + 10;
           }
         } else if (Grid.lastVideoTile.y < y) {
           if (size) {
-            gridVideo.sizeX = gridVideo.sizeX + 10; //<60?gridVideo.sizeX / 2: gridVideo.sizeX;
-            Grid.lastVideoTile.lastY = Grid.lastVideoTile.lastY + 1;
+            gridVideo.sizeX = gridVideo.sizeX + 10;
           }
           //console.log("Nach UNTEN");
         } else if (Grid.lastVideoTile.y >= y) {
           if (size) {
-            gridVideo.sizeX = gridVideo.sizeX - 10; //<60?gridVideo.sizeX / 2: gridVideo.sizeX;
-            Grid.lastVideoTile.lastY = Grid.lastVideoTile.lastY - 1;
+            gridVideo.sizeX = gridVideo.sizeX - 10;
           }
         }
+        Grid.lastVideoTile.lastX = x;
+        Grid.lastVideoTile.lastY = y;
         store.commit("updateGridVideo", gridVideo);
       },
       addVideoTile: function(tileType, x, y) {
