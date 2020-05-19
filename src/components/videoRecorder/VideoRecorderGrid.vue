@@ -427,13 +427,14 @@ export default class VideoRecorderGrid extends Vue {
           const x = e.clientX - bounds.left;
           const y = e.clientY - bounds.top;
         
-          Grid.lastVideoTile.lastX = x;
-          Grid.lastVideoTile.lastY = y;
+
 
           const hoverCell = new Pt(
             Math.floor(x / Grid.vhTOpx(Grid.cellSize)),
             Math.floor(y / Grid.vhTOpx(Grid.cellSize))
           );
+          Grid.lastVideoTile.lastX = hoverCell.x;
+          Grid.lastVideoTile.lastY = hoverCell.y;
           Grid.curCell = hoverCell;
           if (e.which == 1) {
             Grid.addVideoTile(Grid.curTileType, Grid.curCell.x, Grid.curCell.y);
@@ -699,9 +700,13 @@ export default class VideoRecorderGrid extends Vue {
             gridVideo.sizeX = gridVideo.sizeX - 10;
           }
         }
+        if(gridVideo.sizeX>=10){
         Grid.lastVideoTile.lastX = x;
         Grid.lastVideoTile.lastY = y;
         store.commit("updateGridVideo", gridVideo);
+        }else {
+          gridVideo.sizeX = 10
+        }
       },
       addVideoTile: function(tileType, x, y) {
         alert;
@@ -1217,7 +1222,7 @@ body {
   }
 }
 .Grid-selector.addMode {
-  color: limegreen;
+  color: white;
 }
 .Grid-selector.deleteMode {
   color: crimson;
