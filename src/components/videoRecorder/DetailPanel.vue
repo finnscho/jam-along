@@ -33,7 +33,7 @@
                     <v-col cols="1"></v-col>
                     <v-col cols="10">
                       <v-card-text>
-                        <label>Offset</label>
+                        <label>Offset (ms)</label>
                         <v-row>
                           <v-col cols="12">
                             <v-slider
@@ -41,6 +41,7 @@
                               class="align-center"
                               style="margin-bottom:2%;"
                               max="3000"
+                              thumb-label
                             >
                               <template v-slot:append>
                                 <v-text-field

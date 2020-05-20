@@ -116,6 +116,7 @@
           <v-slider
             v-model="timeSlider"
             @change="changeTime"
+            thumb-label
             step="0.001"
             :max="getDuration()"
           ></v-slider>
@@ -296,19 +297,29 @@ export default class VideoRecorderGrid extends Vue {
   }
   get timeSlider() {
     try {
-      if (store.state.activePlayer.player != undefined && store.state.activePlayer.player != null)
+      if (store.state.activePlayer.player != undefined && store.state.activePlayer.player != null) {
+        if (
+          store.state.activePlayer.player?.duration() ==
+          store.state.activePlayer.player.currentTime()
+        ) {
+          
+          store.commit('setPlaying', false);
+        }
         if (!this.isMobileDevice) {
           return store.state.activePlayer.player.currentTime();
         } else {
           return store.state.activePlayer.player.wavesurfer.getCurrentTime();
         }
-      else return 0;
+      } else return 0;
     } catch {
       return 0;
     }
   }
-  set timeSlider(value) {}
 
+  set timeSlider(value) {
+    this.i = 0;
+  }
+  i = 0;
   changeTime(value) {
     try {
       if (store.state.activePlayer.player != undefined && store.state.activePlayer.player != null)
