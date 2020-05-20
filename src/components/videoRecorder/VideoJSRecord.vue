@@ -127,6 +127,13 @@ export default class VideoJSRecord extends Vue {
     if (this.src !== null && this.src !== undefined) {
      
       this.player.src = this.src;
+    if(this.player.src != null){
+      alert('')
+      // this.player.waveSurfer().empty() 
+      this.player.wavesurfer().load(this.player.src);
+    }
+
+
     } else {
       
       try {
@@ -162,7 +169,10 @@ export default class VideoJSRecord extends Vue {
     this.player.on("finishRecord", () => {
       const isMobileDevice = /Mobi/i.test(window.navigator.userAgent);
       if (!isMobileDevice)
+      {
+     this.player.wavesurfer().surfer.empty();
         this.player.wavesurfer().load(this.player.recordedData);
+      }
       //   const wavesurfer = waveSurfer.create({
       //       container: '#waveform',
 
@@ -249,6 +259,7 @@ export default class VideoJSRecord extends Vue {
   }
   activate() {
     store.commit("activePlayer", this);
+
   }
 
   // ync(action, target, param, callback) {

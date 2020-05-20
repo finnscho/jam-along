@@ -131,6 +131,14 @@
         ></video-js-recorder>
       </div>
     </div>
+ 
+
+      <v-card style="height='1vh'">
+          <v-col cols="12">
+            <div style="height='6vh!important'"  class="waveform"></div>
+          </v-col>
+      </v-card>
+
   </v-container>
   <!-- </v-col>
       <v-col cols="4"> </v-col>
@@ -1172,6 +1180,7 @@ export default class VideoRecorderGrid extends Vue {
 </script>
 
 <style lang="less" scoped>
+
 @lineColour: #ff914c;
 @gridColour: darken(#363636, 0%);
 @tileColour: darken(red, 20%);
@@ -1323,6 +1332,7 @@ body {
     background: green;
   }
 }
+
 
 @media only screen and (max-device-width: 1000px) and (orientation: portrait) {
   .Grid {

@@ -11,9 +11,7 @@
     >
       <v-card width="100%">
         <v-row align-start>
-          <v-col cols="12">
-            <div height="30%" class="waveform"></div>
-          </v-col>
+
         </v-row>
         <v-row>
           <v-col cols="12">
@@ -32,7 +30,12 @@
               <v-tab href="#tab-filter">
                 <v-icon hint="Camera...">mdi-camera</v-icon>
               </v-tab>
-
+              <v-tab-item color="#FF914C" value="tab-sync" height="300px">
+                <v-card flat tile>
+                  <v-row>
+                  </v-row>
+                  </v-card>
+                  </v-tab-item>
               <v-tab-item color="#FF914C" value="tab-sync" height="300px">
                 <v-card flat tile>
                   <v-row>
@@ -131,9 +134,5 @@ export default class DetailPanel extends Vue {
 .waveform {
   height: 5px;
 }
-.vjs-wavedisplay {
-  height: 400% !important;
-  /* background:orange; */
-  border: 1px solid;
-}
+
 </style>

@@ -34,4 +34,11 @@ export default {
 #myVideo {
   background-color: #95ddf5;
 }
+
+</style>
+
+<style>
+.vjs-wavedisplay {
+    height: 6vh !important;
+}
 </style>
