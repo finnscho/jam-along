@@ -65,12 +65,19 @@ export default class JALStateService {
         //@ts-ignore
         Myvideos.push(
           new JALVideo(
+            //@ts-ignore
             element.player.src,
+            //@ts-ignore
             element.slider,
+            //@ts-ignore
             element.id,
+            //@ts-ignore
             gridVideo.x,
+            //@ts-ignore
             gridVideo.y,
+            //@ts-ignore
             gridVideo.sizeX,
+            //@ts-ignore
             gridVideo.sizeY
           )
         );
@@ -93,7 +100,9 @@ export default class JALStateService {
               Myvideos.push(
                 new JALVideo(
                   url,
+                  //@ts-ignore
                   element.slider,
+                  //@ts-ignore
                   element.id,
                   gridVideo.x,
                   gridVideo.y,

@@ -41,10 +41,10 @@
       <v-btn v-on:click="record">
         <v-icon v-bind:color="recording ? 'red' : '#FF914C'">mdi-record</v-icon>
       </v-btn>
-      <v-btn v-if="!playing" v-on:click="click">
+      <v-btn v-if="!$store.state.playing" v-on:click="click">
         <v-icon color="#FF914C">mdi-play</v-icon>
       </v-btn>
-      <v-btn v-if="playing" v-on:click="pause">
+      <v-btn v-if="$store.state.playing" v-on:click="pause">
         <v-icon color="#FF914C">mdi-pause</v-icon>
       </v-btn>
 
@@ -112,10 +112,15 @@
 
     <v-card style="height='1vh'">
       <v-col cols="12">
-        <div v-show="$store.state.waveform" style="height='6vh!important'" class="waveform"></div>
-        <div v-show="!$store.state.waveform" style="height='6vh!important'">
-          <v-slider></v-slider>
+        <div style="height='6vh!important'">
+          <v-slider
+            v-model="timeSlider"
+            @change="changeTime"
+            step="0.001"
+            :max="getDuration()"
+          ></v-slider>
         </div>
+        <div v-show="$store.state.waveform" style="height='3vh!important'" class="waveform"></div>
       </v-col>
     </v-card>
   </v-container>
@@ -157,7 +162,7 @@ export default class VideoRecorderGrid extends Vue {
   factor = 1;
   saveProjectDialog = false;
   valueDeterminate = 0;
-  playing = false;
+
   recording = false;
   overlay = false;
   projectid = '';
@@ -186,16 +191,6 @@ export default class VideoRecorderGrid extends Vue {
     store.commit('setTransformationMode', value);
   }
   getStyle(n: GridVideo) {
-    // alert('VideoX: ' + n.sizeX)
-    // store.state.videoGrid.forEach(element => {
-    //   if(element.id == n.id){
-    //     console.log("JOOOOleft:" + element.x * 10 + "vh ; top:" + element.y * 10 + "vh; width:"+element.sizeY+"vh height"+element.sizeY + "vh ");
-    //     return "left:" + element.x * 10 + "vh ; top:" + element.y * 10 + "vh; width:"+element.sizeY+"vh height"+element.sizeY + "vh ";
-
-    //   }
-    // });
-
-    console.log('X: ' + n.sizeX);
     return (
       'left:' +
       n.x * 10 +
@@ -207,16 +202,6 @@ export default class VideoRecorderGrid extends Vue {
       n.sizeX +
       'vh'
     );
-    // const y = (n.y * 15) + 10;
-    // const x = (n.x * 15) + 47;
-
-    // const y = (n.y * 10) + 10;
-    // const x = (n.x * 10) + 47;
-    // return (
-
-    //   "position:absolute;width:10vh;height:10vh;background:#ff914c; left:" +
-    //   (n.x * 10 )+ "vh; top: "+ (n.y * 10) +"vh"
-    // );
   }
 
   constructor(params) {
@@ -304,6 +289,35 @@ export default class VideoRecorderGrid extends Vue {
 
     return (x * value) / 100; // affichage du résultat (facultatif)
   }
+  getDuration() {
+    if (store.state.activePlayer.player != undefined)
+      return store.state.activePlayer.player?.duration();
+    else return 0;
+  }
+  get timeSlider() {
+    try {
+      if (store.state.activePlayer.player != undefined && store.state.activePlayer.player != null)
+        if (!this.isMobileDevice) {
+          return store.state.activePlayer.player.currentTime();
+        } else {
+          return store.state.activePlayer.player.wavesurfer.getCurrentTime();
+        }
+      else return 0;
+    } catch {
+      return 0;
+    }
+  }
+  set timeSlider(value) {}
+
+  changeTime(value) {
+    try {
+      if (store.state.activePlayer.player != undefined && store.state.activePlayer.player != null)
+        store.state.activePlayer.player.currentTime(value);
+    } catch {
+      console.log('error');
+    }
+  }
+
   blub() {
     'use strict';
 
@@ -631,13 +645,6 @@ export default class VideoRecorderGrid extends Vue {
             res = true;
 
             store.commit('setActivePlayById', element.id);
-            store.state.players.forEach(element => {
-              if (element.player.wavesurfer != undefined && element.player.wavesurfer != null)
-                element.player.wavesurfer = null;
-            });
-            store.state.activePlayer.player
-              .wavesurfer()
-              .load(store.state.activePlayer.player.recordedData);
           }
         });
         return res;
@@ -1027,10 +1034,10 @@ export default class VideoRecorderGrid extends Vue {
     store.state.players.forEach(element => {
       // if(element.recordedData !== undefined)
       {
-        this.playing = true;
+        store.commit('setPlaying', true);
         console.log('play');
 
-        if (this.isMobileDevice) {
+        if (!this.isMobileDevice && element.player.wavesurfer != null) {
           element.player.wavesurfer().play();
           element.player.wavesurfer().surfer.setVolume(0);
         } else {
@@ -1043,7 +1050,7 @@ export default class VideoRecorderGrid extends Vue {
     store.state.players.forEach(element => {
       // if(element.recordedData !== undefined)
       {
-        this.playing = false;
+        store.commit('setPlaying', false);
         console.log('pause');
         element.player.pause();
       }
@@ -1059,7 +1066,7 @@ export default class VideoRecorderGrid extends Vue {
       }
     });
 
-    this.playing = false;
+    store.commit('setPlaying', false);
   }
   saveProject() {
     this.saveProjectDialog = false;

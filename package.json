@@ -94,19 +94,18 @@
     "rules": {
       "@typescript-eslint/no-var-requires": "warn",
       "@typescript-eslint/ban-ts-ignore": "off",
-      "no-prototype-builtins": "off"
+      "no-prototype-builtins": "off",
+      "no-empty-function": "off"
     },
-    "overrides": [
-      {
-        "files": [
-          "**/__tests__/*.{j,t}s?(x)",
-          "**/tests/unit/**/*.spec.{j,t}s?(x)"
-        ],
-        "env": {
-          "jest": true
-        }
+    "overrides": [{
+      "files": [
+        "**/__tests__/*.{j,t}s?(x)",
+        "**/tests/unit/**/*.spec.{j,t}s?(x)"
+      ],
+      "env": {
+        "jest": true
       }
-    ]
+    }]
   },
   "browserslist": [
     "> 1%",

@@ -49,6 +49,7 @@ export default new Vuex.Store({
     saveOverlay: false,
     transformationMode: '',
     waveform: false,
+    playing: false,
   },
 
   mutations: {
@@ -131,6 +132,9 @@ export default new Vuex.Store({
       });
       //@ts-ignore
       state.activePlayer.src = src;
+    },
+    setPlaying(state, value) {
+      state.playing = value;
     },
     setActivePlayById(state, id: string) {
       state.players.forEach(element => {

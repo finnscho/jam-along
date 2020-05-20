@@ -142,7 +142,7 @@ export default class VideoJSRecord extends Vue {
     // user clicked the record button and started recording
     this.player.on('startRecord', () => {
       const x = new Date().getTime();
-      console.log('time x : ' + x.toString());
+    
       store.state.players.forEach(element => {
         //if(element.recordedData !== undefined)
         {
@@ -151,11 +151,13 @@ export default class VideoJSRecord extends Vue {
         }
       });
       const y = new Date().getTime();
-      console.log('time y : ' + y.toString());
+     
       this.slider = y - x;
       console.log('offset: ' + this.slider.toString());
     });
-
+    this.player.on('ended',()=>{
+      alert
+    }),
     // user completed recording and stream is available
     this.player.on('finishRecord', () => {
       const isMobileDevice = /Mobi/i.test(window.navigator.userAgent);
@@ -163,30 +165,8 @@ export default class VideoJSRecord extends Vue {
         this.player.wavesurfer().load(this.player.recordedData);
         store.commit('setWaveForm', true);
       }
-      //   const wavesurfer = waveSurfer.create({
-      //       container: '#waveform',
+         console.log('finished recording: ', this.player.recordedData);
 
-      //       waveColor: '#A8DBA8',
-      // progressColor: '#3B8686',
-      // backend: 'MediaElement',
-      // scrollParent: true,
-      //   });
-      //     const mediaElt = document.querySelector('video');
-
-      // wavesurfer.load(mediaElt);
-
-      // this.player.options.plugins.push(        {wavesurfer: {
-      //       backend: 'MediaElement',
-      //       msDisplayMax: 10,
-      //       debug: true,
-      //       waveColor: 'green',
-      //       progressColor: 'blue',
-      //       cursorColor: 'red',
-      //       hideScrollbar: true,}})
-      // the blob object contains the recorded data that
-      // can be downloaded by the user, stored on server etc.
-      console.log('finished recording: ', this.player.recordedData);
-      // store.commit("addVideo", this.player.recordedData);
     });
 
     // error handling
