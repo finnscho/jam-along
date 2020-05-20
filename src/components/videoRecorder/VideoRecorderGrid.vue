@@ -10,12 +10,7 @@
       <h2 style="color:#FF914C">save project...</h2>
       <v-progress-linear indeterminate color="#FF914C"></v-progress-linear>
     </v-overlay>
-    <v-dialog
-    
-      :value="saveProjectDialog"
-      persistent
-      max-width="600px"
-    >
+    <v-dialog :value="saveProjectDialog" persistent max-width="600px">
       <v-card>
         <v-card-title>
           <span class="headline">Project</span>
@@ -32,7 +27,7 @@
               </v-col> </v-row></v-container
         ></v-card-text>
         <v-card-actions>
-          <v-spacer></v-spacer>          
+          <v-spacer></v-spacer>
           <v-btn color="#FF914C" text @click="saveProjectDialog = false"
             >Close</v-btn
           >
@@ -57,11 +52,15 @@
       <v-btn v-on:click="record">
         <v-icon v-bind:color="recording ? 'red' : '#FF914C'">mdi-record</v-icon>
       </v-btn>
-      <v-btn v-on:click="click">
+      <v-btn v-if="!playing" v-on:click="click">
         <v-icon color="#FF914C">mdi-play</v-icon>
       </v-btn>
-      <v-btn v-on:click="pause">
+      <v-btn v-if="playing" v-on:click="pause">
         <v-icon color="#FF914C">mdi-pause</v-icon>
+      </v-btn>
+
+      <v-btn v-on:click="stop">
+        <v-icon color="#FF914C">mdi-stop</v-icon>
       </v-btn>
       <v-btn
         v-on:click="save"
@@ -171,6 +170,7 @@ export default class VideoRecorderGrid extends Vue {
   factor = 1;
   saveProjectDialog = false;
   valueDeterminate = 0;
+  playing = false;
   recording = false;
   overlay = false;
   projectid = "";
@@ -646,7 +646,6 @@ export default class VideoRecorderGrid extends Vue {
           const x = e.clientX - bounds.left;
           const y = e.clientY - bounds.top;
 
-        
           Grid.offset.x += x - Grid.pan.lastPt.x;
           Grid.offset.y += y - Grid.pan.lastPt.y;
           $(".Tiles").css({
@@ -673,7 +672,6 @@ export default class VideoRecorderGrid extends Vue {
           const x = e.touches[0].clientX - bounds.left;
           const y = e.touches[0].clientY - bounds.top;
 
-   
           Grid.offset.x += x - Grid.pan.lastPt.x;
           Grid.offset.y += y - Grid.pan.lastPt.y;
           $(".Tiles").css({
@@ -765,7 +763,6 @@ export default class VideoRecorderGrid extends Vue {
         }
       },
       addVideoTile: function(tileType, x, y) {
-       
         // console.log("addVideoTile at x/y" + x + "  y " + y);
         if (!Grid.isTileAt(tileType, x, y)) {
           const id = "JALvideojs" + Date.now();
@@ -783,7 +780,7 @@ export default class VideoRecorderGrid extends Vue {
             src: undefined,
           };
           store.commit("addVideoToGrid", gridVideo);
-           store.commit("setTransformationMode", "size");
+          store.commit("setTransformationMode", "size");
           //   //        $("." + tileType + "[data-x='" + x + "'][data-y='" + y + "']").css({
           //   // left: x * Grid.vhTOpx(Grid.cellSize),
           //   // top: y * Grid.vhTOpx(Grid.cellSize),})
@@ -1087,6 +1084,7 @@ export default class VideoRecorderGrid extends Vue {
     store.state.players.forEach((element) => {
       // if(element.recordedData !== undefined)
       {
+        this.playing = true;
         console.log("play");
 
         if (this.isMobileDevice) {
@@ -1097,24 +1095,31 @@ export default class VideoRecorderGrid extends Vue {
         }
       }
     });
+    
   }
   public pause() {
     store.state.players.forEach((element) => {
       // if(element.recordedData !== undefined)
       {
+        this.playing = false;
         console.log("pause");
         element.player.pause();
       }
     });
+
+    
   }
   public stop() {
     store.state.players.forEach((element) => {
       // if(element.recordedData !== undefined)
       {
         console.log("stop");
-        element.player.stop();
+        element.player.currentTime(0);
+        element.player.pause();
       }
     });
+
+    this.playing = false;
   }
   saveProject() {
     this.saveProjectDialog = false;
