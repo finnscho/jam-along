@@ -14,10 +14,10 @@
 <script>
 // import VideoRecorderGrid from "./components/videoRecorder/VideoRecorderGrid.vue";
 // import DetailPanel from "./components/videoRecorder/DetailPanel.vue";
-import CookieLaw from "vue-cookie-law";
+import CookieLaw from 'vue-cookie-law';
 
 export default {
-  name: "app",
+  name: 'app',
   components: {
     CookieLaw,
   },
@@ -34,11 +34,10 @@ export default {
 #myVideo {
   background-color: #95ddf5;
 }
-
 </style>
 
 <style>
 .vjs-wavedisplay {
-    height: 6vh !important;
+  height: 6vh !important;
 }
 </style>

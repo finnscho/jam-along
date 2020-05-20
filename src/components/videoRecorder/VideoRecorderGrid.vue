@@ -19,18 +19,12 @@
           <v-container>
             <v-row>
               <v-col cols="12">
-                <v-text-field
-                  label="Project name*"
-                  v-model="projectName"
-                  required
-                ></v-text-field>
+                <v-text-field label="Project name*" v-model="projectName" required></v-text-field>
               </v-col> </v-row></v-container
         ></v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="#FF914C" text @click="saveProjectDialog = false"
-            >Close</v-btn
-          >
+          <v-btn color="#FF914C" text @click="saveProjectDialog = false">Close</v-btn>
           <v-btn color="#FF914C" text @click="saveProject">Save</v-btn>
         </v-card-actions>
       </v-card></v-dialog
@@ -38,12 +32,7 @@
     <v-app-bar fixed dense style="vertical-align: bottom;">
       <!-- <v-file-input accept="image/*" style="color:"#FF914C"" width="5%" @change="onFileChange" label="Projekt öffnen"></v-file-input> -->
 
-      <input
-        type="file"
-        ref="file"
-        style="display: none"
-        v-on:change="handleFileUpload()"
-      />
+      <input type="file" ref="file" style="display: none" v-on:change="handleFileUpload()" />
 
       <v-btn @click="$refs.file.click()">
         <v-icon color="#FF914C">mdi-movie-open</v-icon>
@@ -62,13 +51,8 @@
       <v-btn v-on:click="stop">
         <v-icon color="#FF914C">mdi-stop</v-icon>
       </v-btn>
-      <v-btn
-        v-on:click="save"
-        :style="!isMobileDevice ? 'margin-left:10vw' : ''"
-      >
-        <v-icon color="#FF914C" v-if="downloading == false"
-          >mdi-download</v-icon
-        >
+      <v-btn v-on:click="save" :style="!isMobileDevice ? 'margin-left:10vw' : ''">
+        <v-icon color="#FF914C" v-if="downloading == false">mdi-download</v-icon>
         <v-progress-circular
           v-if="downloading == true"
           :width="3"
@@ -85,18 +69,12 @@
       </v-btn>
 
       <v-btn @click="setTransformationMode('position')"
-        ><v-icon
-          :color="
-            $store.state.transformationMode == 'position' ? 'white' : '#FF914C'
-          "
+        ><v-icon :color="$store.state.transformationMode == 'position' ? 'white' : '#FF914C'"
           >mdi-arrow-all</v-icon
         ></v-btn
       >
       <v-btn @click="setTransformationMode('size')"
-        ><v-icon
-          :color="
-            $store.state.transformationMode == 'size' ? 'white' : '#FF914C'
-          "
+        ><v-icon :color="$store.state.transformationMode == 'size' ? 'white' : '#FF914C'"
           >mdi-arrow-top-right-bottom-left</v-icon
         ></v-btn
       >
@@ -131,14 +109,15 @@
         ></video-js-recorder>
       </div>
     </div>
- 
 
-      <v-card style="height='1vh'">
-          <v-col cols="12">
-            <div style="height='6vh!important'"  class="waveform"></div>
-          </v-col>
-      </v-card>
-
+    <v-card style="height='1vh'">
+      <v-col cols="12">
+        <div v-show="$store.state.waveform" style="height='6vh!important'" class="waveform"></div>
+        <div v-show="!$store.state.waveform" style="height='6vh!important'">
+          <v-slider></v-slider>
+        </div>
+      </v-col>
+    </v-card>
   </v-container>
   <!-- </v-col>
       <v-col cols="4"> </v-col>
@@ -146,23 +125,23 @@
   </v-container> -->
 </template>
 <script lang="ts">
-import Vue from "vue";
-import { Component, Prop } from "vue-property-decorator";
-import VideoJSRecord from "./VideoJSRecord.vue";
-import store, { Child, GridVideo } from "../../store";
-import { VideoStreamMerger } from "video-stream-merger";
-import "videojs-offset";
-import JalffmpegService from "../services/ffmpegService";
-import JalStateService from "../services/JALStateService";
-import videojs from "video.js";
-import JALStateService from "../services/JALStateService";
-import jquery from "jquery";
-import $ from "jquery";
-import { Pt, Line } from "pts";
+import Vue from 'vue';
+import { Component, Prop } from 'vue-property-decorator';
+import VideoJSRecord from './VideoJSRecord.vue';
+import store, { Child, GridVideo } from '../../store';
+import { VideoStreamMerger } from 'video-stream-merger';
+import 'videojs-offset';
+import JalffmpegService from '../services/ffmpegService';
+import JalStateService from '../services/JALStateService';
+import videojs from 'video.js';
+import JALStateService from '../services/JALStateService';
+import jquery from 'jquery';
+import $ from 'jquery';
+import { Pt, Line } from 'pts';
 
 @Component({
   components: {
-    "video-js-recorder": VideoJSRecord,
+    'video-js-recorder': VideoJSRecord,
   },
 })
 export default class VideoRecorderGrid extends Vue {
@@ -173,7 +152,7 @@ export default class VideoRecorderGrid extends Vue {
   viId = 0;
   hover = false;
   downloading = false;
-  file: any = "";
+  file: any = '';
   merger: any;
   factor = 1;
   saveProjectDialog = false;
@@ -181,8 +160,8 @@ export default class VideoRecorderGrid extends Vue {
   playing = false;
   recording = false;
   overlay = false;
-  projectid = "";
-  projectName = "";
+  projectid = '';
+  projectName = '';
   isMobileDevice: boolean;
   //@ts-ignore
   mediaRecorder: MediaRecorder = null;
@@ -204,7 +183,7 @@ export default class VideoRecorderGrid extends Vue {
   //  }
 
   setTransformationMode(value) {
-    store.commit("setTransformationMode", value);
+    store.commit('setTransformationMode', value);
   }
   getStyle(n: GridVideo) {
     // alert('VideoX: ' + n.sizeX)
@@ -216,17 +195,17 @@ export default class VideoRecorderGrid extends Vue {
     //   }
     // });
 
-    console.log("X: " + n.sizeX);
+    console.log('X: ' + n.sizeX);
     return (
-      "left:" +
+      'left:' +
       n.x * 10 +
-      "vh ; top:" +
+      'vh ; top:' +
       n.y * 10 +
-      "vh ; width:" +
+      'vh ; width:' +
       n.sizeX +
-      "vh ;  height:" +
+      'vh ;  height:' +
       n.sizeX +
-      "vh"
+      'vh'
     );
     // const y = (n.y * 15) + 10;
     // const x = (n.x * 15) + 47;
@@ -245,9 +224,9 @@ export default class VideoRecorderGrid extends Vue {
     this.isMobileDevice = /Mobi/i.test(window.navigator.userAgent);
     if (this.isMobileDevice) {
       alert(
-        "Jam-Along might not work with mobile devices. Please use Google Chrome on a Desktop PC"
+        'Jam-Along might not work with mobile devices. Please use Google Chrome on a Desktop PC'
       );
-      this.setTransformationMode("size");
+      this.setTransformationMode('size');
     }
 
     sessionStorage.clear();
@@ -260,14 +239,13 @@ export default class VideoRecorderGrid extends Vue {
   }
 
   async init() {
-    console.log(1);
     await this.sleep(1200);
-    console.log(2);
-    store.commit("resetChildren");
 
-    if (store.state.activeProject == "") {
+    store.commit('resetChildren');
+
+    if (store.state.activeProject == '') {
       store.commit(
-        "setProject",
+        'setProject',
         Math.random()
           .toString(36)
           .substring(2) + Date.now().toString(36)
@@ -283,7 +261,7 @@ export default class VideoRecorderGrid extends Vue {
     this.overlay = false;
   }
   sleep(ms) {
-    return new Promise((resolve) => {
+    return new Promise(resolve => {
       setTimeout(resolve, ms);
     });
   }
@@ -299,38 +277,37 @@ export default class VideoRecorderGrid extends Vue {
   setZoom(zoom, el) {
     const transformOrigin = [0, 0];
     //@ts-ignore
-    const p = ["webkit", "moz", "ms", "o"],
-      s = "scale(" + zoom + ")",
-      oString =
-        transformOrigin[0] * 100 + "% " + transformOrigin[1] * 100 + "%";
+    const p = ['webkit', 'moz', 'ms', 'o'],
+      s = 'scale(' + zoom + ')',
+      oString = transformOrigin[0] * 100 + '% ' + transformOrigin[1] * 100 + '%';
 
     for (let i = 0; i < p.length; i++) {
-      el.style[p[i] + "Transform"] = s;
-      el.style[p[i] + "TransformOrigin"] = oString;
+      el.style[p[i] + 'Transform'] = s;
+      el.style[p[i] + 'TransformOrigin'] = oString;
     }
 
-    el.style["transform"] = s;
-    el.style["transformOrigin"] = oString;
+    el.style['transform'] = s;
+    el.style['transformOrigin'] = oString;
   }
 
   getZoom(value) {
     const zoomScale = Number(value) / 100;
-    this.setZoom(zoomScale, document.getElementsByClassName("Grid")[0]);
+    this.setZoom(zoomScale, document.getElementsByClassName('Grid')[0]);
   }
   vwTOpx(value) {
     const w = window,
       d = document,
       e = d.documentElement,
-      g = d.getElementsByTagName("body")[0],
+      g = d.getElementsByTagName('body')[0],
       x = w.innerWidth || e.clientWidth || g.clientWidth,
       y = w.innerHeight || e.clientHeight || g.clientHeight;
 
     return (x * value) / 100; // affichage du résultat (facultatif)
   }
   blub() {
-    "use strict";
+    'use strict';
 
-    console.log("START");
+    console.log('START');
     const size = this.vwTOpx(22);
     const Grid = {
       // DEPENDANCIES: Pt.js
@@ -338,7 +315,7 @@ export default class VideoRecorderGrid extends Vue {
         const w = window,
           d = document,
           e = d.documentElement,
-          g = d.getElementsByTagName("body")[0],
+          g = d.getElementsByTagName('body')[0],
           x = w.innerWidth || e.clientWidth || g.clientWidth,
           y = w.innerHeight || e.clientHeight || g.clientHeight;
 
@@ -350,7 +327,7 @@ export default class VideoRecorderGrid extends Vue {
         const w = window,
           d = document,
           e = d.documentElement,
-          g = d.getElementsByTagName("body")[0],
+          g = d.getElementsByTagName('body')[0],
           x = w.innerWidth || e.clientWidth || g.clientWidth,
           y = w.innerHeight || e.clientHeight || g.clientHeight;
 
@@ -361,16 +338,16 @@ export default class VideoRecorderGrid extends Vue {
       cellSize: 10,
       curCell: new Pt(0, 0),
       offset: new Pt(0, 0),
-      curTileType: "Tiles-floor",
+      curTileType: 'Tiles-floor',
       lastVideoTile: new GridVideo(null, null, null, null, null),
 
       cursor: {
         enable: function() {
-          $("body").on("mousemove", ".Grid", Grid.cursor.run);
-          $("body").on("touchmove", ".Grid", Grid.cursor.runTouch);
-          $(".Grid").css("cursor", "default");
+          $('body').on('mousemove', '.Grid', Grid.cursor.run);
+          $('body').on('touchmove', '.Grid', Grid.cursor.runTouch);
+          $('.Grid').css('cursor', 'default');
 
-          $(".Grid-selector")
+          $('.Grid-selector')
             .css({
               left: Grid.curCell.x * Grid.vhTOpx(Grid.cellSize) + Grid.offset.x,
               top: Grid.curCell.y * Grid.vhTOpx(Grid.cellSize) + Grid.offset.y,
@@ -378,15 +355,13 @@ export default class VideoRecorderGrid extends Vue {
             .show();
         },
         disable: function() {
-          $("body").off("mousemove", ".Grid", Grid.cursor.run);
-          $("body").off("touchmove", ".Grid", Grid.cursor.runTouch);
-          $(".Grid-selector").hide();
+          $('body').off('mousemove', '.Grid', Grid.cursor.run);
+          $('body').off('touchmove', '.Grid', Grid.cursor.runTouch);
+          $('.Grid-selector').hide();
         },
         run: function(e) {
           //@ts-ignore
-          const bounds = document
-            .getElementById("Grid")
-            .getBoundingClientRect();
+          const bounds = document.getElementById('Grid').getBoundingClientRect();
           const x = e.clientX - bounds.left;
           const y = e.clientY - bounds.top;
           // console.log('x: ' + x + ' y: '+ y );
@@ -407,18 +382,16 @@ export default class VideoRecorderGrid extends Vue {
           //     hoverCell.x
           // );
           //alert('left'+ hoverCell.x * Grid.cellSize + Grid.offset.x+ 'hoverCell.x '+  hoverCell.x + ' Grid.cellSize' +Grid.vhTOpx(Grid.cellSize)+ '  Grid.offset.x ' + Grid.offset.x  )
-          $(".Grid-selector").css({
+          $('.Grid-selector').css({
             left: hoverCell.x * Grid.vhTOpx(Grid.cellSize),
             top: hoverCell.y * Grid.vhTOpx(Grid.cellSize),
           });
         },
         runTouch: function(e) {
-          console.log("HIIIIIEEER 2 ");
+          console.log('HIIIIIEEER 2 ');
 
           //@ts-ignore
-          const bounds = document
-            .getElementById("Grid")
-            .getBoundingClientRect();
+          const bounds = document.getElementById('Grid').getBoundingClientRect();
           const x = e.touches[0].clientX - bounds.left;
           const y = e.touches[0].clientY - bounds.top;
 
@@ -426,50 +399,41 @@ export default class VideoRecorderGrid extends Vue {
             Math.floor(x / Grid.vhTOpx(Grid.cellSize)),
             Math.floor(y / Grid.vhTOpx(Grid.cellSize))
           );
-          console.log(" Grid.curCell.x " + Grid.curCell.x);
-          console.log(" Grid.curCell.y " + Grid.curCell.y);
-          console.log(" hoverCell.x " + hoverCell.x);
-          console.log(" hoverCell.y " + hoverCell.y);
+          console.log(' Grid.curCell.x ' + Grid.curCell.x);
+          console.log(' Grid.curCell.y ' + Grid.curCell.y);
+          console.log(' hoverCell.x ' + hoverCell.x);
+          console.log(' hoverCell.y ' + hoverCell.y);
 
-          if (
-            Grid.curCell.x !== hoverCell.x ||
-            Grid.curCell.y !== hoverCell.y
-          ) {
+          if (Grid.curCell.x !== hoverCell.x || Grid.curCell.y !== hoverCell.y) {
             Grid.curCell = hoverCell;
 
-            console.log("DA");
-            Grid.mergeVideoTile(
-              Grid.curTileType,
-              Grid.curCell.x,
-              Grid.curCell.y
-            );
+            console.log('DA');
+            Grid.mergeVideoTile(Grid.curTileType, Grid.curCell.x, Grid.curCell.y);
           }
         },
       },
 
       modify: {
         enable: function() {
-          $(".Grid").on("mousedown", Grid.modify.start);
-          $(".Grid").on("touchstart", Grid.modify.startTouch);
-          $(".Grid").on("mouseup", Grid.modify.end);
-          $(".Grid").on("touchend", Grid.modify.endTouch);
-          $(".Grid").on("contextmenu", function() {
+          $('.Grid').on('mousedown', Grid.modify.start);
+          $('.Grid').on('touchstart', Grid.modify.startTouch);
+          $('.Grid').on('mouseup', Grid.modify.end);
+          $('.Grid').on('touchend', Grid.modify.endTouch);
+          $('.Grid').on('contextmenu', function() {
             return false;
           });
         },
         disable: function() {
-          $(".Grid").off("mousedown", Grid.modify.start);
-          $(".Grid").off("touchstart", Grid.modify.startTouch);
-          $(".Grid").off("mousemove", Grid.modify.run);
-          $(".Grid").off("touchmove", Grid.modify.runTouch);
+          $('.Grid').off('mousedown', Grid.modify.start);
+          $('.Grid').off('touchstart', Grid.modify.startTouch);
+          $('.Grid').off('mousemove', Grid.modify.run);
+          $('.Grid').off('touchmove', Grid.modify.runTouch);
         },
         start: function(e) {
           if (!/Mobi/i.test(window.navigator.userAgent)) {
-            console.log("MOD START");
+            console.log('MOD START');
             //@ts-ignore
-            const bounds = document
-              .getElementById("Grid")
-              .getBoundingClientRect();
+            const bounds = document.getElementById('Grid').getBoundingClientRect();
             const x = e.clientX - bounds.left;
             const y = e.clientY - bounds.top;
 
@@ -481,29 +445,23 @@ export default class VideoRecorderGrid extends Vue {
             Grid.lastVideoTile.lastY = hoverCell.y;
             Grid.curCell = hoverCell;
             if (e.which == 1) {
-              Grid.addVideoTile(
-                Grid.curTileType,
-                Grid.curCell.x,
-                Grid.curCell.y
-              );
+              Grid.addVideoTile(Grid.curTileType, Grid.curCell.x, Grid.curCell.y);
             } else if (e.which == 3) {
-              $(".Grid-selector")
-                .removeClass("addMode")
-                .addClass("deleteMode")
+              $('.Grid-selector')
+                .removeClass('addMode')
+                .addClass('deleteMode')
                 .hide()
                 .show(1);
               Grid.deleteTile(Grid.curTileType, Grid.curCell.x, Grid.curCell.y);
             }
-            $(".Grid").on("mousemove", Grid.modify.run);
-            $(".Grid").on("touchmove", Grid.modify.runTouch);
+            $('.Grid').on('mousemove', Grid.modify.run);
+            $('.Grid').on('touchmove', Grid.modify.runTouch);
           }
         },
         startTouch: function(e) {
-          console.log("TOUCH START");
+          console.log('TOUCH START');
           //@ts-ignore
-          const bounds = document
-            .getElementById("Grid")
-            .getBoundingClientRect();
+          const bounds = document.getElementById('Grid').getBoundingClientRect();
           const x = e.touches[0].clientX - bounds.left;
           const y = e.touches[0].clientY - bounds.top;
           //0.7 is the transformation size in portrait mode
@@ -518,23 +476,21 @@ export default class VideoRecorderGrid extends Vue {
           if (e.which == 0) {
             Grid.addVideoTile(Grid.curTileType, Grid.curCell.x, Grid.curCell.y);
           } else if (e.which == 3) {
-            $(".Grid-selector")
-              .removeClass("addMode")
-              .addClass("deleteMode")
+            $('.Grid-selector')
+              .removeClass('addMode')
+              .addClass('deleteMode')
               .hide()
               .show(1);
             Grid.deleteTile(Grid.curTileType, Grid.curCell.x, Grid.curCell.y);
           }
 
-          $(".Grid").on("mousehmove", Grid.modify.run);
-          $(".Grid").on("touchmove", Grid.modify.runTouch);
+          $('.Grid').on('mousehmove', Grid.modify.run);
+          $('.Grid').on('touchmove', Grid.modify.runTouch);
         },
 
         runTouch: function(e) {
           //@ts-ignore
-          const bounds = document
-            .getElementById("Grid")
-            .getBoundingClientRect();
+          const bounds = document.getElementById('Grid').getBoundingClientRect();
           const x = e.touches[0].clientX - bounds.left;
           const y = e.touches[0].clientY - bounds.top;
 
@@ -543,18 +499,11 @@ export default class VideoRecorderGrid extends Vue {
             Math.floor(y / Grid.vhTOpx(Grid.cellSize))
           );
 
-          if (
-            Grid.curCell.x !== hoverCell.x ||
-            Grid.curCell.y !== hoverCell.y
-          ) {
+          if (Grid.curCell.x !== hoverCell.x || Grid.curCell.y !== hoverCell.y) {
             Grid.curCell = hoverCell;
             if (e.which == 0) {
-              console.log("DA");
-              Grid.mergeVideoTile(
-                Grid.curTileType,
-                Grid.curCell.x,
-                Grid.curCell.y
-              );
+              console.log('DA');
+              Grid.mergeVideoTile(Grid.curTileType, Grid.curCell.x, Grid.curCell.y);
             } else if (e.which == 3) {
               Grid.deleteTile(Grid.curTileType, Grid.curCell.x, Grid.curCell.y);
             }
@@ -563,9 +512,7 @@ export default class VideoRecorderGrid extends Vue {
 
         run: function(e) {
           //@ts-ignore
-          const bounds = document
-            .getElementById("Grid")
-            .getBoundingClientRect();
+          const bounds = document.getElementById('Grid').getBoundingClientRect();
           const x = e.clientX - bounds.left;
           const y = e.clientY - bounds.top;
 
@@ -574,31 +521,24 @@ export default class VideoRecorderGrid extends Vue {
             Math.floor(y / Grid.vhTOpx(Grid.cellSize))
           );
 
-          if (
-            Grid.curCell.x !== hoverCell.x ||
-            Grid.curCell.y !== hoverCell.y
-          ) {
+          if (Grid.curCell.x !== hoverCell.x || Grid.curCell.y !== hoverCell.y) {
             Grid.curCell = hoverCell;
             if (e.which == 1) {
-              console.log("DA");
-              Grid.mergeVideoTile(
-                Grid.curTileType,
-                Grid.curCell.x,
-                Grid.curCell.y
-              );
+              console.log('DA');
+              Grid.mergeVideoTile(Grid.curTileType, Grid.curCell.x, Grid.curCell.y);
             } else if (e.which == 3) {
               Grid.deleteTile(Grid.curTileType, Grid.curCell.x, Grid.curCell.y);
             }
           }
         },
         endTouch: function(e) {
-          console.log("end touch");
+          console.log('end touch');
         },
         end: function(e) {
-          console.log("MOD END");
-          $(".Grid-selector")
-            .removeClass("deleteMode")
-            .addClass("addMode")
+          console.log('MOD END');
+          $('.Grid-selector')
+            .removeClass('deleteMode')
+            .addClass('addMode')
             .hide()
             .show(1);
         },
@@ -607,102 +547,97 @@ export default class VideoRecorderGrid extends Vue {
       pan: {
         lastPt: new Pt(0, 0),
         enable: function() {
-          $(document).on("keydown", Grid.pan.start);
-          $(document).on("keyup", Grid.pan.disable);
+          $(document).on('keydown', Grid.pan.start);
+          $(document).on('keyup', Grid.pan.disable);
         },
         disable: function(e) {
           if (e.which == 32) {
             e.preventDefault();
-            $(".Grid").off("mousedown", Grid.pan.begin);
-            $(".Grid").off("touchstart", Grid.pan.begin);
-            $(".Grid").off("mouseup", Grid.pan.stop);
-            $(".Grid").off("touchend", Grid.pan.stop);
+            $('.Grid').off('mousedown', Grid.pan.begin);
+            $('.Grid').off('touchstart', Grid.pan.begin);
+            $('.Grid').off('mouseup', Grid.pan.stop);
+            $('.Grid').off('touchend', Grid.pan.stop);
             Grid.cursor.enable();
             Grid.modify.enable();
           }
         },
         start: function(e) {
-          console.log("MOUSESTART");
+          console.log('MOUSESTART');
           if (e.which == 32) {
             e.preventDefault();
             Grid.cursor.disable();
             Grid.modify.disable();
-            $(".Grid").css("cursor", "move");
-            $(".Grid").on("mousedown", Grid.pan.begin);
-            $(".Grid").on("touchstart", Grid.pan.begin);
-            $(".Grid").on("touchend", Grid.pan.stop);
+            $('.Grid').css('cursor', 'move');
+            $('.Grid').on('mousedown', Grid.pan.begin);
+            $('.Grid').on('touchstart', Grid.pan.begin);
+            $('.Grid').on('touchend', Grid.pan.stop);
           }
         },
         begin: function(e) {
           //@ts-ignore
-          const bounds = document
-            .getElementById("Grid")
-            .getBoundingClientRect();
+          const bounds = document.getElementById('Grid').getBoundingClientRect();
           const x = e.clientX - bounds.left;
           const y = e.clientY - bounds.top;
 
           Grid.pan.lastPt = new Pt(x, y);
-          $(".Grid").on("mousemove", Grid.pan.run);
-          $(".Grid").on("touchmove", Grid.pan.runTouch);
+          $('.Grid').on('mousemove', Grid.pan.run);
+          $('.Grid').on('touchmove', Grid.pan.runTouch);
         },
         run: function(e) {
-          console.log("MOUSERUN");
+          console.log('MOUSERUN');
           //@ts-ignore
-          const bounds = document
-            .getElementById("Grid")
-            .getBoundingClientRect();
+          const bounds = document.getElementById('Grid').getBoundingClientRect();
           const x = e.clientX - bounds.left;
           const y = e.clientY - bounds.top;
 
           Grid.offset.x += x - Grid.pan.lastPt.x;
           Grid.offset.y += y - Grid.pan.lastPt.y;
-          $(".Tiles").css({
+          $('.Tiles').css({
             left: Grid.offset.x,
             top: Grid.offset.y,
           });
-          $(".Grid").css(
-            "background-position",
-            Grid.offset.x + "px " + Grid.offset.y + "px"
-          );
+          $('.Grid').css('background-position', Grid.offset.x + 'px ' + Grid.offset.y + 'px');
           Grid.pan.lastPt = new Pt(x, y);
         },
         stop: function(e) {
-          console.log("MOUSESTOP");
-          $(".Grid").off("mousemove", Grid.pan.run);
-          $(".Grid").off("touchmove", Grid.pan.runTouch);
+          console.log('MOUSESTOP');
+          $('.Grid').off('mousemove', Grid.pan.run);
+          $('.Grid').off('touchmove', Grid.pan.runTouch);
         },
 
         runTouch: function(e) {
           //@ts-ignore
-          const bounds = document
-            .getElementById("Grid")
-            .getBoundingClientRect();
+          const bounds = document.getElementById('Grid').getBoundingClientRect();
           const x = e.touches[0].clientX - bounds.left;
           const y = e.touches[0].clientY - bounds.top;
 
           Grid.offset.x += x - Grid.pan.lastPt.x;
           Grid.offset.y += y - Grid.pan.lastPt.y;
-          $(".Tiles").css({
+          $('.Tiles').css({
             left: Grid.offset.x,
             top: Grid.offset.y,
           });
-          $(".Grid").css(
-            "background-position",
-            Grid.offset.x + "px " + Grid.offset.y + "px"
-          );
+          $('.Grid').css('background-position', Grid.offset.x + 'px ' + Grid.offset.y + 'px');
           Grid.pan.lastPt = new Pt(x, y);
         },
       },
 
       isTileAt: function(tileType, x, y) {
         let res = false;
-        store.state.videoGrid.forEach((element) => {
+        store.state.videoGrid.forEach(element => {
           const exMax = element.x + element.sizeX / 10 - 1;
           const eyMax = element.y + element.sizeX / 10 - 1;
           if (element.x <= x && x <= exMax && element.y <= y && y <= eyMax) {
             res = true;
 
-            store.commit("setActivePlayById", element.id);
+            store.commit('setActivePlayById', element.id);
+            store.state.players.forEach(element => {
+              if (element.player.wavesurfer != undefined && element.player.wavesurfer != null)
+                element.player.wavesurfer = null;
+            });
+            store.state.activePlayer.player
+              .wavesurfer()
+              .load(store.state.activePlayer.player.recordedData);
           }
         });
         return res;
@@ -716,7 +651,7 @@ export default class VideoRecorderGrid extends Vue {
         const size = true;
 
         if (Grid.lastVideoTile.id == null) {
-          store.state.videoGrid.forEach((video) => {
+          store.state.videoGrid.forEach(video => {
             //@ts-ignore
             if (video.id == store.state.activePlayer.id) {
               Grid.lastVideoTile = video;
@@ -729,7 +664,7 @@ export default class VideoRecorderGrid extends Vue {
         if (Grid.lastVideoTile.lastX > x) {
           if (size) {
             //LINKS
-            if (store.state.transformationMode == "position") {
+            if (store.state.transformationMode == 'position') {
               gridVideo.x = gridVideo.x - 1;
             } else {
               gridVideo.sizeX = gridVideo.sizeX - 10; //<60?gridVideo.sizeX * 2: gridVideo.sizeX;
@@ -738,7 +673,7 @@ export default class VideoRecorderGrid extends Vue {
         } else if (Grid.lastVideoTile.x < x) {
           // console.log("Nach RECHTS");
           if (size) {
-            if (store.state.transformationMode == "position") {
+            if (store.state.transformationMode == 'position') {
               gridVideo.x = gridVideo.x + 1;
             } else {
               gridVideo.sizeX = gridVideo.sizeX + 10;
@@ -746,7 +681,7 @@ export default class VideoRecorderGrid extends Vue {
           }
         } else if (Grid.lastVideoTile.y < y) {
           if (size) {
-            if (store.state.transformationMode == "position") {
+            if (store.state.transformationMode == 'position') {
               gridVideo.y = gridVideo.y + 1;
             } else {
               gridVideo.sizeX = gridVideo.sizeX + 10;
@@ -755,7 +690,7 @@ export default class VideoRecorderGrid extends Vue {
           //console.log("Nach UNTEN");
         } else if (Grid.lastVideoTile.y >= y) {
           if (size) {
-            if (store.state.transformationMode == "position") {
+            if (store.state.transformationMode == 'position') {
               gridVideo.y = gridVideo.y - 1;
             } else {
               gridVideo.sizeX = gridVideo.sizeX - 10;
@@ -765,7 +700,7 @@ export default class VideoRecorderGrid extends Vue {
         if (gridVideo.sizeX >= 10) {
           Grid.lastVideoTile.lastX = x;
           Grid.lastVideoTile.lastY = y;
-          store.commit("updateGridVideo", gridVideo);
+          store.commit('updateGridVideo', gridVideo);
         } else {
           gridVideo.sizeX = 10;
         }
@@ -773,7 +708,7 @@ export default class VideoRecorderGrid extends Vue {
       addVideoTile: function(tileType, x, y) {
         // console.log("addVideoTile at x/y" + x + "  y " + y);
         if (!Grid.isTileAt(tileType, x, y)) {
-          const id = "JALvideojs" + Date.now();
+          const id = 'JALvideojs' + Date.now();
           //  console.log("adding video at x: " + x + " y: " + y);
           const gridVideo = new GridVideo(id, x, y, 10, 10);
 
@@ -787,8 +722,8 @@ export default class VideoRecorderGrid extends Vue {
             lastY: y,
             src: undefined,
           };
-          store.commit("addVideoToGrid", gridVideo);
-          store.commit("setTransformationMode", "size");
+          store.commit('addVideoToGrid', gridVideo);
+          store.commit('setTransformationMode', 'size');
           //   //        $("." + tileType + "[data-x='" + x + "'][data-y='" + y + "']").css({
           //   // left: x * Grid.vhTOpx(Grid.cellSize),
           //   // top: y * Grid.vhTOpx(Grid.cellSize),})
@@ -829,10 +764,10 @@ export default class VideoRecorderGrid extends Vue {
             y +
             "' style='position:absolute;width:10vh;height:10vh;background:#ff914c; left: " +
             x * Grid.cellSize +
-            "vh; top: " +
+            'vh; top: ' +
             y * Grid.cellSize +
             "vh'></div>";
-          $(".Tiles").append(html);
+          $('.Tiles').append(html);
           // $("." + tileType + "[data-x='" + x + "'][data-y='" + y + "']").css({
           //   left: x * Grid.vhTOpx(Grid.cellSize),
           //   top: y * Grid.vhTOpx(Grid.cellSize),
@@ -881,11 +816,11 @@ export default class VideoRecorderGrid extends Vue {
       // },
 
       deleteTile: function(tileType, x, y) {
-        $("." + tileType + "[data-x='" + x + "'][data-y='" + y + "']").remove();
+        $('.' + tileType + "[data-x='" + x + "'][data-y='" + y + "']").remove();
       },
 
       deleteAllTilesOfType: function(tileType) {
-        $("." + tileType).remove();
+        $('.' + tileType).remove();
       },
     };
 
@@ -893,27 +828,27 @@ export default class VideoRecorderGrid extends Vue {
     Grid.modify.enable();
     Grid.pan.enable();
 
-    $("#btn-clearAll").click(function() {
+    $('#btn-clearAll').click(function() {
       Grid.deleteAllTilesOfType(Grid.curTileType);
     });
   }
 
   get videoWidth() {
     if (this.isMobileDevice) {
-      return "100px";
+      return '100px';
     }
     switch (store.state.children.length) {
       case 1:
-        return "100vw";
+        return '100vw';
       case 2:
-        return "48vw";
+        return '48vw';
       case 3:
       case 4:
       case 5:
       case 6:
-        return "32vw";
+        return '32vw';
       default:
-        return "10vw";
+        return '10vw';
     }
   }
   get getColMd() {
@@ -924,7 +859,7 @@ export default class VideoRecorderGrid extends Vue {
 
     if (!droppedFiles) return;
     // this tip, convert FileList to array, credit: https://www.smashingmagazine.com/2018/01/drag-drop-file-uploader-vanilla-js/
-    [...droppedFiles].forEach((f) => {
+    [...droppedFiles].forEach(f => {
       const reader = new FileReader();
 
       reader.onload = this.loadData;
@@ -941,13 +876,13 @@ export default class VideoRecorderGrid extends Vue {
 
       //const name = "JALvideojs" + Date.now();
 
-      store.commit("setAtivePlayerSrc", e2.target.result);
+      store.commit('setAtivePlayerSrc', e2.target.result);
       //@ts-ignore
-      store.commit("removeChildren", store.state.activePlayer.id);
+      store.commit('removeChildren', store.state.activePlayer.id);
     }
   }
   removeFile(file) {
-    this.files = this.files.filter((f) => {
+    this.files = this.files.filter(f => {
       return f != file;
     });
   }
@@ -959,16 +894,16 @@ export default class VideoRecorderGrid extends Vue {
     this.hover = false;
   }
   refreshMergedStream() {
-    console.log("Try to refresh merged Stream:");
+    console.log('Try to refresh merged Stream:');
 
     let i = 1;
     const data: any[] = [];
 
-    store.state.players.forEach((element) => {
+    store.state.players.forEach(element => {
       data.push(element);
 
       if (element.player.record() !== undefined) {
-        console.log("save");
+        console.log('save');
         //element.record().saveAs({ video: "video" + i + ".webm" });
         i++;
       }
@@ -979,10 +914,10 @@ export default class VideoRecorderGrid extends Vue {
     console.log(stream);
 
     const recordedChunks = [];
-    const options = { mimeType: "video/webm; codecs=vp9" };
+    const options = { mimeType: 'video/webm; codecs=vp9' };
     //@ts-ignore
     this.mediaRecorder = new MediaRecorder(stream, options);
-    store.state.players.forEach((element) => {
+    store.state.players.forEach(element => {
       const oldPlayer = document.getElementById(element.id);
       //Todo dispose
       //  oldPlayer.muted = true;
@@ -1029,14 +964,14 @@ export default class VideoRecorderGrid extends Vue {
     // });
   }
   public addPlayer() {
-    store.commit("addChildren", new Child("JALvideojs" + Date.now(), null));
+    store.commit('addChildren', new Child('JALvideojs' + Date.now(), null));
     //this.children.push('JALvideojs' +Date.now());
     this.mediaRecorder = null;
   }
 
   public removePlayer() {
     //@ts-ignore
-    store.commit("removeChildren", store.state.activePlayer.id);
+    store.commit('removeChildren', store.state.activePlayer.id);
   }
 
   record() {
@@ -1069,8 +1004,8 @@ export default class VideoRecorderGrid extends Vue {
     }
 
     if (this.recording) {
-      store.state.players.forEach((element) => {
-        element.player.on("ended", () => {
+      store.state.players.forEach(element => {
+        element.player.on('ended', () => {
           if (this.recording) {
             this.record();
           }
@@ -1083,17 +1018,17 @@ export default class VideoRecorderGrid extends Vue {
     if (!files.length) return;
     JALStateService.prototype.loadState(files[0]);
 
-    store.state.players.forEach((element) => {
-      store.commit("addChildren", new Child("JALvideojs" + Date.now(), null));
+    store.state.players.forEach(element => {
+      store.commit('addChildren', new Child('JALvideojs' + Date.now(), null));
     });
   }
 
   public click() {
-    store.state.players.forEach((element) => {
+    store.state.players.forEach(element => {
       // if(element.recordedData !== undefined)
       {
         this.playing = true;
-        console.log("play");
+        console.log('play');
 
         if (this.isMobileDevice) {
           element.player.wavesurfer().play();
@@ -1103,25 +1038,22 @@ export default class VideoRecorderGrid extends Vue {
         }
       }
     });
-    
   }
   public pause() {
-    store.state.players.forEach((element) => {
+    store.state.players.forEach(element => {
       // if(element.recordedData !== undefined)
       {
         this.playing = false;
-        console.log("pause");
+        console.log('pause');
         element.player.pause();
       }
     });
-
-    
   }
   public stop() {
-    store.state.players.forEach((element) => {
+    store.state.players.forEach(element => {
       // if(element.recordedData !== undefined)
       {
-        console.log("stop");
+        console.log('stop');
         element.player.currentTime(0);
         element.player.pause();
       }
@@ -1139,7 +1071,7 @@ export default class VideoRecorderGrid extends Vue {
   }
 
   public save() {
-    console.log("todoSave");
+    console.log('todoSave');
 
     this.downloading = true;
     try {
@@ -1153,7 +1085,7 @@ export default class VideoRecorderGrid extends Vue {
   }
 
   handleDataAvailable(event) {
-    console.log("data-available");
+    console.log('data-available');
     if (event.data.size > 0) {
       this.recordedChunks.push(event.data);
       console.log(this.recordedChunks);
@@ -1165,14 +1097,14 @@ export default class VideoRecorderGrid extends Vue {
   }
   download() {
     const blob = new Blob(this.recordedChunks, {
-      type: "video/webm",
+      type: 'video/webm',
     });
     const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
+    const a = document.createElement('a');
     document.body.appendChild(a);
     //a.style = "display: none";
     a.href = url;
-    a.download = "test.webm";
+    a.download = 'test.webm';
     a.click();
     window.URL.revokeObjectURL(url);
   }
@@ -1180,7 +1112,6 @@ export default class VideoRecorderGrid extends Vue {
 </script>
 
 <style lang="less" scoped>
-
 @lineColour: #ff914c;
 @gridColour: darken(#363636, 0%);
 @tileColour: darken(red, 20%);
@@ -1189,8 +1120,8 @@ export default class VideoRecorderGrid extends Vue {
     linear-gradient(90deg, fade(@lineColour, 50%) 3px, transparent 0),
     linear-gradient(fade(@lineColour, 30%) 1px, transparent 0),
     linear-gradient(90deg, fade(@lineColour, 30%) 1px, transparent 0);
-  background-size: @size * @cellCount @size * @cellCount,
-    @size * @cellCount @size * @cellCount, @size @size, @size @size;
+  background-size: @size * @cellCount @size * @cellCount, @size * @cellCount @size * @cellCount,
+    @size @size, @size @size;
 }
 
 *,
@@ -1264,7 +1195,7 @@ body {
   .grid(#FF914C; 10vh; 3);
   z-index: 0;
   &:after {
-    content: "";
+    content: '';
     position: absolute;
     width: 100%;
     height: 100%;
@@ -1332,7 +1263,6 @@ body {
     background: green;
   }
 }
-
 
 @media only screen and (max-device-width: 1000px) and (orientation: portrait) {
   .Grid {

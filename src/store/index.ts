@@ -1,7 +1,7 @@
 import { JALUser, JALProject } from './../components/models/models';
 import Vue from 'vue';
 import Vuex from 'vuex';
-import VideoJSRecord from '../components/videoRecorder/VideoJSRecord.vue'
+import VideoJSRecord from '../components/videoRecorder/VideoJSRecord.vue';
 
 const fb = require('../firebaseConfig');
 Vue.use(Vuex);
@@ -22,7 +22,7 @@ export class GridVideo {
   id: string;
   sizeX: number;
   lastX: number;
-  lastY: number
+  lastY: number;
   sizeY: number;
   src: any;
   constructor(id, x, y, sizeX, sizeY, src = undefined) {
@@ -31,14 +31,10 @@ export class GridVideo {
     this.y = y;
     this.sizeX = sizeX;
     this.sizeY = sizeY;
-    this.lastX = x,
-      this.lastY = y,
-      this.src = src;
-
+    (this.lastX = x), (this.lastY = y), (this.src = src);
   }
 }
 export default new Vuex.Store({
-
   state: {
     // videos: Array<Blob>(),
     children: Array<Child>(),
@@ -52,26 +48,25 @@ export default new Vuex.Store({
     videoGrid: Array<GridVideo>(),
     saveOverlay: false,
     transformationMode: '',
+    waveform: false,
   },
 
   mutations: {
+    setWaveForm(state, value) {
+      state.waveform = value;
+    },
 
     setTransformationMode(state, value) {
       state.transformationMode = value;
     },
     setUser(state, val: JALUser) {
-      state.userProfile = val
+      state.userProfile = val;
     },
     setSaveOverlay(state, value) {
-
-
       state.saveOverlay = value;
     },
     updateGridVideo(state, video) {
-
       if (video.id != null) {
-
-
         for (let i = 0; i < state.videoGrid.length; i++) {
           if (state.videoGrid[i].id === video.id) {
             state.videoGrid.splice(i, 1);
@@ -85,19 +80,18 @@ export default new Vuex.Store({
         //     element.sizeY = video.sizeY;
         //   }})
 
-        state.videoGrid.push(video)
+        state.videoGrid.push(video);
       }
     },
 
     addVideoToGrid(state, video) {
-
-      state.videoGrid.push(video)
+      state.videoGrid.push(video);
     },
     setProject(state, val) {
-      state.activeProject = val
+      state.activeProject = val;
     },
     setProjectName(state, val) {
-      state.activeProjectName = val
+      state.activeProjectName = val;
     },
     addProject(state, val: any) {
       state.projects.push({ name: val.name, projectid: val.projectid, userid: val.userid });
@@ -107,16 +101,15 @@ export default new Vuex.Store({
     //   state.videos.push(n);
     // },
     addPlayer(state, n: any) {
-
       state.players.push(n);
     },
     resetChildren(state) {
       state.players = Array<VideoJSRecord>();
       state.children = new Array<Child>();
       state.videoGrid = new Array<GridVideo>();
+      state.waveform = false;
     },
     activePlayer(state, n: any) {
-
       state.activePlayer = n;
     },
 
@@ -124,19 +117,23 @@ export default new Vuex.Store({
       state.videoGrid.forEach(element => {
         //@ts-ignore
         if (element.id == state.activePlayer.id) {
+          const video = new GridVideo(
+            'JALvideojs' + Date.now(),
+            element.x,
+            element.y,
+            element.sizeX,
+            element.sizeY,
+            src
+          );
 
-          const video = new GridVideo("JALvideojs" + Date.now(), element.x, element.y, element.sizeX, element.sizeY, src)
-
-          state.videoGrid.push(video)
+          state.videoGrid.push(video);
         }
       });
       //@ts-ignore
       state.activePlayer.src = src;
-
     },
     setActivePlayById(state, id: string) {
-      state.players.forEach((element) => {
-
+      state.players.forEach(element => {
         //@ts-ignore
         if (id != undefined && id != null && element.id == id) {
           //@ts-ignore
@@ -145,11 +142,9 @@ export default new Vuex.Store({
       });
     },
     addChildren(state, n: any) {
-
       state.children.push(n);
     },
     removeChildren(state, n: any) {
-
       for (let i = 0; i < state.videoGrid.length; i++) {
         if (state.videoGrid[i].id === n) {
           state.videoGrid.splice(i, 1);
@@ -163,18 +158,21 @@ export default new Vuex.Store({
           state.players.splice(j, 1);
         }
       }
-
-    }
+    },
   },
   actions: {
     fetchUserProfile({ commit, state }) {
       //@ts-ignore
-      fb.usersCollection.doc(state.currentUser?.uid).get().then(res => {
-        commit('setUserProfile', res.data())
-      }).catch(err => {
-        console.log(err)
-      })
+      fb.usersCollection
+        //@ts-ignore
+        .doc(state.currentUser?.uid)
+        .get()
+        .then(res => {
+          commit('setUserProfile', res.data());
+        })
+        .catch(err => {
+          console.log(err);
+        });
     },
-
-  }
-})
+  },
+});
