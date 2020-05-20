@@ -19,8 +19,8 @@
                 <v-icon hint="Audio...">mdi-microphone</v-icon>
               </v-tab>
 
-              <v-tab href="#tab-filter">
-                <v-icon hint="Camera...">mdi-camera</v-icon>
+              <v-tab href="#tab-Users">
+                <v-icon hint="Camera...">mdi-account-group</v-icon>
               </v-tab>
               <v-tab-item color="#FF914C" value="tab-sync" height="300px">
                 <v-card flat tile>
@@ -63,7 +63,28 @@
                   </v-row>
                 </v-card>
               </v-tab-item>
-              <v-tab-item color="#FF914C" value="tab-filter" height="300px"> </v-tab-item>
+              <v-tab-item color="#FF914C" value="tab-Users" height="300px">
+                <v-row>
+                  <v-col cols="4" />
+
+                  <v-col>
+                    <v-text-field
+                      style="color:#FF914C"
+                      readonly
+                      :value="getInvitationLink()"
+                      label="Share this invitation link"
+                    ></v-text-field>
+                  </v-col>
+                  <v-col>
+                    <v-btn
+                      ><v-icon color="#FF914C" @click="copyLinkToClipboard"
+                        >mdi-content-copy</v-icon
+                      ></v-btn
+                    >
+                  </v-col>
+                  <v-col cols="3" />
+                </v-row>
+              </v-tab-item>
             </v-tabs>
           </v-col>
         </v-row>
@@ -106,6 +127,19 @@ export default class DetailPanel extends Vue {
       start: value / 1000,
       //Should the video go to the beginning when it ends
     });
+  }
+
+  copyLinkToClipboard() {
+    const el = document.createElement('textarea');
+    el.value = this.getInvitationLink();
+    document.body.appendChild(el);
+    el.select();
+    document.execCommand('copy');
+    document.body.removeChild(el);
+  }
+
+  getInvitationLink() {
+    return location + '?' + store.state.activeProject;
   }
 
   constructor(params) {

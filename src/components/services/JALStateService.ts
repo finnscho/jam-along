@@ -86,7 +86,8 @@ export default class JALStateService {
         //@ts-ignore
         const storageRef = firebase
           .storage()
-          .ref(`${element.id}`)
+          //@ts-ignore
+          .ref(`${element.id}`) //@ts-ignore
           .put(element.player.recordedData, metadata);
         storageRef.on(
           `state_changed`,
