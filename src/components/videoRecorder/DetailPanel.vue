@@ -2,17 +2,9 @@
   <v-container fluid>
     <!-- <div        style="border-top:solid; border-color:orange"> -->
 
-    <v-app-bar
-      fixed
-      :bottom="true"
-      height="auto"
-      :extended="false"
-      extension-height="auto"
-    >
+    <v-app-bar fixed :bottom="true" height="auto" :extended="false" extension-height="auto">
       <v-card width="100%">
-        <v-row align-start>
-
-        </v-row>
+        <v-row align-start> </v-row>
         <v-row>
           <v-col cols="12">
             <v-tabs color="#FF914C" :centered="true">
@@ -32,16 +24,14 @@
               </v-tab>
               <v-tab-item color="#FF914C" value="tab-sync" height="300px">
                 <v-card flat tile>
-                  <v-row>
-                  </v-row>
-                  </v-card>
-                  </v-tab-item>
+                  <v-row> </v-row>
+                </v-card>
+              </v-tab-item>
               <v-tab-item color="#FF914C" value="tab-sync" height="300px">
                 <v-card flat tile>
                   <v-row>
                     <v-col cols="1"></v-col>
                     <v-col cols="10">
-                
                       <v-card-text>
                         <label>Offset</label>
                         <v-row>
@@ -72,8 +62,7 @@
                   </v-row>
                 </v-card>
               </v-tab-item>
-              <v-tab-item color="#FF914C" value="tab-filter" height="300px">
-              </v-tab-item>
+              <v-tab-item color="#FF914C" value="tab-filter" height="300px"> </v-tab-item>
             </v-tabs>
           </v-col>
         </v-row>
@@ -84,37 +73,34 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-import { Component, Prop } from "vue-property-decorator";
-import VideoJSRecord from "./VideoJSRecord.vue";
-import store from "../../store";
-import { VideoStreamMerger } from "video-stream-merger";
-import "videojs-offset";
-import JalffmpegService from "../services/ffmpegService";
-import JalStateService from "../services/JALStateService";
-import videojs from "video.js";
-import JALStateService from "../services/JALStateService";
+import Vue from 'vue';
+import { Component, Prop } from 'vue-property-decorator';
+import VideoJSRecord from './VideoJSRecord.vue';
+import store from '../../store';
+import { VideoStreamMerger } from 'video-stream-merger';
+import 'videojs-offset';
+import JalffmpegService from '../services/ffmpegService';
+import JalStateService from '../services/JALStateService';
+import videojs from 'video.js';
+import JALStateService from '../services/JALStateService';
 @Component({
   components: {
-    "video-js-recorder": VideoJSRecord,
+    'video-js-recorder': VideoJSRecord,
   },
 })
 export default class DetailPanel extends Vue {
   slider = 0;
   get offset() {
     //  return 15;
-    if (
-      store.state.activePlayer != undefined &&
-      store.state.activePlayer.player != undefined
-    )
+    if (store.state.activePlayer != undefined && store.state.activePlayer.player != undefined)
       return store.state.activePlayer.player.slider;
     else return 0;
   }
   set offset(value) {
     this.slider = value;
-    console.log("offset: " + value / 1000);
+    console.log('offset: ' + value / 1000);
     //@ts-ignore
-   // store.state.activePlayer.slider = value / 1000;
+    // store.state.activePlayer.slider = value / 1000;
     store.state.activePlayer.player.offset({
       start: value / 1000,
       //Should the video go to the beginning when it ends
@@ -134,5 +120,4 @@ export default class DetailPanel extends Vue {
 .waveform {
   height: 5px;
 }
-
 </style>

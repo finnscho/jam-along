@@ -1,16 +1,11 @@
 <template>
-  <v-col  cols="12" md="4">
+  <v-col cols="12" md="4">
     <v-hover v-slot:default="{ hover }">
-      <v-card
-        style="background:#FF914C"
-        :elevation="hover ? 12 : 2"
-        :class="{ 'on-hover': hover }"
-      >
+      <v-card style="background:#FF914C" :elevation="hover ? 12 : 2" :class="{ 'on-hover': hover }">
         <v-text-field
           autocomplete="off"
           @change="updateProjectName"
           style="padding:30px"
-        
           label="Jam"
           color="white"
           :value="name"
@@ -34,9 +29,7 @@
 
               <div class="align-self-center">
                 <v-btn :class="{ 'show-btns': hover }" @click="click"
-                  ><v-icon :class="{ 'show-btns': hover }"
-                    >mdi-pencil</v-icon
-                  ></v-btn
+                  ><v-icon :class="{ 'show-btns': hover }">mdi-pencil</v-icon></v-btn
                 >
               </div>
             </v-row>
@@ -48,43 +41,38 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-import { Component, Prop } from "vue-property-decorator";
+import Vue from 'vue';
+import { Component, Prop } from 'vue-property-decorator';
 
-import store from "../../store";
-import { JALProject } from "../models/models";
-import JALStateService from "../services/JALStateService";
-import firebase from "firebase";
+import store from '../../store';
+import { JALProject } from '../models/models';
+import JALStateService from '../services/JALStateService';
+import firebase from 'firebase';
 
 @Component({})
 export default class Project extends Vue {
   @Prop() item: any;
-  projectName = "no name";
+  projectName = 'no name';
 
   mounted() {
-    
-    const ref = firebase.database().ref("project/" + this.item.projectid);
-    ref.on("value", function(snapshot) {
-      store.commit("addProject", snapshot.val());
+    const ref = firebase.database().ref('project/' + this.item.projectid);
+    ref.on('value', function(snapshot) {
+      store.commit('addProject', snapshot.val());
     });
-
   }
   get name() {
-   this.projectName =this.item.name     
+    this.projectName = this.item.name;
     return this.projectName;
   }
 
   click() {
-    store.commit("setProject", this.item.projectid);
-    store.commit(
-      "setProjectName",
-      this.projectName
-    );
-    this.$router.replace("RecorderApp");
+    store.commit('setProject', this.item.projectid);
+    store.commit('setProjectName', this.projectName);
+    this.$router.replace('RecorderApp');
   }
   updateProjectName(value) {
     const updates = {};
-    updates["project/" + this.item + "/name"] = value;
+    updates['project/' + this.item + '/name'] = value;
 
     return firebase
       .database()

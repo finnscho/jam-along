@@ -1,17 +1,17 @@
-import Vue from 'vue'
-import App from './App.vue'
-import store from './store'
+import Vue from 'vue';
+import App from './App.vue';
+import store from './store';
 import vuetify from './plugins/vuetify';
 import firebase from 'firebase';
-import router from './router'
+import router from './router';
 const fb = require('./firebaseConfig.js');
 
-Vue.config.productionTip = false
+Vue.config.productionTip = false;
 Vue.filter('kb', val => {
   return Math.floor(val / 1024);
 });
-Vue.config.devtools = true
-let app
+Vue.config.devtools = true;
+let app;
 fb.auth.onAuthStateChanged(user => {
   if (!app) {
     app = new Vue({
@@ -19,7 +19,7 @@ fb.auth.onAuthStateChanged(user => {
       router,
       store,
       vuetify,
-      render: h => h(App)
-    }).$mount('#app')
+      render: h => h(App),
+    }).$mount('#app');
   }
-})
+});

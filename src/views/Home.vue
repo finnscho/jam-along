@@ -26,18 +26,10 @@
     </v-navigation-drawer>
 
     <v-app-bar overflow-hidden app clipped-left>
-      <v-app-bar-nav-icon
-        color="primary"
-        @click.stop="drawer = !drawer"
-      ></v-app-bar-nav-icon>
+      <v-app-bar-nav-icon color="primary" @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
 
       <v-toolbar-side-icon>
-        <v-img
-          class="mr-3"
-          src="../assets/logo_transparent_background.png"
-          width="30%"
-        >
-        </v-img>
+        <v-img class="mr-3" src="../assets/logo_transparent_background.png" width="30%"> </v-img>
       </v-toolbar-side-icon>
     </v-app-bar>
     <v-container class="fill-height" fluid style="background:#FF914C">
@@ -59,14 +51,14 @@
 </template>
 
 <script>
-import firebase from "firebase";
-import VideoRecorderGrid from "../components/videoRecorder/VideoRecorderGrid.vue";
-import DetailPanel from "../components/videoRecorder/DetailPanel.vue";
-import store from "../store";
-import JALStateService from "../components/services/JALStateService";
-import ProjectGrid from "../components/project/ProjectGrid.vue";
+import firebase from 'firebase';
+import VideoRecorderGrid from '../components/videoRecorder/VideoRecorderGrid.vue';
+import DetailPanel from '../components/videoRecorder/DetailPanel.vue';
+import store from '../store';
+import JALStateService from '../components/services/JALStateService';
+import ProjectGrid from '../components/project/ProjectGrid.vue';
 export default {
-  name: "home",
+  name: 'home',
   components: {
     ProjectGrid: ProjectGrid,
   },
@@ -90,7 +82,7 @@ export default {
       this.overlay = false;
     },
     sleep(ms) {
-      return new Promise((resolve) => {
+      return new Promise(resolve => {
         setTimeout(resolve, ms);
       });
     },
@@ -99,7 +91,7 @@ export default {
         .auth()
         .signOut()
         .then(() => {
-          this.$router.replace("login");
+          this.$router.replace('login');
         });
     },
   },

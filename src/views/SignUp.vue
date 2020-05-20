@@ -66,16 +66,16 @@
   </v-content>
 </template>
 <script>
-import firebase from "firebase";
-import JALStateService from "../components/services/JALStateService";
+import firebase from 'firebase';
+import JALStateService from '../components/services/JALStateService';
 export default {
-  name: "signUp",
+  name: 'signUp',
   data() {
     return {
-      email: "",
-      password: "",
-      name: "",
-      lastname: "",
+      email: '',
+      password: '',
+      name: '',
+      lastname: '',
     };
   },
   methods: {
@@ -84,17 +84,17 @@ export default {
         .auth()
         .createUserWithEmailAndPassword(this.email, this.password)
         .then(
-          (user) => {
+          user => {
             JALStateService.prototype.createUser(
               firebase.auth().currentUser.uid,
               this.email,
               this.name,
               this.lastname
             );
-            this.$router.replace("home");
+            this.$router.replace('home');
           },
-          (err) => {
-            alert("Oops. " + err.message);
+          err => {
+            alert('Oops. ' + err.message);
           }
         );
     },

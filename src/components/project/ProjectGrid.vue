@@ -20,18 +20,13 @@
                     ></v-text-field>
                     <v-img height="150px">
                       <v-card-title class="title white--text">
-                        <v-row
-                          class="fill-height flex-column"
-                          justify="space-between"
-                        >
+                        <v-row class="fill-height flex-column" justify="space-between">
                           <!-- <p class="mt-4 subheading text-center">
                      
                         </p> -->
                           <div class="align-self-center">
                             <router-link to="/RecorderApp"
-                              ><v-btn
-                                background-opacity="0"
-                                :class="{ 'show-btns': hover }"
+                              ><v-btn background-opacity="0" :class="{ 'show-btns': hover }"
                                 ><v-icon>mdi-plus</v-icon></v-btn
                               ></router-link
                             >
@@ -93,14 +88,14 @@
 </template> -->
 
 <script lang="ts">
-import Vue from "vue";
-import { Component } from "vue-property-decorator";
+import Vue from 'vue';
+import { Component } from 'vue-property-decorator';
 
-import store from "../../store";
-import { JALProject } from "../models/models";
-import JALStateService from "../services/JALStateService";
-import firebase from "firebase";
-import Project from "./Project.vue";
+import store from '../../store';
+import { JALProject } from '../models/models';
+import JALStateService from '../services/JALStateService';
+import firebase from 'firebase';
+import Project from './Project.vue';
 @Component({
   components: {
     Project: Project,
@@ -114,7 +109,7 @@ export default class ProjectGrid extends Vue {
     // });
   }
   mounted() {
-   store.commit("setProject", "");
+    store.commit('setProject', '');
   }
 }
 </script>

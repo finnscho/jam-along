@@ -161,7 +161,7 @@ export default class VideoJSRecord extends Vue {
       const isMobileDevice = /Mobi/i.test(window.navigator.userAgent);
       if (!isMobileDevice && !store.state.waveform) {
         this.player.wavesurfer().load(this.player.recordedData);
-        store.commit("setWaveForm", true)
+        store.commit('setWaveForm', true);
       }
       //   const wavesurfer = waveSurfer.create({
       //       container: '#waveform',

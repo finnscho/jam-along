@@ -11,10 +11,10 @@
 </template>
 
 <script>
-import Vue from "vue";
-import VueDraggableResizable from "vue-draggable-resizable";
+import Vue from 'vue';
+import VueDraggableResizable from 'vue-draggable-resizable';
 
-Vue.component("vue-draggable-resizable", VueDraggableResizable);
+Vue.component('vue-draggable-resizable', VueDraggableResizable);
 export default {};
 </script>
 

@@ -55,14 +55,14 @@
 </template>
 
 <script>
-import firebase from "firebase";
+import firebase from 'firebase';
 
 export default {
-  name: "login",
+  name: 'login',
   data() {
     return {
-      email: "",
-      password: "",
+      email: '',
+      password: '',
     };
   },
   methods: {
@@ -71,11 +71,11 @@ export default {
         .auth()
         .signInWithEmailAndPassword(this.email, this.password)
         .then(
-          (user) => {
-            this.$router.replace("home");
+          user => {
+            this.$router.replace('home');
           },
-          (err) => {
-            alert("Oops. " + err.message);
+          err => {
+            alert('Oops. ' + err.message);
           }
         );
     },

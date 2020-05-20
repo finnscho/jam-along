@@ -6,62 +6,66 @@ import Home from '@/views/Home.vue';
 import Login from '@/views/Login.vue';
 import SignUp from '@/views/SignUp.vue';
 import Disclaimer from '@/views/Disclaimer.vue';
-import RecorderApp from "./views/RecorderApp.vue";
+import RecorderApp from './views/RecorderApp.vue';
 
 Vue.use(Router);
 
 const router = new Router({
-    routes: [{
-        path: '*',
-        redirect: '/login'
+  routes: [
+    {
+      path: '*',
+      redirect: '/login',
     },
     {
-        path: '/',
-        redirect: '/login'
+      path: '/',
+      redirect: '/login',
     },
     {
-        path: '/login',
-        name: 'Login',
-        component: Login
+      path: '/login',
+      name: 'Login',
+      component: Login,
     },
     {
-        path: '/sign-up',
-        name: 'SignUp',
-        component: SignUp
+      path: '/sign-up',
+      name: 'SignUp',
+      component: SignUp,
     },
 
     {
-        path: '/home',
-        name: 'Home',
-        component: Home,
-        meta: {
-            requiresAuth: true
-        }
+      path: '/home',
+      name: 'Home',
+      component: Home,
+      meta: {
+        requiresAuth: true,
+      },
     },
     {
-        path: '/RecorderApp',
-        name: 'RecorderApp',
-        component: RecorderApp,
-        meta: {
-            requiresAuth: true
-        }
+      path: '/RecorderApp',
+      name: 'RecorderApp',
+      component: RecorderApp,
+      meta: {
+        requiresAuth: true,
+      },
     },
     {
-        path: '/disclaimer',
-        name: 'Disclaimer',
-        component: Disclaimer
+      path: '/disclaimer',
+      name: 'Disclaimer',
+      component: Disclaimer,
     },
-    ]
+  ],
 });
 
 router.beforeEach((to, from, next) => {
-    if (to.fullPath == "/disclaimer") { next(); return }
-    const currentUser = firebase.auth().currentUser;
-    const requiresAuth = to.matched.some(record => record.meta.requiresAuth);
+  if (to.fullPath == '/disclaimer') {
+    next();
+    return;
+  }
+  const currentUser = firebase.auth().currentUser;
+  const requiresAuth = to.matched.some(record => record.meta.requiresAuth);
 
-    if (requiresAuth && !currentUser) next('login');
-    else if (!requiresAuth && currentUser) next('home');
-    else next();
+  if (requiresAuth && !currentUser) next('login');
+  else if (!requiresAuth && currentUser) next('home');
+  else next();
 });
 
 export default router;
