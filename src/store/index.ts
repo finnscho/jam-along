@@ -50,9 +50,15 @@ export default new Vuex.Store({
     transformationMode: '',
     waveform: false,
     playing: false,
+    nextUrl:''
+
   },
 
   mutations: {
+    setNextUrl(state, url) {
+      state.nextUrl = url
+   },
+
     setWaveForm(state, value) {
       state.waveform = value;
     },

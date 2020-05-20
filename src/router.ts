@@ -7,6 +7,7 @@ import Login from '@/views/Login.vue';
 import SignUp from '@/views/SignUp.vue';
 import Disclaimer from '@/views/Disclaimer.vue';
 import RecorderApp from './views/RecorderApp.vue';
+import store from './store';
 
 Vue.use(Router);
 
@@ -63,9 +64,16 @@ router.beforeEach((to, from, next) => {
   const currentUser = firebase.auth().currentUser;
   const requiresAuth = to.matched.some(record => record.meta.requiresAuth);
 
-  if (requiresAuth && !currentUser) next('login');
-  else if (!requiresAuth && currentUser) next('home');
-  else next();
+  if (requiresAuth && !currentUser) {
+    store.commit('setNextUrl', to.fullPath);
+    next({
+      path: 'login',
+    });
+  } else if (!requiresAuth && currentUser) next('home');
+  else {
+    store.commit('setNextUrl', '');
+    next();
+  }
 });
 
 export default router;

@@ -67,6 +67,7 @@
 </template>
 <script>
 import firebase from 'firebase';
+import store from '../store';
 import JALStateService from '../components/services/JALStateService';
 export default {
   name: 'signUp',
@@ -91,7 +92,11 @@ export default {
               this.name,
               this.lastname
             );
-            this.$router.replace('home');
+            if (store.state.nextUrl != '') {
+              this.$router.push(store.state.nextUrl);
+            } else {
+              this.$router.replace('home');
+            }
           },
           err => {
             alert('Oops. ' + err.message);

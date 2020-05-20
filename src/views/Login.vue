@@ -56,7 +56,7 @@
 
 <script>
 import firebase from 'firebase';
-
+import store from '../store';
 export default {
   name: 'login',
   data() {
@@ -72,7 +72,9 @@ export default {
         .signInWithEmailAndPassword(this.email, this.password)
         .then(
           user => {
-            this.$router.replace('home');
+            if (store.state.nextUrl != '') {
+              this.$router.push(store.state.nextUrl);
+            } else this.$router.replace('home');
           },
           err => {
             alert('Oops. ' + err.message);
