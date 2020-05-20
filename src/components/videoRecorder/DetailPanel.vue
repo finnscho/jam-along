@@ -139,7 +139,7 @@ export default class DetailPanel extends Vue {
   }
 
   getInvitationLink() {
-    return location + '?' + store.state.activeProject;
+    return location.href + '?' + store.state.activeProject;
   }
 
   constructor(params) {

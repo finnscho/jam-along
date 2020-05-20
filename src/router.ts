@@ -8,6 +8,7 @@ import SignUp from '@/views/SignUp.vue';
 import Disclaimer from '@/views/Disclaimer.vue';
 import RecorderApp from './views/RecorderApp.vue';
 import store from './store';
+import JALStateService from './components/services/JALStateService';
 
 Vue.use(Router);
 
@@ -64,16 +65,22 @@ router.beforeEach((to, from, next) => {
   const currentUser = firebase.auth().currentUser;
   const requiresAuth = to.matched.some(record => record.meta.requiresAuth);
 
-  if (requiresAuth && !currentUser) {
-    store.commit('setNextUrl', to.fullPath);
-    next({
-      path: 'login',
-    });
-  } else if (!requiresAuth && currentUser) next('home');
-  else {
-    store.commit('setNextUrl', '');
-    next();
-  }
+    if (requiresAuth && !currentUser) {
+      store.commit('setNextUrl', to.fullPath);
+      next({
+        path: 'login',
+      });
+    } else if (!requiresAuth && currentUser) next('home');
+    else {
+
+        if (to.fullPath.indexOf('?') > 0) {
+            const values = to.fullPath.split('?');
+            store.commit('setProject', values[1]);
+           JALStateService.prototype.loadProject();
+        }
+      store.commit('setNextUrl', '');
+      next();
+    }
 });
 
 export default router;
