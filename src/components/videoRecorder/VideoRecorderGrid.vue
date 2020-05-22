@@ -302,7 +302,6 @@ export default class VideoRecorderGrid extends Vue {
           store.state.activePlayer.player?.duration() ==
           store.state.activePlayer.player.currentTime()
         ) {
-          
           store.commit('setPlaying', false);
         }
         if (!this.isMobileDevice) {
@@ -935,6 +934,7 @@ export default class VideoRecorderGrid extends Vue {
     const options = { mimeType: 'video/webm; codecs=vp9' };
     //@ts-ignore
     this.mediaRecorder = new MediaRecorder(stream, options);
+    this.mediaRecorder.crossOrigin = 'anonymous';
     store.state.players.forEach(element => {
       const oldPlayer = document.getElementById(element.id);
       //Todo dispose
@@ -1104,14 +1104,14 @@ export default class VideoRecorderGrid extends Vue {
 
   handleDataAvailable(event) {
     console.log('data-available');
-    if (event.data.size > 0) {
-      this.recordedChunks.push(event.data);
-      console.log(this.recordedChunks);
-      this.download();
-      this.downloading = false;
-    } else {
-      // ...
-    }
+    // if (event.data.size > 0) {
+    this.recordedChunks.push(event.data);
+    console.log(this.recordedChunks);
+    this.download();
+    this.downloading = false;
+    // } else {
+    //   alert('An Error occured.');
+    // }
   }
   download() {
     const blob = new Blob(this.recordedChunks, {

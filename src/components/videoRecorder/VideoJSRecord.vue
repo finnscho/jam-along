@@ -61,6 +61,7 @@ export default class VideoJSRecord extends Vue {
     const options = {
       controls: false,
       autoplay: false,
+      crossOrigin: 'anonymous',
       fluid: true,
       responsive: true,
       loop: false,
@@ -76,6 +77,7 @@ export default class VideoJSRecord extends Vue {
           this.src == null
             ? {
                 audio: true,
+                crossOrigin: 'anonymous',
                 maxLength: 500,
                 debug: true,
                 // video: true,
@@ -125,6 +127,8 @@ export default class VideoJSRecord extends Vue {
     store.commit('addPlayer', this);
     if (this.src !== null && this.src !== undefined) {
       this.player.src = this.src;
+      // this.player.src.crossOrigin = 'anonymous';
+      this.player.crossOrigin = 'anonymous';
     } else {
       try {
         this.player.record().getDevice();
@@ -142,7 +146,7 @@ export default class VideoJSRecord extends Vue {
     // user clicked the record button and started recording
     this.player.on('startRecord', () => {
       const x = new Date().getTime();
-    
+
       store.state.players.forEach(element => {
         //if(element.recordedData !== undefined)
         {
@@ -151,23 +155,22 @@ export default class VideoJSRecord extends Vue {
         }
       });
       const y = new Date().getTime();
-     
+
       this.slider = y - x;
       console.log('offset: ' + this.slider.toString());
     });
-    this.player.on('ended',()=>{
-      alert
+    this.player.on('ended', () => {
+      alert;
     }),
-    // user completed recording and stream is available
-    this.player.on('finishRecord', () => {
-      const isMobileDevice = /Mobi/i.test(window.navigator.userAgent);
-      if (!isMobileDevice && !store.state.waveform) {
-        this.player.wavesurfer().load(this.player.recordedData);
-        store.commit('setWaveForm', true);
-      }
-         console.log('finished recording: ', this.player.recordedData);
-
-    });
+      // user completed recording and stream is available
+      this.player.on('finishRecord', () => {
+        const isMobileDevice = /Mobi/i.test(window.navigator.userAgent);
+        if (!isMobileDevice && !store.state.waveform) {
+          this.player.wavesurfer().load(this.player.recordedData);
+          store.commit('setWaveForm', true);
+        }
+        console.log('finished recording: ', this.player.recordedData);
+      });
 
     // error handling
     this.player.on('error', (element, error) => {

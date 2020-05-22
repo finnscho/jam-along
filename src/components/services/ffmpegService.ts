@@ -20,6 +20,7 @@ export default class JalffmpegService {
   player: videojs;
   mergeVideos(videos: any[]) {
     const merger = new VideoStreamMerger();
+    merger.crossOrigin = 'anonymous';
     merger.setOutputSize(1200, 1200);
     let x = 0;
     let width = 0;
@@ -35,6 +36,7 @@ export default class JalffmpegService {
         //DeepCopy
         media = element.player.record().mediaElement as HTMLMediaElement;
       }
+      media.crossOrigin = 'anonymous';
       store.state.videoGrid.forEach(gridVideo => {
         if (gridVideo.id == element.id) {
           x = gridVideo.x * 200;
@@ -57,12 +59,12 @@ export default class JalffmpegService {
     // // Start the merging. Calling this makes the result available to us
     merger.start();
 
-    const outputElement = document.querySelector('#output');
-    if (outputElement !== null) {
-      const media = outputElement as HTMLMediaElement;
-      media.srcObject = merger.result;
-      media.autoplay = true;
-    }
+    // const outputElement = document.querySelector('#output');
+    // if (outputElement !== null) {
+    //   const media = outputElement as HTMLMediaElement;
+    //   media.srcObject = merger.result;
+    //   media.autoplay = true;
+    // }
 
     return merger;
   }
