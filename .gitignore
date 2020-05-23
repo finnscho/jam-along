@@ -45,3 +45,10 @@ yarn-error.log*
 /src-cordova/platforms
 /src-cordova/plugins
 /public/cordova.js
+
+/dist
+
+
+dist/favicon.ico
+dist/index.html
+public/index.html
